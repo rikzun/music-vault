@@ -1,0 +1,21 @@
+{
+  "include": ["src", "declarations.d.ts"],
+  "compilerOptions": {
+    "strict": true,
+    "sourceMap": true,
+    "module": "esnext",
+    "target": "es6",
+    "forceConsistentCasingInFileNames": true,
+    "allowJs": true,
+    "jsx": "react-jsx",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@assets/*": ["assets/*"],
+      "@components/*": ["components/*"]
+    }
+  }
+}
