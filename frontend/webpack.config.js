@@ -3,7 +3,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
-const ReactRefreshTypeScript = require('react-refresh-typescript')
+const ReactRefreshTypeScript = require('react-refresh-typescript').default
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production'
