@@ -1,8 +1,6 @@
 package schema
 
-import (
-	"time"
-)
+import "time"
 
 type AuthToken struct {
 	ID uint `gorm:"column:id; primaryKey"`
