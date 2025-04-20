@@ -2,8 +2,7 @@ package ClientService
 
 import "backend/core"
 
-// returns true if client was found
-func FindByUnique(email string, login string) (rtClient *ClientSchema, rtFound bool) {
+func FindByUnique(email string, login string) (*ClientSchema, bool) {
 	var client ClientSchema
 
 	result := core.Database.
@@ -11,17 +10,13 @@ func FindByUnique(email string, login string) (rtClient *ClientSchema, rtFound b
 		First(&client)
 
 	if result.Error != nil {
-		rtClient = nil
-		rtFound = false
-		return
+		return nil, false
 	}
 
-	rtClient = &client
-	rtFound = true
-	return
+	return &client, true
 }
 
-func Create(email string, login string, passwordHash string) (rtClient *ClientSchema) {
+func Create(email string, login string, passwordHash string) *ClientSchema {
 	client := ClientSchema{
 		Email:    email,
 		Login:    login,
@@ -29,6 +24,5 @@ func Create(email string, login string, passwordHash string) (rtClient *ClientSc
 	}
 
 	core.Database.Create(&client)
-	rtClient = &client
-	return
+	return &client
 }
