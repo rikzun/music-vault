@@ -11,34 +11,37 @@ import (
 func EntrySignUp(ctx *gin.Context) {
 	var body ClientSignBody
 	if err := ctx.ShouldBindJSON(&body); err != nil {
-		ctx.AbortWithError(http.StatusInternalServerError, err)
+		ctx.String(http.StatusBadRequest, err.Error())
+		ctx.Abort()
 		return
 	}
 
-	if _, found := ClientService.FindByLogin(body.Login); !found {
+	if _, found := ClientService.FindByUnique(body.Email, body.Login); !found {
 		hash, err := utils.HashPassword(body.Password)
 
 		if err != nil {
-			ctx.AbortWithError(http.StatusInternalServerError, err)
+			ctx.String(http.StatusInternalServerError, err.Error())
+			ctx.Abort()
 			return
 		}
 
-		ClientService.Create(body.Login, hash)
+		ClientService.Create(body.Email, body.Login, hash)
 		ctx.Status(http.StatusOK)
 		return
 	}
 
-	ctx.Status(http.StatusBadRequest)
+	ctx.Status(http.StatusConflict)
 }
 
 func EntrySignIn(ctx *gin.Context) {
 	var body ClientSignBody
 	if err := ctx.BindJSON(&body); err != nil {
-		ctx.AbortWithError(http.StatusInternalServerError, err)
+		ctx.String(http.StatusBadRequest, err.Error())
+		ctx.Abort()
 		return
 	}
 
-	client, found := ClientService.FindByLogin(body.Login)
+	client, found := ClientService.FindByUnique(body.Email, body.Login)
 
 	if !found {
 		ctx.Status(http.StatusNotFound)

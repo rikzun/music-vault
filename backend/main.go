@@ -1,16 +1,16 @@
 package main
 
 import (
+	"backend/core"
 	"backend/core/routing"
-	"backend/modules"
 	ClientService "backend/services/client"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	modules.InitDatabase()
-	modules.Database.AutoMigrate(&ClientService.ClientSchema{})
+	core.InitDatabase()
+	core.Database.AutoMigrate(&ClientService.ClientSchema{})
 
 	engine := gin.Default()
 	routing.Init(engine)

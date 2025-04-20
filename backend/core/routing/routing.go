@@ -1,7 +1,7 @@
 package routing
 
 import (
-	"backend/routes/auth"
+	"backend/api/auth"
 
 	"github.com/gin-gonic/gin"
 )
