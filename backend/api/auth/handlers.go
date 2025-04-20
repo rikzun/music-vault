@@ -1,6 +1,7 @@
 package auth
 
 import (
+	AuthTokenService "backend/services/auth_tokens"
 	ClientService "backend/services/client"
 	"backend/utils"
 	"net/http"
@@ -9,14 +10,14 @@ import (
 )
 
 func EntrySignUp(ctx *gin.Context) {
-	var body ClientSignBody
+	var body ClientSignUpBody
 	if err := ctx.ShouldBindJSON(&body); err != nil {
 		ctx.String(http.StatusBadRequest, err.Error())
 		ctx.Abort()
 		return
 	}
 
-	if _, found := ClientService.FindByUnique(body.Email, body.Login); !found {
+	if client := ClientService.FindByUnique(body.Email, body.Login); client == nil {
 		hash, err := utils.HashPassword(body.Password)
 
 		if err != nil {
@@ -25,8 +26,13 @@ func EntrySignUp(ctx *gin.Context) {
 			return
 		}
 
-		ClientService.Create(body.Email, body.Login, hash)
-		ctx.Status(http.StatusOK)
+		ip := utils.StringPtrOrNil(ctx.RemoteIP())
+		ua := utils.StringPtrOrNil(ctx.GetHeader("User-Agent"))
+
+		client := ClientService.Create(body.Email, body.Login, hash)
+		signedToken := AuthTokenService.Create(client.ID, ip, ua)
+
+		ctx.String(http.StatusOK, signedToken)
 		return
 	}
 
@@ -34,22 +40,26 @@ func EntrySignUp(ctx *gin.Context) {
 }
 
 func EntrySignIn(ctx *gin.Context) {
-	var body ClientSignBody
+	var body ClientSignInBody
 	if err := ctx.BindJSON(&body); err != nil {
 		ctx.String(http.StatusBadRequest, err.Error())
 		ctx.Abort()
 		return
 	}
 
-	client, found := ClientService.FindByUnique(body.Email, body.Login)
+	client := ClientService.FindByUnique(body.Login, body.Login)
 
-	if !found {
+	if client == nil {
 		ctx.Status(http.StatusNotFound)
 		return
 	}
 
 	if utils.ValidatePassword(body.Password, client.Password) {
-		ctx.Status(http.StatusOK)
+		ip := utils.StringPtrOrNil(ctx.RemoteIP())
+		ua := utils.StringPtrOrNil(ctx.GetHeader("User-Agent"))
+		signedToken := AuthTokenService.FindOrCreate(client.ID, ip, ua)
+
+		ctx.String(http.StatusOK, signedToken)
 		return
 	}
 

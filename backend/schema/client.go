@@ -1,0 +1,11 @@
+package schema
+
+type Client struct {
+	ID uint `gorm:"column:id; primaryKey"`
+
+	Email    string `gorm:"column:email;    not null; type:text; uniqueIndex"`
+	Login    string `gorm:"column:login;    not null; type:text; uniqueIndex"`
+	Password string `gorm:"column:password; not null; type:text"`
+
+	AuthTokens []AuthToken `gorm:"foreignKey:ClientID;references:ID"`
+}
