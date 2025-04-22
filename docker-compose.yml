@@ -1,0 +1,40 @@
+name: music-vault
+
+services:
+  frontend:
+    image: nginx-frontend
+    build: ./frontend
+    ports:
+      - "8000:8000"
+
+  backend:
+    image: go-backend
+    build: ./backend
+    ports:
+      - "8080:8080"
+    environment:
+      - GOOS=linux
+      - GOARCH=amd64
+    depends_on:
+      go_postgres:
+        condition: service_healthy
+
+  go_postgres:
+    image: postgres:10-alpine
+    restart: always
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: dev
+      POSTGRES_USER: dev
+      POSTGRES_DB: go_db
+      PGPASSWORD: dev
+      PGUSER: dev
+      PGDATABASE: go_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
