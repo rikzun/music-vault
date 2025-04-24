@@ -5,6 +5,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 const ReactRefreshTypeScript = require('react-refresh-typescript').default
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const { DefinePlugin } = require('webpack')
 
 const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production'
 const IS_SERVE = process.env.WEBPACK_SERVE ?? false
@@ -95,6 +96,9 @@ module.exports = () => {
                         }
                     }
                 }]
+            }),
+            new DefinePlugin({
+
             })
         ]
     }

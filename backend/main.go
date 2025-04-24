@@ -2,6 +2,7 @@ package main
 
 import (
 	"backend/core"
+	_ "backend/core/config"
 	"backend/core/routing"
 	"backend/schema"
 

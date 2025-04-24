@@ -2,6 +2,7 @@ package AuthTokenService
 
 import (
 	"backend/core"
+	"backend/core/config"
 	"backend/schema"
 	"crypto/hmac"
 	"crypto/sha512"
@@ -10,12 +11,10 @@ import (
 	"github.com/google/uuid"
 )
 
-var secret = []byte("lol")
-
 func Create(clientID uint, ip *string, ua *string) string {
 	uuidToken := uuid.NewString()
 
-	mac := hmac.New(sha512.New, secret)
+	mac := hmac.New(sha512.New, []byte(config.Secret))
 	mac.Write([]byte(uuidToken))
 
 	signedToken := mac.Sum(nil)
@@ -41,7 +40,7 @@ func FindOrCreate(clientID uint, ip *string, ua *string) string {
 
 	result := core.Database.
 		Where("client_id = ? AND ip = ?", clientID, *ip).
-		Find(&record)
+		First(&record)
 
 	if result.Error != nil {
 		return Create(clientID, ip, ua)

@@ -2,37 +2,42 @@ name: music-vault
 
 services:
   frontend:
-    image: nginx-frontend
-    build: ./frontend
+    image: frontend
+    build:
+      context: ./frontend
+      dockerfile: ../Dockerfile.frontend
     ports:
       - "8000:8000"
 
   backend:
-    image: go-backend
-    build: ./backend
+    image: backend
+    build:
+      context: ./backend
+      dockerfile: ../Dockerfile.backend
     ports:
       - "8080:8080"
+    env_file: ".env"
     environment:
       - GOOS=linux
       - GOARCH=amd64
     depends_on:
-      go_postgres:
+      database:
         condition: service_healthy
 
-  go_postgres:
-    image: postgres:10-alpine
+  database:
+    image: postgres:15-alpine
     restart: always
     volumes:
       - ./db_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT}:5432"
     environment:
-      POSTGRES_PASSWORD: dev
-      POSTGRES_USER: dev
-      POSTGRES_DB: go_db
-      PGPASSWORD: dev
-      PGUSER: dev
-      PGDATABASE: go_db
+      POSTGRES_DB: ${POSTGRES_NAME}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASS}
+      PGDATABASE: ${POSTGRES_NAME}
+      PGUSER: ${POSTGRES_USER}
+      PGPASSWORD: ${POSTGRES_PASS}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
       interval: 1s
