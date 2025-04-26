@@ -38,3 +38,5 @@ declare module '*.svg' {
 declare module '*.css'
 declare module '*.scss'
 declare module '*.sass'
+
+declare const ENV: { readonly DEV_MODE: boolean }

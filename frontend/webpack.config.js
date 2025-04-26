@@ -5,10 +5,12 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 const ReactRefreshTypeScript = require('react-refresh-typescript').default
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const dotenv = require("dotenv")
 const { DefinePlugin } = require('webpack')
 
 const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production'
 const IS_SERVE = process.env.WEBPACK_SERVE ?? false
+const ENV = dotenv.config({ path: '../.env' })
 
 const PATH_ENTRY = path.join(__dirname, 'src', 'index.tsx')
 const PATH_TEMPLATE_ENTRY = path.join(__dirname, 'public', 'index.html')
@@ -98,7 +100,7 @@ module.exports = () => {
                 }]
             }),
             new DefinePlugin({
-
+                'ENV.DEV_MODE': ENV['DEV_MODE'] == 'true'
             })
         ]
     }

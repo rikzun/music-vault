@@ -1,7 +1,11 @@
 import './App.style.scss'
 import axios from 'axios'
 
-axios.defaults.baseURL = window.location.protocol + "//" + window.location.hostname + ":8080" + "/api";
+if (ENV.DEV_MODE) {
+    axios.defaults.baseURL = 'http://localhost:8080/api'
+} else {
+    axios.defaults.baseURL = window.location.origin + "/api"
+}
 
 export function App() {
     return <div></div>
