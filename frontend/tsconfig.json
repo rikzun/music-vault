@@ -14,8 +14,10 @@
     "skipLibCheck": true,
     "baseUrl": "./src",
     "paths": {
-      "@assets/*": ["assets/*"],
-      "@components/*": ["components/*"]
+      "@assets": ["src/assets"],
+      "@assets/*": ["src/assets/*"],
+      "@components": ["src/components"],
+      "@components/*": ["src/components/*"]
     }
   }
 }

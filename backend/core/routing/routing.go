@@ -7,6 +7,8 @@ import (
 )
 
 func Init(engine *gin.Engine) {
-	engine.POST("/sign-up", auth.EntrySignUp)
-	engine.POST("/sign-in", auth.EntrySignIn)
+	group := engine.Group("/api")
+
+	group.POST("/sign-up", auth.EntrySignUp)
+	group.POST("/sign-in", auth.EntrySignIn)
 }
