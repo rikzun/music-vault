@@ -8,6 +8,9 @@ Get-Content ".env" | ForEach-Object {
     }
 }
 
-Push-Location "backend"
-go run main.go
-Pop-Location
+try {
+    Push-Location "backend"
+    go run main.go
+} finally {
+    Pop-Location
+}
