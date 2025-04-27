@@ -3,11 +3,14 @@ package main
 import (
 	"backend/core"
 	_ "backend/core/config"
+	"backend/core/middleware"
 	"backend/core/routing"
 	"backend/schema"
-	"net/http"
+	"reflect"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	"github.com/go-playground/validator/v10"
 )
 
 func main() {
@@ -18,20 +21,20 @@ func main() {
 	)
 
 	engine := gin.Default()
-	engine.Use(func(c *gin.Context) {
-		c.Header("Access-Control-Allow-Origin", "*")
-		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		c.Header("Access-Control-Allow-Headers", "Origin, Content-Type, Authorization, X-Requested-With")
-		c.Header("Access-Control-Allow-Credentials", "true")
+	engine.Use(middleware.CORS)
 
-		if c.Request.Method == http.MethodOptions {
-			c.AbortWithStatus(http.StatusOK)
-			return
-		}
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		v.RegisterTagNameFunc(func(field reflect.StructField) string {
+			jsonTag := field.Tag.Get("json")
 
-		c.Next()
-	})
+			if jsonTag == "" {
+				return field.Name
+			}
+
+			return jsonTag
+		})
+	}
+
 	routing.Init(engine)
-
 	engine.Run(":8080")
 }

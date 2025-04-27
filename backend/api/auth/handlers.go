@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"backend/core"
 	AuthTokenService "backend/services/auth_tokens"
 	ClientService "backend/services/client"
 	"backend/utils"
@@ -12,8 +13,7 @@ import (
 func EntrySignUp(ctx *gin.Context) {
 	var body ClientSignUpBody
 	if err := ctx.ShouldBindJSON(&body); err != nil {
-		ctx.String(http.StatusBadRequest, err.Error())
-		ctx.Abort()
+		core.SendDetails(ctx, err)
 		return
 	}
 
@@ -41,9 +41,8 @@ func EntrySignUp(ctx *gin.Context) {
 
 func EntrySignIn(ctx *gin.Context) {
 	var body ClientSignInBody
-	if err := ctx.BindJSON(&body); err != nil {
-		ctx.String(http.StatusBadRequest, err.Error())
-		ctx.Abort()
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		core.SendDetails(ctx, err)
 		return
 	}
 
