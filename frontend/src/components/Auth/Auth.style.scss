@@ -1,0 +1,70 @@
+.signFormBox {
+    min-width: 115px;
+    max-width: 90%;
+    width: 400px;
+
+    > .signBox {
+        > .modeBar {
+            background-color: #626262;
+            display: flex;
+            flex-direction: row;
+    
+            > .modeButton {
+                display: flex;
+                width: 50%;
+                min-height: 47px;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+
+                &.signModeActive {
+                    border-bottom: solid #69A2CC 4px;
+                }
+
+                &:hover {
+                    background-color: #515151;
+                }
+            }
+        }
+    
+        > .inputBox {
+            background-color: #3C3C3C;
+
+            > .signInputs {
+                display: flex;
+                flex-direction: column;
+
+                > input {
+                    margin: 20px;
+                    background-color: #626262;
+                    min-height: 47px;
+                    padding: 1em;
+                    color: #cccccc;
+                    font-size: 16px;
+
+                    &::placeholder {
+                        font-size: 16px;
+                        color: #cccccc;
+                    }
+                }
+            }
+        }
+    }
+
+    > .submitButtonBox {
+        display: flex;
+        margin-top: 10px;
+
+        > .formSubmitButton {
+            width: 100%;
+            min-height: 48px;
+            border-radius: 16px;
+            background-color: #626262;
+            cursor: pointer;
+
+            &:hover {
+                background-color: #515151;
+            }
+        }
+    }
+}

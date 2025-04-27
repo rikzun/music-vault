@@ -10,7 +10,7 @@ const { DefinePlugin } = require('webpack')
 
 const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production'
 const IS_SERVE = process.env.WEBPACK_SERVE ?? false
-const ENV = dotenv.config({ path: '../.env' })
+const ENV = dotenv.config({ path: '../.env' }).parsed
 
 const PATH_ENTRY = path.join(__dirname, 'src', 'index.tsx')
 const PATH_TEMPLATE_ENTRY = path.join(__dirname, 'public', 'index.html')

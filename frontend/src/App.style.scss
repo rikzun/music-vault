@@ -1,4 +1,22 @@
+* {
+    box-sizing: border-box;
+}
+
+button {
+    background-color: inherit;
+    border: unset;
+    color: inherit;
+    font-size: inherit;
+}
+
+input {
+    border-radius: unset;
+    border: unset;
+}
+
 body {
+    background-color: #252525;
+    color: #cccccc;
     margin: 0;
     height: 100vh;
     width: 100vw;
