@@ -2,6 +2,7 @@ package routing
 
 import (
 	"backend/api/auth"
+	"backend/api/track"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,4 +12,5 @@ func Init(engine *gin.Engine) {
 
 	group.POST("/sign-up", auth.EntrySignUp)
 	group.POST("/sign-in", auth.EntrySignIn)
+	group.POST("/upload-track", track.EntryUploadTrack)
 }
