@@ -1,5 +1,5 @@
 {
-    "include": ["src", "declarations.d.ts"],
+    "include": ["src", "file-declarations.d.ts", "declarations.d.ts"],
     "compilerOptions": {
       "strict": true,
       "sourceMap": true,
@@ -17,7 +17,9 @@
         "@assets": ["src/assets"],
         "@assets/*": ["src/assets/*"],
         "@components": ["src/components"],
-        "@components/*": ["src/components/*"]
+        "@components/*": ["src/components/*"],
+        "@utils": ["src/utils"],
+        "@utils/*": ["src/utils/*"]
       }
     }
   }
