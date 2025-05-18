@@ -37,7 +37,7 @@ func EntryUploadTrack(ctx *gin.Context) {
 
 	metaData := strings.TrimRight(string(metaBuffer[:metaSize]), "\x00 \n")
 	fileName := strconv.FormatInt(time.Now().Unix(), 10)
-	println(metaData)
+	println(metaData + "meta")
 
 	os.MkdirAll("./uploads/", os.ModePerm)
 	outFile, err := os.Create("./uploads/" + fileName + ".mp3")

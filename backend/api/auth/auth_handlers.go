@@ -2,8 +2,8 @@ package auth
 
 import (
 	"backend/core"
-	AuthTokenService "backend/services/auth_tokens"
-	ClientService "backend/services/client"
+	AuthTokenService "backend/domain/auth_tokens"
+	ClientService "backend/domain/clients"
 	"backend/utils"
 	"net/http"
 

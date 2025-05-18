@@ -11,7 +11,7 @@ import (
 
 type ErrorResponse struct {
 	Message string        `json:"message"`
-	Details []ErrorDetail `json:"details"`
+	Details []ErrorDetail `json:"details,omitempty"`
 }
 
 type ErrorDetail struct {

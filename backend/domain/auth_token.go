@@ -1,8 +1,8 @@
-package schema
+package domain
 
 import "time"
 
-type AuthToken struct {
+type AuthTokenEntity struct {
 	ID uint `gorm:"column:id; primaryKey"`
 
 	ClientID  uint      `gorm:"column:client_id; not null; index; constraint:OnDelete:CASCADE"`
@@ -11,5 +11,5 @@ type AuthToken struct {
 	UserAgent *string   `gorm:"column:user_agent; type:text"`
 	CreatedAt time.Time `gorm:"column:created_at; not null; autoCreateTime"`
 
-	Client Client `gorm:"foreignKey:ClientID"`
+	Client ClientEntity `gorm:"foreignKey:ClientID"`
 }

@@ -1,18 +1,17 @@
 package core
 
 import (
-	"backend/core/config"
 	"fmt"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-var Database *gorm.DB
+var DB *gorm.DB
 
 func InitDatabase() {
 	var host string
-	if config.DevMode {
+	if Config.DevMode {
 		host = "localhost"
 	} else {
 		host = "database"
@@ -20,11 +19,11 @@ func InitDatabase() {
 
 	dsn := fmt.Sprintf(
 		"host=%s port=%s dbname=%s user=%s password=%s sslmode=disable TimeZone=UTC",
-		host, config.DbPort, config.DbName, config.DbUser, config.DbPass,
+		host, Config.DbPort, Config.DbName, Config.DbUser, Config.DbPass,
 	)
 
 	var err error
-	Database, err = gorm.Open(
+	DB, err = gorm.Open(
 		postgres.Open(dsn),
 		&gorm.Config{},
 	)

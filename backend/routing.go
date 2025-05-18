@@ -1,4 +1,4 @@
-package routing
+package main
 
 import (
 	"backend/api/auth"
@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Init(engine *gin.Engine) {
+func InitRouting(engine *gin.Engine) {
 	group := engine.Group("/api")
 
 	group.POST("/sign-up", auth.EntrySignUp)
