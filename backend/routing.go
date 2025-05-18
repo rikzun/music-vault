@@ -3,14 +3,16 @@ package main
 import (
 	"backend/api/auth"
 	"backend/api/track"
+	"backend/core/middleware"
 
 	"github.com/gin-gonic/gin"
 )
 
 func InitRouting(engine *gin.Engine) {
-	group := engine.Group("/api")
+	public := engine.Group("/api")
+	public.POST("/sign-up", auth.EntrySignUp)
+	public.POST("/sign-in", auth.EntrySignIn)
 
-	group.POST("/sign-up", auth.EntrySignUp)
-	group.POST("/sign-in", auth.EntrySignIn)
-	group.POST("/upload-track", track.EntryUploadTrack)
+	protected := public.Group("", middleware.Authorization)
+	protected.POST("/upload-track", track.EntryUploadTrack)
 }

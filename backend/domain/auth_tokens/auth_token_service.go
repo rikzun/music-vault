@@ -40,7 +40,7 @@ func FindOrCreate(clientID uint, ip *string, ua *string) string {
 	return record.Token
 }
 
-func ValidateAndGetID(uuidToken string) *uint {
+func ValidateAndGetID(uuidToken string) uint {
 	var record domain.AuthTokenEntity
 
 	result := core.DB.
@@ -48,8 +48,8 @@ func ValidateAndGetID(uuidToken string) *uint {
 		First(&record)
 
 	if result.Error != nil {
-		return nil
+		return 0
 	}
 
-	return &record.ClientID
+	return record.ID
 }

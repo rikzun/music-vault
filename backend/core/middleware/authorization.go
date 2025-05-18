@@ -17,7 +17,7 @@ var Authorization = func(ctx *gin.Context) {
 
 	clientID := AuthTokensService.ValidateAndGetID(authToken)
 
-	if clientID == nil {
+	if clientID == 0 {
 		ctx.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}

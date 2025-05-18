@@ -4,6 +4,7 @@ import (
 	"backend/core"
 	"backend/core/middleware"
 	"backend/domain"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,9 +18,10 @@ func main() {
 		&domain.AuthTokenEntity{},
 	)
 
+	os.MkdirAll("./uploads/", os.ModePerm)
+
 	engine := gin.Default()
 	engine.Use(middleware.DefaultHeaders)
-	engine.Use(middleware.Authorization)
 	InitRouting(engine)
 
 	engine.Run(":8080")

@@ -13,7 +13,7 @@ import (
 func EntrySignUp(ctx *gin.Context) {
 	var body ClientSignUpBody
 	if err := ctx.ShouldBindJSON(&body); err != nil {
-		core.SendDetails(ctx, err)
+		core.SendBindError(ctx, err)
 		return
 	}
 
@@ -42,7 +42,7 @@ func EntrySignUp(ctx *gin.Context) {
 func EntrySignIn(ctx *gin.Context) {
 	var body ClientSignInBody
 	if err := ctx.ShouldBindJSON(&body); err != nil {
-		core.SendDetails(ctx, err)
+		core.SendBindError(ctx, err)
 		return
 	}
 
