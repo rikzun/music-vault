@@ -8,9 +8,7 @@ Get-Content ".env" | ForEach-Object {
     }
 }
 
-try {
-    Push-Location "backend"
-    go run main.go
-} finally {
-    Pop-Location
-}
+cd backend
+go build -o ../vault.exe
+cd ../
+& ./vault.exe
