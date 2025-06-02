@@ -12,6 +12,10 @@ type ClientEntity struct {
 	AuthTokens []AuthTokenEntity `gorm:"foreignKey:ClientID;references:ID"`
 }
 
+func (ClientEntity) TableName() string {
+	return "clients"
+}
+
 func (client *ClientEntity) Delete() error {
 	return core.DB.Delete(client).Error
 }

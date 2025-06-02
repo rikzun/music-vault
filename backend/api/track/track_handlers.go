@@ -2,11 +2,13 @@ package track
 
 import (
 	"backend/core"
+	TrackService "backend/domain/tracks"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -15,7 +17,8 @@ import (
 )
 
 var allowedCodecs = []string{
-	"mp3", "wav", "flac", "aac",
+	"mp3", "wav", "ogg",
+	"flac", "aac", "alac",
 }
 
 func EntryUploadTrack(ctx *gin.Context) {
@@ -43,7 +46,7 @@ func EntryUploadTrack(ctx *gin.Context) {
 		return
 	}
 
-	var metaData TrackMetaData
+	var metaData TrackMetaDataBody
 	metaParseErr := json.Unmarshal(metaBuffer, &metaData)
 	if metaParseErr != nil {
 		core.SendError(ctx,
@@ -53,9 +56,16 @@ func EntryUploadTrack(ctx *gin.Context) {
 		return
 	}
 
+	if !slices.Contains(allowedCodecs, metaData.Codec) {
+		core.SendError(ctx,
+			http.StatusBadRequest,
+			"Unsupported codec",
+		)
+	}
+
 	fileName := uuid.NewString()
 
-	file, fileCreateErr := os.Create("./uploads/" + fileName + ".mp3")
+	file, fileCreateErr := os.Create("./uploads/" + fileName)
 	if fileCreateErr != nil {
 		core.SendError(ctx,
 			http.StatusInternalServerError,
@@ -74,5 +84,17 @@ func EntryUploadTrack(ctx *gin.Context) {
 		return
 	}
 
-	ctx.String(http.StatusOK, fmt.Sprintf("File %s uploaded successfully", fileName))
+	trackID := TrackService.Create(
+		metaData.Title,
+		metaData.Author,
+		metaData.Codec,
+		metaData.Bitrate,
+		metaData.FileName,
+	)
+
+	response := TrackCreateResponse{
+		ID: trackID,
+	}
+
+	ctx.JSON(http.StatusOK, response)
 }

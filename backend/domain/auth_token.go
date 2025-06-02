@@ -13,3 +13,7 @@ type AuthTokenEntity struct {
 
 	Client ClientEntity `gorm:"foreignKey:ClientID"`
 }
+
+func (AuthTokenEntity) TableName() string {
+	return "auth_tokens"
+}
