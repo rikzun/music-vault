@@ -3,7 +3,7 @@ import './App.style.scss'
 import axios from 'axios'
 
 if (ENV.DEV_MODE) {
-    axios.defaults.baseURL = 'http://localhost:8080/api'
+    axios.defaults.baseURL = ENV.BACKEND_URL
 } else {
     axios.defaults.baseURL = window.location.origin + "/api"
 }

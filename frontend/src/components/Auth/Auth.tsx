@@ -65,7 +65,7 @@ export function Auth() {
                     {isSignIn.value
                         ? (
                             <div className="signInputs">
-                                <input type="email" name="login" placeholder="Email or Login" />
+                                <input type="text" name="login" placeholder="Email or Login" />
                                 <input type="password" name="password" placeholder="Password" />
                             </div>
                         )
