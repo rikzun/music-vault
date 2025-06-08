@@ -1,5 +1,5 @@
 {
-    "include": ["src", "file-declarations.d.ts", "declarations.d.ts"],
+    "include": ["src", "assets.ts", "declarations.d.ts"],
     "compilerOptions": {
       "strict": true,
       "sourceMap": true,

@@ -1,41 +1,55 @@
 const path = require('path')
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
-const ReactRefreshTypeScript = require('react-refresh-typescript').default
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 const dotenv = require("dotenv")
 const { DefinePlugin } = require('webpack')
 
 const IS_DEVELOPMENT = process.env.NODE_ENV !== 'production'
-const IS_SERVE = process.env.WEBPACK_SERVE ?? false
+const IS_SERVE = process.env.WEBPACK_SERVE == 'true'
 const ENV = dotenv.config({ path: '../.env' }).parsed
 
-const PATH_ENTRY = path.join(__dirname, 'src', 'index.tsx')
-const PATH_TEMPLATE_ENTRY = path.join(__dirname, 'public', 'index.html')
-const PATH_PUBLIC_FOLDER = path.join(__dirname, 'public')
+const PATH_NODE_MODULES_FOLDER = path.join(__dirname, 'node_modules')
 const PATH_OUTPUT_FOLDER = path.join(__dirname, 'build')
+const PATH_PUBLIC_FOLDER = path.join(__dirname, 'public')
+const PATH_PUBLIC_ENTRY = path.join(PATH_PUBLIC_FOLDER, 'index.html')
+const PATH_SOURCE_FOLDER = path.join(__dirname, 'src')
+const PATH_SOURCE_ENTRY = path.join(PATH_SOURCE_FOLDER, 'index.tsx')
+
+const ALIAS_ASSETS_FOLDER = path.join(PATH_SOURCE_FOLDER, 'assets')
+const ALIAS_COMPONENTS_FOLDER = path.join(PATH_SOURCE_FOLDER, 'components')
+const ALIAS_UTILS_FOLDER = path.join(PATH_SOURCE_FOLDER, 'utils')
 
 module.exports = () => {
     const config = {
         mode: IS_DEVELOPMENT ? 'development' : 'production',
-        devtool: IS_DEVELOPMENT ? 'source-map' : undefined,
-        entry: PATH_ENTRY,
+        devtool: IS_DEVELOPMENT ? 'source-map' : false,
+        entry: PATH_SOURCE_ENTRY,
         output: {
             path: PATH_OUTPUT_FOLDER,
             filename: '[name].[fullhash:8].js',
             chunkFilename: '[name].[chunkhash:8].js',
             publicPath: 'auto'
         },
+        cache: {
+            type: 'filesystem',
+            buildDependencies: {
+                config: [__filename]
+            }
+        },
         optimization: {
             splitChunks: {
                 chunks: 'all',
                 cacheGroups: {
                     vendor: {
-                        test: /[\\/]node_modules[\\/]/,
                         name: 'vendors',
-                        chunks: 'all'
+                        chunks: 'all',
+                        test: (module) => {
+                            return module?.resource?.startsWith(PATH_NODE_MODULES_FOLDER)
+                        }
                     }
                 }
             },
@@ -44,11 +58,11 @@ module.exports = () => {
         resolve: {
             extensions: ['.js', '.jsx', '.ts', '.tsx', '.css', '.scss', '.sass'],
             fallback: { process: false },
-            modules: [__dirname, 'node_modules'],
+            modules: [__dirname, PATH_SOURCE_FOLDER, 'node_modules'],
             alias: {
-                '@assets': path.resolve(__dirname, 'src/assets'),
-                '@components': path.resolve(__dirname, 'src/components'),
-                '@utils': path.resolve(__dirname, 'src/utils')
+                '@assets': ALIAS_ASSETS_FOLDER,
+                '@components': ALIAS_COMPONENTS_FOLDER,
+                '@utils': ALIAS_UTILS_FOLDER
             }
         },
         devServer: {
@@ -62,14 +76,31 @@ module.exports = () => {
             rules: [
                 {
                     test: /\.[jt]sx?$/,
-                    use: ['ts-loader']
+                    exclude: PATH_NODE_MODULES_FOLDER,
+                    use: {
+                        loader: 'swc-loader',
+                        options: {
+                            jsc: {
+                                parser: {
+                                    syntax: 'typescript',
+                                    tsx: true
+                                },
+                                transform: {
+                                    react: {
+                                        runtime: 'automatic',
+                                        refresh: IS_DEVELOPMENT && IS_SERVE
+                                    }
+                                }
+                            }
+                        }
+                    }
                 },
                 {
                     test: /\.s?[ca]ss$/i,
                     use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
                 },
                 {
-                    test: /\.(png|jpe?g|gif|webp|ico)$/i,
+                    test: /\.(png|jpe?g|gif|webp|ico|woff2?|eot|ttf|otf)$/i,
                     type: 'asset/resource'
                 },
                 {
@@ -80,9 +111,10 @@ module.exports = () => {
             ]
         },
         plugins: [
+            new ForkTsCheckerWebpackPlugin(),
             new CleanWebpackPlugin(),
             new HtmlWebpackPlugin({
-                template: PATH_TEMPLATE_ENTRY,
+                template: PATH_PUBLIC_ENTRY,
                 filename: 'index.html?[fullhash:8]'
             }),
             new MiniCssExtractPlugin({
@@ -109,15 +141,6 @@ module.exports = () => {
 
     if (IS_DEVELOPMENT && IS_SERVE) {
         config.plugins.push(new ReactRefreshWebpackPlugin())
-        config.module.rules[0].use[0] = {
-            loader: 'ts-loader',
-            options: {
-                getCustomTransformers: () => ({
-                    before: [ReactRefreshTypeScript()]
-                }),
-                transpileOnly: false
-            }
-        }
     }
 
     return config

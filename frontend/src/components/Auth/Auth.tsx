@@ -2,7 +2,6 @@ import { FormEvent } from "react"
 import "./Auth.style.scss"
 import { useStorage } from "@utils/hooks/useStorage"
 import axios from "axios"
-import { ClassName } from "@utils/components/ClassName"
 
 interface SignData {
     email: string
@@ -40,25 +39,27 @@ export function Auth() {
         })
     }
 
+    let modeButton1ClassName = 'modeButton'
+    let modeButton2ClassName = 'modeButton'
+
+    if (isSignIn.value) modeButton1ClassName += ' signModeActive'
+    else modeButton2ClassName += ' signModeActive'
+
     return (
         <form className="signFormBox" onSubmit={onSubmit}>
             <div className="signBox">
                 <div className="modeBar">
-                    <ClassName signModeActive={isSignIn.value}>
-                        <button
-                            className="modeButton"
-                            children="Sign In"
-                            onClick={() => !isSignIn.value && isSignIn.invert()}
-                        />
-                    </ClassName>
+                    <button
+                        className={modeButton1ClassName}
+                        children="Sign In"
+                        onClick={() => !isSignIn.value && isSignIn.invert()}
+                    />
 
-                    <ClassName signModeActive={!isSignIn.value}>
-                        <button
-                            className="modeButton"
-                            children="Sign Up"
-                            onClick={() => isSignIn.value && isSignIn.invert()}
-                        />
-                    </ClassName>
+                    <button
+                        className={modeButton2ClassName}
+                        children="Sign Up"
+                        onClick={() => isSignIn.value && isSignIn.invert()}
+                    />
                 </div>
 
                 <div className="inputBox">
