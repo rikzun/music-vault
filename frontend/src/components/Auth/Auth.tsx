@@ -1,7 +1,7 @@
 import "./Auth.style.scss"
 import axios from "axios"
 import { FormEvent } from "react"
-import { useState } from "@utils/hooks/useState"
+import { useState } from "@utils/hooks"
 import { useTokenAtom } from "src/atoms/settings"
 
 interface SignData {

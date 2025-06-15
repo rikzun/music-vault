@@ -1,4 +1,4 @@
-import { useAtom } from "@utils/hooks/useAtom"
+import { useAtom } from "@utils/hooks"
 import { atom } from "jotai"
 
 namespace atoms {
