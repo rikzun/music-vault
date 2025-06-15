@@ -1,69 +1,83 @@
 .signFormBox {
     min-width: 115px;
     max-width: 90%;
-    width: 400px;
+    width: 675px;
+    min-height: 300px;
+    max-height: 70%;
+    height: 330px;
+    overflow: hidden;
+    border-radius: 11px;
+    background-color: var(--background-main-color);
 
     > .signBox {
-        > .modeBar {
-            background-color: #626262;
-            display: flex;
-            flex-direction: row;
-    
-            > .modeButton {
-                display: flex;
-                width: 50%;
-                min-height: 47px;
-                justify-content: center;
-                align-items: center;
-                cursor: pointer;
+        display: flex;
+        border-radius: 11px;
+        transition: translate 1s ease-in-out;
+        height: 100%;
 
-                &.signModeActive {
-                    border-bottom: solid #69A2CC 4px;
-                }
-
-                &:hover {
-                    background-color: #515151;
-                }
-            }
+        > * {
+            flex-grow: 0;
+            flex-shrink: 0;
         }
-    
-        > .inputBox {
-            background-color: #3C3C3C;
+
+        > .modeBox {
+            flex-basis: 40%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--title-font-size);
+        }
+
+        > .signInBox, .signUpBox {
+            background-color: var(--background-secondary-color);
+            border-radius: 11px;
+            transition: width 1s ease-in-out 0.5s;
+            flex-basis: 60%;
+            border-radius: 11px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: var(--title-font-size);
+
+            > .title {
+                margin-block: 20px;
+            }
 
             > .signInputs {
                 display: flex;
                 flex-direction: column;
+                border-radius: 11px;
+                width: 80%;
 
                 > input {
-                    margin: 20px;
-                    background-color: #626262;
-                    min-height: 47px;
-                    padding: 1em;
-                    color: #cccccc;
-                    font-size: 16px;
+                    margin-bottom: 1rem;
+                    background-color: inherit;
+                    height: 30px;
+                    padding: 0.5em;
+                    color: inherit;
+                    border: solid 1px var(--text-white);
+                    border-radius: inherit;
+                    font-size: 15px;
 
-                    &::placeholder {
-                        font-size: 16px;
-                        color: #cccccc;
+                    &:last-child {
+                        margin-bottom: unset;
                     }
                 }
             }
-        }
-    }
 
-    > .submitButtonBox {
-        display: flex;
-        margin-top: 10px;
+            > a {
+                font-size: 14px;
+                margin-top: 28px;
+            }
 
-        > .formSubmitButton {
-            width: 100%;
-            min-height: 48px;
-            border-radius: 16px;
-            background-color: #626262;
-            cursor: pointer;
-
-            &:hover {
-                background-color: #515151;
+            > .formSubmitButton {
+                height: 30px;
+                width: 128px;
+                border-radius: inherit;
+                font-size: 14px;
+                background-color: var(--button-white);
+                color: var(--text-back);
+                margin-top: 28px;
             }
         }
     }

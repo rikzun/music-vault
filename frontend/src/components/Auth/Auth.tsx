@@ -26,6 +26,7 @@ export function Auth() {
     const signInHandler = (data: SignData) => {
         axios.post<string>("sign-in", data).then((res) => {
             console.log(res)
+            localStorage.setItem("token", res.data)
         }).catch((reason) => {
             console.log(reason)
         })
@@ -39,54 +40,48 @@ export function Auth() {
         })
     }
 
-    let modeButton1ClassName = 'modeButton'
-    let modeButton2ClassName = 'modeButton'
-
-    if (isSignIn.value) modeButton1ClassName += ' signModeActive'
-    else modeButton2ClassName += ' signModeActive'
+    const handleModeChange = () => {
+        isSignIn.invert()
+        let slide = new Audio("slide.mp3")
+        slide.volume = 0.1
+        slide.play()
+    }
 
     return (
-        <form className="signFormBox" onSubmit={onSubmit}>
-            <div className="signBox">
-                <div className="modeBar">
+        <div className="signFormBox">
+            <div className="signBox" style={{ translate: !isSignIn.value ? "-60%" : "0" }}>
+                <form className={"signInBox"} onSubmit={onSubmit}>
+                    <div className="title">Sign In</div>
+                    <div className="signInputs">
+                        <input type="text" name="login" placeholder="Email or Login" />
+                        <input type="password" name="password" placeholder="Password" />
+                    </div>
+                    <a>Forgot password?</a>
                     <button
-                        className={modeButton1ClassName}
-                        children="Sign In"
-                        onClick={() => !isSignIn.value && isSignIn.invert()}
+                        className="formSubmitButton"
+                        type="submit"
+                        children={"Sign In"}
                     />
+                </form>
 
-                    <button
-                        className={modeButton2ClassName}
-                        children="Sign Up"
-                        onClick={() => isSignIn.value && isSignIn.invert()}
-                    />
+                <div className="modeBox" onClick={() => handleModeChange()}>
+                    {isSignIn.value ? 'Sign Up' : 'Sign In'}
                 </div>
 
-                <div className="inputBox">
-                    {isSignIn.value
-                        ? (
-                            <div className="signInputs">
-                                <input type="text" name="login" placeholder="Email or Login" />
-                                <input type="password" name="password" placeholder="Password" />
-                            </div>
-                        )
-                        : (
-                            <div className="signInputs">
-                                <input type="email" name="email" placeholder="Email" />
-                                <input type="text" name="login" placeholder="Login" />
-                                <input type="password" name="password" placeholder="Password" />
-                            </div>
-                        )
-                    }
-                </div>
+                <form className={"signUpBox"} onSubmit={onSubmit}>
+                    <div className="title">Sign Up</div>
+                    <div className="signInputs">
+                        <input type="email" name="email" placeholder="Email" />
+                        <input type="text" name="login" placeholder="Login" />
+                        <input type="password" name="password" placeholder="Password" />
+                    </div>
+                    <button
+                        className="formSubmitButton"
+                        type="submit"
+                        children={"Sign Up"}
+                    />
+                </form>
             </div>
-            <div className="submitButtonBox">
-                <button
-                    className="formSubmitButton"
-                    type="submit"
-                    children={isSignIn.value ? "SIGN IN" : "SIGN UP"}
-                />
-            </div>
-        </form>
+        </div>
     )
 }

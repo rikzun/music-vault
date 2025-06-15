@@ -1,25 +1,36 @@
+@use 'theme';
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
 * {
     box-sizing: border-box;
 }
 
 button {
-    background-color: inherit;
+    background-color: var(--background-color);
     border: unset;
     color: inherit;
-    font-size: inherit;
+    font-size: var(--default-font-size);
 }
 
 input {
     border-radius: unset;
     border: unset;
+    font-size: var(--default-font-size);
+    font-family: 'Nunito';
+    
+    &::placeholder {
+        color: inherit;
+        font-family: 'Nunito';
+    }
 }
 
 body {
-    background-color: #252525;
-    color: #cccccc;
+    background-color: var(--background-color);
+    color: var(--text-white);
     margin: 0;
     height: 100vh;
     width: 100vw;
+    font-family: 'Nunito';
 
     > #root {
         display: flex;
@@ -27,11 +38,5 @@ body {
         justify-content: center;
         height: inherit;
         width: inherit;
-
-        > iframe {
-            height: 100%;
-            width: 100%;
-            border: unset;
-        }
     }
 }
