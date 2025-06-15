@@ -2,6 +2,8 @@ import { FormEvent } from "react"
 import "./Auth.style.scss"
 import { useStorage } from "@utils/hooks/useStorage"
 import axios from "axios"
+import { useAtom } from "jotai"
+import { tokenAtom } from "src/atoms/settings"
 
 interface SignData {
     email: string
@@ -11,6 +13,7 @@ interface SignData {
 
 export function Auth() {
     const isSignIn = useStorage<boolean>(true)
+    const [_, setToken] = useAtom(tokenAtom)
 
     const onSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -27,6 +30,7 @@ export function Auth() {
         axios.post<string>("sign-in", data).then((res) => {
             console.log(res)
             localStorage.setItem("token", res.data)
+            setToken(res.data)
         }).catch((reason) => {
             console.log(reason)
         })
