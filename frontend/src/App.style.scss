@@ -10,6 +10,7 @@ button {
     border: unset;
     color: inherit;
     font-size: var(--default-font-size);
+    cursor: pointer;
 }
 
 input {
@@ -22,6 +23,8 @@ input {
         color: inherit;
         font-family: 'Nunito';
     }
+
+    outline: unset;
 }
 
 body {

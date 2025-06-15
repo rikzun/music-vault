@@ -1,9 +1,8 @@
-import { FormEvent } from "react"
 import "./Auth.style.scss"
-import { useStorage } from "@utils/hooks/useStorage"
 import axios from "axios"
-import { useAtom } from "jotai"
-import { tokenAtom } from "src/atoms/settings"
+import { FormEvent } from "react"
+import { useState } from "@utils/hooks/useState"
+import { useTokenAtom } from "src/atoms/settings"
 
 interface SignData {
     email: string
@@ -12,8 +11,8 @@ interface SignData {
 }
 
 export function Auth() {
-    const isSignIn = useStorage<boolean>(true)
-    const [_, setToken] = useAtom(tokenAtom)
+    const isSignIn = useState<boolean>(true)
+    const tokenAtom = useTokenAtom()
 
     const onSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -27,17 +26,16 @@ export function Auth() {
     }
 
     const signInHandler = (data: SignData) => {
-        axios.post<string>("sign-in", data).then((res) => {
-            console.log(res)
-            localStorage.setItem("token", res.data)
-            setToken(res.data)
+        axios.post<string>('sign-in', data).then((res) => {
+            localStorage.setItem('token', res.data)
+            tokenAtom.set(res.data)
         }).catch((reason) => {
             console.log(reason)
         })
     }
 
     const signUpHandler = (data: SignData) => {
-        axios.post<string>("sign-up", data).then((res) => {
+        axios.post<string>('sign-up', data).then((res) => {
             console.log(res)
         }).catch((reason) => {
             console.log(reason)
@@ -46,43 +44,48 @@ export function Auth() {
 
     const handleModeChange = () => {
         isSignIn.invert()
-        let slide = new Audio("slide.mp3")
+        let slide = new Audio('slide.mp3')
         slide.volume = 0.1
         slide.play()
     }
 
     return (
         <div className="signFormBox">
-            <div className="signBox" style={{ translate: !isSignIn.value ? "-60%" : "0" }}>
-                <form className={"signInBox"} onSubmit={onSubmit}>
+            <div className="signBox" style={{ translate: !isSignIn.value ? '-60%' : '0' }}>
+                <form className="signInBox" onSubmit={onSubmit}>
                     <div className="title">Sign In</div>
+
                     <div className="signInputs">
-                        <input type="text" name="login" placeholder="Email or Login" />
+                        <input type="text"     name="login"    placeholder="Email or Login" />
                         <input type="password" name="password" placeholder="Password" />
                     </div>
-                    <a>Forgot password?</a>
+
+                    <a href="">Forgot password?</a>
+                    
                     <button
                         className="formSubmitButton"
                         type="submit"
-                        children={"Sign In"}
+                        children="Sign In"
                     />
                 </form>
 
-                <div className="modeBox" onClick={() => handleModeChange()}>
+                <div className="modeBox" onClick={handleModeChange}>
                     {isSignIn.value ? 'Sign Up' : 'Sign In'}
                 </div>
 
-                <form className={"signUpBox"} onSubmit={onSubmit}>
+                <form className="signUpBox" onSubmit={onSubmit}>
                     <div className="title">Sign Up</div>
+
                     <div className="signInputs">
-                        <input type="email" name="email" placeholder="Email" />
-                        <input type="text" name="login" placeholder="Login" />
+                        <input type="email"    name="email"    placeholder="Email" />
+                        <input type="text"     name="login"    placeholder="Login" />
                         <input type="password" name="password" placeholder="Password" />
                     </div>
+
                     <button
                         className="formSubmitButton"
                         type="submit"
-                        children={"Sign Up"}
+                        children="Sign Up"
                     />
                 </form>
             </div>

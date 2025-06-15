@@ -1,3 +1,8 @@
-import { atom } from "jotai";
+import { useAtom } from "@utils/hooks/useAtom"
+import { atom } from "jotai"
 
-export const tokenAtom = atom<string | undefined>()
+namespace atoms {
+    export const token = atom<string | null>(null)
+}
+
+export const useTokenAtom = () => useAtom(atoms.token)
