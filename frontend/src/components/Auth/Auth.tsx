@@ -70,7 +70,16 @@ export function Auth() {
                 </form>
 
                 <div className="modeBox" onClick={handleModeChange}>
-                    {isSignIn.value ? 'Sign Up' : 'Sign In'}
+                    <span
+                        className="mode"
+                        children="Sign Up"
+                        style={{opacity: isSignIn.value ? 1 : 0}}
+                    />
+                    <span
+                        className="mode"
+                        children="Sign In"
+                        style={{opacity: isSignIn.value ? 0 : 1}}
+                    />
                 </div>
 
                 <form className="signUpBox" onSubmit={onSubmit}>

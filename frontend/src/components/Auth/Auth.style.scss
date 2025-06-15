@@ -22,11 +22,17 @@
 
         > .modeBox {
             flex-basis: 40%;
+            position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             font-size: var(--title-font-size);
+
+            > .mode {
+                position: absolute;
+                transition: opacity ease-in 0.5s;
+            }
         }
 
         > .signInBox, .signUpBox {
