@@ -1,7 +1,8 @@
 import path from "path"
+import fs from "fs"
 import { fileURLToPath } from "url"
 import { config as dotenv } from "dotenv"
-import { HtmlRspackPlugin, SwcJsMinimizerRspackPlugin, LightningCssMinimizerRspackPlugin, DefinePlugin } from "@rspack/core"
+import { HtmlRspackPlugin, SwcJsMinimizerRspackPlugin, LightningCssMinimizerRspackPlugin, CopyRspackPlugin, DefinePlugin } from "@rspack/core"
 import { TsCheckerRspackPlugin } from "ts-checker-rspack-plugin"
 import ReactRefreshRspackPlugin from "@rspack/plugin-react-refresh"
 import type { Configuration, NormalModule } from "@rspack/core"
@@ -125,6 +126,14 @@ const config: Configuration = {
 			template: PATH_PUBLIC_ENTRY,
             filename: 'index.html?[fullhash:8]'
 		}),
+        new CopyRspackPlugin({
+            patterns: fs.readdirSync(PATH_PUBLIC_FOLDER, { withFileTypes: true }).map((file) => {
+                const location = path.join(file.parentPath, file.name)
+
+                if (file.isDirectory()) return { from: location, to: file.name }
+                return { from: location }
+            }).filter((location) => location.from != PATH_PUBLIC_ENTRY)
+        }),
         new DefinePlugin({
             'ENV.DEV_MODE': ENV['DEV_MODE'] == 'true',
             'ENV.BACKEND_URL': '"' + ENV['BACKEND_URL'] + '"'

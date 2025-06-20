@@ -2,35 +2,33 @@ name: music-vault
 
 services:
   frontend:
-    image: frontend
-    restart: always
-    build:
-      context: ./frontend
-      dockerfile: ../Dockerfile.frontend
+    image: nginx:1.28.0-alpine3.21
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./frontend:/usr/share/nginx/html:ro
     ports:
-      - "8000:8000"
-
-  backend:
-    image: backend
-    restart: always
-    build:
-      context: ./backend
-      dockerfile: ../Dockerfile.backend
-    ports:
-      - "${BACKEND_PORT}:8080"
-    env_file: ".env"
+      - ${FRONTEND_PORT}:80
     environment:
-      - GOOS=linux
-      - GOARCH=amd64
+      - NGINX_PORT=80
+  
+  backend:
+    image: alpine:3.22
+    volumes:
+      - ./vault:/vault
+      - ./uploads:/uploads
+    entrypoint: sh -c "chmod +x ./vault && ./vault"
+    ports:
+      - ${BACKEND_PORT}:8080
+    env_file: .env
     depends_on:
       database:
         condition: service_healthy
-
+  
   database:
-    image: postgres:15-alpine
+    image: postgres:17.5-alpine3.22
     restart: always
     volumes:
-      - ./db_data:/var/lib/postgresql/data
+      - ./database:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: ${POSTGRES_NAME}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -39,7 +37,7 @@ services:
       PGUSER: ${POSTGRES_USER}
       PGPASSWORD: ${POSTGRES_PASS}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
+      test: [CMD-SHELL, pg_isready]
       interval: 1s
       timeout: 5s
       retries: 10

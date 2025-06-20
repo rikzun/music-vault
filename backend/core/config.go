@@ -14,7 +14,7 @@ type ConfigStruct struct {
 var Config = ConfigStruct{
 	DevMode: get("DEV_MODE") == "true",
 	Secret:  getOrPanic("SECRET"),
-	DbPort:  getOrPanic("POSTGRES_PORT"),
+	DbPort:  "5432",
 	DbName:  getOrPanic("POSTGRES_NAME"),
 	DbUser:  getOrPanic("POSTGRES_USER"),
 	DbPass:  getOrPanic("POSTGRES_PASS"),

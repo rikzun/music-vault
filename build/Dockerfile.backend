@@ -1,9 +1,0 @@
-FROM alpine:latest
-
-COPY vault /app/
-
-WORKDIR /app
-
-RUN chmod +x vault
-
-CMD ["./vault"]
