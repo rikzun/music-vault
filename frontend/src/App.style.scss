@@ -1,30 +1,9 @@
 @use 'theme';
+@use 'standart';
 @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
 
 * {
     box-sizing: border-box;
-}
-
-button {
-    background-color: var(--background-color);
-    border: unset;
-    color: inherit;
-    font-size: var(--default-font-size);
-    cursor: pointer;
-}
-
-input {
-    border-radius: unset;
-    border: unset;
-    font-size: var(--default-font-size);
-    font-family: 'Nunito';
-    
-    &::placeholder {
-        color: inherit;
-        font-family: 'Nunito';
-    }
-
-    outline: unset;
 }
 
 body {

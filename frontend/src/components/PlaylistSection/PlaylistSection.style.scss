@@ -1,0 +1,14 @@
+.playlist-section {
+    height: calc(100% - 16px);
+    width: 40%;
+    min-width: 340px;
+
+    margin-top: 8px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+
+    border-top-right-radius: 11px;
+    border-bottom-right-radius: 11px;
+    
+    background-color: var(--background-third-color);
+}

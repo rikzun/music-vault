@@ -1,23 +1,23 @@
 import "./App.style.scss"
 import axios from "axios"
 import { Auth } from "@components/Auth"
-import { useEffect } from "react"
-import { Layout } from "@components/Layout/Layout"
+import { Fragment } from "react"
+import { NavbarSection } from "@components/NavbarSection"
+import { PlayerSection } from "@components/PlayerSection"
+import { PlaylistSection } from "@components/PlaylistSection"
 import { useTokenAtom } from "src/atoms/settings"
 
-if (ENV.DEV_MODE) {
-    axios.defaults.baseURL = ENV.BACKEND_URL
-} else {
-    axios.defaults.baseURL = window.location.origin + '/api'
-}
+axios.defaults.baseURL = ENV.BACKEND_URL
 
 export function App() {
     const token = useTokenAtom()
 
-    useEffect(() => {
-        const localToken = localStorage['token']
-        if (localToken && !token.value) token.set(localToken)
-    }, [])
-
-    return token.value ? <Layout /> : <Auth />
+    if (token.value == null) return <Auth />
+    return (
+        <Fragment>
+            <NavbarSection />
+            <PlayerSection />
+            <PlaylistSection />
+        </Fragment>
+    )
 }

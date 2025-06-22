@@ -135,7 +135,6 @@ const config: Configuration = {
             }).filter((location) => location.from != PATH_PUBLIC_ENTRY)
         }),
         new DefinePlugin({
-            'ENV.DEV_MODE': ENV['DEV_MODE'] == 'true',
             'ENV.BACKEND_URL': '"' + ENV['BACKEND_URL'] + '"'
         }),
         IS_DEVELOPMENT

@@ -1,0 +1,13 @@
+.player-section {
+    height: calc(100% - 16px);
+    width: 40%;
+    min-width: 340px;
+
+    margin-top: 8px;
+    margin-bottom: 8px;
+
+    border-top-left-radius: 11px;
+    border-bottom-left-radius: 11px;
+
+    background-color: var(--background-main-color);
+}
