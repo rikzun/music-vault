@@ -1,0 +1,32 @@
+.button-component {
+    &__active {
+        > .content {
+            path {
+                fill: var(--button-active)
+            }
+        }
+    }
+
+    &.button-menu {
+        padding-top: 8px;
+        padding-right: 16px;
+        padding-bottom: 8px;
+        padding-left: 16px;
+        background: unset;
+        position: relative;
+
+        > .content {
+            width: 40px;
+            height: 40px;
+            border-radius: 11px;
+            background-color: var(--button-white);
+
+            > * {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+        }
+    }
+}

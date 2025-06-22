@@ -1,0 +1,76 @@
+.user-panel {
+    margin-left: 8px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    border-radius: 11px;
+
+    > :first-child {
+        border-top-right-radius: 11px;
+        border-top-left-radius: 11px;
+    }
+    
+    > :last-child {
+        border-bottom-right-radius: 11px;
+        border-bottom-left-radius: 11px;
+    }
+
+    > .volume {
+        display: flex;
+        align-items: center;
+
+        padding-top: 4px;
+        padding-right: 11px;
+        padding-bottom: 4px;
+        padding-left: 11px;
+        background-color: var(--background-a-color);
+
+        > svg {
+            flex-shrink: 0;
+        }
+
+        > .placeholder {
+            width: 100%;
+            height: 2px;
+            background-color: white;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        > input {
+            background: unset;
+            width: 38px;
+            border: 1px solid white;
+            border-radius: 4px;
+            color: white;
+            font-size: 14px;
+            text-align: center;
+        }
+    }
+
+    > .main {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: var(--background-secondary-color);
+
+        > .info {
+            display: flex;
+            align-items: center;
+
+            > img {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                padding: 8px;
+            }
+
+            > .login {
+                font-size: 16px;
+            }
+        }
+
+        > .settings-button {
+            padding-right: 18px;
+        }
+    }
+}

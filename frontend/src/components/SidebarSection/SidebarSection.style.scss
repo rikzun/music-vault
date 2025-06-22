@@ -1,0 +1,33 @@
+.sidebar-section {
+    height: 100%;
+    width: 20%;
+    min-width: 300px;
+
+    display: flex;
+    flex-direction: column;
+
+    > .container {
+        display: flex;
+        height: 100%;
+
+        > .buttons {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 72px;
+            flex-shrink: 0;
+            padding-block: 8px;
+            border-right: 1px solid var(--background-main-color);
+        }
+
+        > .content {
+            width: 100%;
+
+            > .title {
+                font-size: 16px;
+                text-transform: uppercase;
+                padding: 16px;
+            }
+        }
+    }
+}

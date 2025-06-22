@@ -4,14 +4,14 @@ import {
     useState as useReactState
 } from "react"
 
-export type StateHook<T> = T extends boolean ? {
-    value: T
-    set: StateDispatcher<boolean>
-    invert: () => void
-} : {
+export type StateHook<T> = {
     value: T
     set: StateDispatcher<T>
-}
+} & (
+    T extends boolean ? {
+        invert: () => void
+    } : {}
+)
 
 export type StateDispatcher<T> = Dispatch<SetStateAction<T>>
 
@@ -21,6 +21,7 @@ export function useState<T>(value: T): StateHook<T> {
     return {
         value: state,
         set: setState,
-        invert: () => (setState as StateDispatcher<boolean>)((v) => !v)
-    } as StateHook<T>
+        //@ts-ignore
+        invert: () => setState((v) => !v)
+    }
 }

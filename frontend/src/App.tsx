@@ -2,7 +2,7 @@ import "./App.style.scss"
 import axios from "axios"
 import { Auth } from "@components/Auth"
 import { Fragment } from "react"
-import { NavbarSection } from "@components/NavbarSection"
+import { SidebarSection } from "@components/SidebarSection"
 import { PlayerSection } from "@components/PlayerSection"
 import { PlaylistSection } from "@components/PlaylistSection"
 import { useTokenAtom } from "src/atoms/settings"
@@ -15,7 +15,7 @@ export function App() {
     if (token.value == null) return <Auth />
     return (
         <Fragment>
-            <NavbarSection />
+            <SidebarSection />
             <PlayerSection />
             <PlaylistSection />
         </Fragment>

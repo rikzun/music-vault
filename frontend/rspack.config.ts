@@ -116,7 +116,13 @@ const config: Configuration = {
             },
             {
 				test: /\.svg$/i,
-				type: 'asset'
+                resourceQuery: /url/,
+				type: 'asset/resource'
+			},
+            {
+				test: /\.svg$/i,
+                resourceQuery: { not: [/url/] },
+				use: '@svgr/webpack'
 			}
         ]
     },
@@ -137,9 +143,7 @@ const config: Configuration = {
         new DefinePlugin({
             'ENV.BACKEND_URL': '"' + ENV['BACKEND_URL'] + '"'
         }),
-        IS_DEVELOPMENT
-            ? new ReactRefreshRspackPlugin()
-            : null
+        IS_DEVELOPMENT && new ReactRefreshRspackPlugin()
     ],
     experiments: {
 		css: true,
