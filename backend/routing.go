@@ -2,6 +2,7 @@ package main
 
 import (
 	"backend/api/auth"
+	"backend/api/client"
 	"backend/api/track"
 	"backend/core/middleware"
 
@@ -10,9 +11,10 @@ import (
 
 func InitRouting(engine *gin.Engine) {
 	public := engine.Group("/api")
-	public.POST("/sign-up", auth.EntrySignUp)
-	public.POST("/sign-in", auth.EntrySignIn)
+	public.POST("auth/sign-up", auth.EntrySignUp)
+	public.POST("auth/sign-in", auth.EntrySignIn)
 
 	protected := public.Group("", middleware.Authorization)
-	protected.POST("/upload-track", track.EntryUploadTrack)
+	protected.GET("client/me", client.EntryMe)
+	protected.POST("track/upload", track.EntryUploadTrack)
 }

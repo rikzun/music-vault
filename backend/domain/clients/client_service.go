@@ -5,6 +5,20 @@ import (
 	"backend/domain"
 )
 
+func FindByID(id uint) *domain.ClientEntity {
+	var client domain.ClientEntity
+
+	result := core.DB.
+		Where("id = ?", id).
+		First(&client)
+
+	if result.Error != nil {
+		return nil
+	}
+
+	return &client
+}
+
 func FindByUnique(email string, login string) *domain.ClientEntity {
 	var client domain.ClientEntity
 

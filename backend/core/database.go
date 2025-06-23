@@ -10,12 +10,7 @@ import (
 var DB *gorm.DB
 
 func InitDatabase() {
-	var host string
-	if Config.DevMode {
-		host = "localhost"
-	} else {
-		host = "database"
-	}
+	host := "database"
 
 	dsn := fmt.Sprintf(
 		"host=%s port=%s dbname=%s user=%s password=%s sslmode=disable TimeZone=UTC",
