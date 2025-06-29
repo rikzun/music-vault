@@ -16,7 +16,7 @@ services:
     volumes:
       - ./vault:/vault
       - ./uploads:/uploads
-    entrypoint: /vault
+    entrypoint: sh -c "chmod +x /vault && /vault"
     ports:
       - ${BACKEND_PORT}:8080
     env_file: .env

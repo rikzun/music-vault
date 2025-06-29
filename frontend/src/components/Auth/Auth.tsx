@@ -26,17 +26,19 @@ export function Auth() {
     }
 
     const signInHandler = (data: SignData) => {
-        axios.post<string>('sign-in', data).then((res) => {
+        axios.post<string>('/auth/sign-in', data).then((res) => {
             localStorage.setItem('token', res.data)
             tokenAtom.set(res.data)
+            axios.defaults.headers["Authorization"] = res.data
         }).catch((reason) => {
             console.log(reason)
         })
     }
 
     const signUpHandler = (data: SignData) => {
-        axios.post<string>('sign-up', data).then((res) => {
-            console.log(res)
+        axios.post<string>('/auth/sign-up', data).then((res) => {
+            tokenAtom.set(res.data)
+            axios.defaults.headers["Authorization"] = res.data
         }).catch((reason) => {
             console.log(reason)
         })

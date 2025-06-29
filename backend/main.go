@@ -16,6 +16,7 @@ func main() {
 	core.DB.AutoMigrate(
 		&domain.ClientEntity{},
 		&domain.AuthTokenEntity{},
+		&domain.TrackEntity{},
 	)
 
 	os.MkdirAll("./uploads/", os.ModePerm)

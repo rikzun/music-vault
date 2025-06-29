@@ -13,6 +13,8 @@ export function App() {
     const token = useTokenAtom()
 
     if (token.value == null) return <Auth />
+    axios.defaults.headers["Authorization"] = token.value
+
     return (
         <Fragment>
             <SidebarSection />

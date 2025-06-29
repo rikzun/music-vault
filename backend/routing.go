@@ -14,7 +14,7 @@ func InitRouting(engine *gin.Engine) {
 	public.POST("auth/sign-up", auth.EntrySignUp)
 	public.POST("auth/sign-in", auth.EntrySignIn)
 
-	protected := public.Group("", middleware.Authorization)
+	protected := engine.Group("/api", middleware.Authorization)
 	protected.GET("client/me", client.EntryMe)
 	protected.POST("track/upload", track.EntryUploadTrack)
 }
