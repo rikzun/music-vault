@@ -1,10 +1,20 @@
 .content-upload {
-    > input {
-        color: transparent;
-        width: 9rem;
-    }
+    > .dnd-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
 
-    > .send-button {
-        background: red;
+        > .info-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+
+            > svg {
+                height: 50px;
+                width: 50px;
+            }
+        }
     }
 }

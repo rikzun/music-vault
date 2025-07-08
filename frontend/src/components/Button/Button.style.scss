@@ -29,4 +29,13 @@
             }
         }
     }
+
+    &.button-text {
+        padding: unset;
+        cursor: pointer;
+        color: var(--button-text-color);
+        font-family: inherit;
+        font-size: var(--default-font-size);
+        background-color: unset;
+    }
 }
