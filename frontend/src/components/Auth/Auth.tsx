@@ -3,6 +3,7 @@ import axios from "axios"
 import { FormEvent } from "react"
 import { useState } from "@utils/hooks"
 import { useTokenAtom } from "src/atoms/settings"
+import slideAudioUrl from "@assets/slide.mp3?url"
 
 interface SignData {
     email: string
@@ -46,7 +47,7 @@ export function Auth() {
 
     const handleModeChange = () => {
         isSignIn.invert()
-        let slide = new Audio('slide.mp3')
+        let slide = new Audio(slideAudioUrl)
         slide.volume = 0.1
         slide.play()
     }
