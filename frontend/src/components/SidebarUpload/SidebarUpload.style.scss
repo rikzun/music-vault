@@ -1,13 +1,21 @@
 .section-content__upload {
-    > .content {
+    .content {
+        padding-bottom: unset;
+
         > .dnd-container {
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-direction: column;
             height: 100%;
 
             &__active {
                 border: 1px dashed white;
+            }
+
+            &__tracks {
+                align-items: start;
+                justify-content: unset;
             }
 
             > .info-section {
@@ -23,7 +31,7 @@
             }
         }
 
-        > .track-data {
+        .track-data {
             background-color: var(--background-b-color);
             border-radius: 11px;
             padding: 8px;

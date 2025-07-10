@@ -1,10 +1,12 @@
 import './SidebarUpload.style.scss'
+import 'overlayscrollbars/overlayscrollbars.css'
 import { IAudioMetadata, IPicture, parseBlob } from 'music-metadata'
 import { Button } from '@components/Button'
 import { preventEvent } from '@utils/std'
 import { useInput, useState } from '@utils/hooks'
 import { MdCloudDownload } from "react-icons/md"
 import { useRef } from 'react'
+import { OverlayScrollbarsComponent } from 'overlayscrollbars-react'
 
 // const reader = new FileReader()
 
@@ -115,16 +117,23 @@ export function SidebarUpload() {
 
     const input = useInput(fileHandler)
 
+    let dndClassName = 'dnd-container'
+    if (tracks.value.length) dndClassName += ' dnd-container__tracks'
+
     return (
         <div className="section-content section-content__upload">
             <div className="title">
                 Upload
             </div>
 
-            <div className="content">
-                {!tracks.value.length && (
+            <OverlayScrollbarsComponent
+              className="content"
+              options={{ scrollbars: { theme: "os-theme-light" } }}
+              defer
+            >
+                {(
                     <div
-                        className="dnd-container"
+                        className={dndClassName}
                         aria-label="file upload zone"
                         ref={dndRef}
                         onDragOver={(e) => {
@@ -144,22 +153,27 @@ export function SidebarUpload() {
                         }}
                         onDrop={(e) => {
                             preventEvent(e)
+                            clearTimeout(dropClearInterval)
+
                             fileHandler(Array.from(e.dataTransfer.files))
+                            dndRef.current!.classList.remove('dnd-container__active')
                         }}
                     >
-                        <div className="info-section">
-                            <MdCloudDownload id={iconID} />
-                            
-                            <span>Drag & Drop</span>
-                            <span>or <Button.Text value="browse" onClick={input.click} /></span>
-                        </div>
+                        {!tracks.value.length && (
+                            <div className="info-section">
+                                <MdCloudDownload id={iconID} />
+                                
+                                <span>Drag & Drop</span>
+                                <span>or <Button.Text value="browse" onClick={input.click} /></span>
+                            </div>
+                        )}
+
+                        {tracks.value.map((v, i) => (
+                            <Track key={i} data={v} />
+                        ))}
                     </div>
                 )}
-
-                {tracks.value.map((v, i) => (
-                    <Track key={i} data={v} />
-                ))}
-            </div>
+            </OverlayScrollbarsComponent>
 
             {!!tracks.value.length && (
                 <Button.Small
