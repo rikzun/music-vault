@@ -6,6 +6,7 @@ import { SidebarSection } from "@components/SidebarSection"
 import { PlayerSection } from "@components/PlayerSection"
 import { PlaylistSection } from "@components/PlaylistSection"
 import { useTokenAtom } from "src/atoms/settings"
+import { IconContext } from "react-icons"
 
 axios.defaults.baseURL = ENV.BACKEND_URL
 
@@ -16,10 +17,10 @@ export function App() {
     axios.defaults.headers["Authorization"] = token.value
 
     return (
-        <Fragment>
+        <IconContext.Provider value={{ size: "24" }}>
             <SidebarSection />
             <PlayerSection />
             <PlaylistSection />
-        </Fragment>
+        </IconContext.Provider>
     )
 }

@@ -1,14 +1,13 @@
 import './UserPanel.style.scss'
-import VolumeIcon from "@assets/Volume.svg"
-import SettingsIcon from "@assets/Settings.svg"
-import PeopleAltUrl from "@assets/PeopleAlt.svg?url"
 import { KeyboardEvent } from 'react'
 import { useState } from '@utils/hooks'
+import { MdVolumeUp, MdSettings } from 'react-icons/md'
 
 export function UserPanel() {
     const volume = useState(50)
 
     const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (e.key == "Tab") return
         if (e.key == "Enter") return
         if (e.key == "Backspace") return
         if (e.key == ".") return
@@ -17,8 +16,9 @@ export function UserPanel() {
         if (e.key == "a" && e.ctrlKey) return
         if (e.key == "x" && e.ctrlKey) return
 
-        const target = e.target as HTMLInputElement
+        const target = e.currentTarget
         const value = target.value
+        
         if (value.length == 3 && (target.selectionStart == target.selectionEnd)) {
             e.preventDefault()
             return
@@ -59,7 +59,7 @@ export function UserPanel() {
             {/* <div className="room"></div> */}
 
             <div className="volume">
-                <VolumeIcon />
+                <MdVolumeUp />
 
                 <div className="placeholder" />
 
@@ -73,7 +73,7 @@ export function UserPanel() {
 
             <div className="main">
                 <div className="info">
-                    <img src={PeopleAltUrl} />
+                    <img />
 
                     <div className="login">
                         user_login
@@ -81,7 +81,7 @@ export function UserPanel() {
                 </div>
 
                 <div className="settings-button">
-                    <SettingsIcon />
+                    <MdSettings />
                 </div>
             </div>
         </div>

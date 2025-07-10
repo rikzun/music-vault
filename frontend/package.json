@@ -12,7 +12,8 @@
     "jotai": "^2.12.5",
     "music-metadata": "^11.6.0",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "react-icons": "^5.5.0"
   },
   "devDependencies": {
     "@rspack/cli": "^1.4.3",

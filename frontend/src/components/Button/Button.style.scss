@@ -1,8 +1,9 @@
 .button-component {
     &__active {
-        > .content {
-            path {
-                fill: var(--button-active)
+        &.button-menu {
+            > .content {
+                outline: 2px solid var(--button-white);
+                outline-offset: 2px;
             }
         }
     }
@@ -27,6 +28,22 @@
                 left: 50%;
                 transform: translate(-50%, -50%);
             }
+        }
+    }
+
+    &.button-small {
+        width: 32px;
+        height: 32px;
+        border-radius: 11px;
+        color: var(--button-text-color);
+        font-size: 15px;
+        font-weight: 700;
+        font-family: inherit;
+        text-transform: uppercase;
+        background-color: var(--button-white);
+
+        &__full-width {
+            width: 100%;
         }
     }
 

@@ -9,6 +9,7 @@
     > .container {
         display: flex;
         height: 100%;
+        overflow: hidden;
 
         > .buttons {
             display: flex;
@@ -20,7 +21,7 @@
             border-right: 1px solid var(--background-main-color);
         }
 
-        > .content {
+        > .section-content {
             display: flex;
             flex-direction: column;
             width: calc(100% - 72px);
@@ -28,7 +29,17 @@
             > .title {
                 font-size: 16px;
                 text-transform: uppercase;
-                padding: 16px;
+                padding: 1rem;
+            }
+
+            > .content {
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                padding-left: 1rem;
+                padding-right: 1rem;
+                padding-bottom: 1rem;
+                overflow: auto;
             }
         }
     }
