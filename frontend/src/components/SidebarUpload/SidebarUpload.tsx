@@ -1,12 +1,13 @@
 import './SidebarUpload.style.scss'
-import 'overlayscrollbars/overlayscrollbars.css'
-import { IAudioMetadata, IPicture, parseBlob } from 'music-metadata'
 import { Button } from '@components/Button'
-import { preventEvent } from '@utils/std'
 import { useInput, useState } from '@utils/hooks'
 import { MdCloudDownload } from "react-icons/md"
-import { useRef } from 'react'
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-react'
+import { TrackData } from '@components/SidebarUpload/SidebarUpload.types'
+import { DragAndDrop } from '@components/DragAndDrop'
+import { UploadTrack } from '@components/UploadTrack'
+import { useEffect } from 'react'
+import { bridge } from '@workers/track.worker'
 
 // const reader = new FileReader()
 
@@ -36,36 +37,6 @@ import { OverlayScrollbarsComponent } from 'overlayscrollbars-react'
 //     reader.readAsArrayBuffer(file)
 // })
 
-interface TrackData {
-    image: TrackImage
-    title: string | null
-    artists: string[]
-    album: string | null
-    codec: string | null
-    bitrate: number | null
-    lossless: boolean
-}
-
-interface TrackImage {
-    data: Uint8Array
-    objectURL: string
-}
-
-function handleImage(value: IPicture[] | undefined): TrackImage | null {
-    const first = value?.at(0)
-    if (!first || !first.format) return null
-
-    const blob = new Blob(
-        [first.data], 
-        { type: first.format }
-    )
-
-    return {
-        data: first.data,
-        objectURL: URL.createObjectURL(blob)
-    }
-}
-
 const iconID = "cloud-download-icon"
 const keyFrames = [
     { fill: "var(--error-color)" },
@@ -76,49 +47,36 @@ const keyFrames = [
     { transform: "translateX(5px)" },
     { transform: "translateX(0)" }
 ]
-let dropClearInterval: NodeJS.Timeout
 
 export function SidebarUpload() {
-    const dndRef = useRef<HTMLDivElement>(null)
     const tracks = useState<TrackData[]>([])
+
+    useEffect(() => {
+        bridge.on('metadata-parsed', async(message) => {
+            if (!message.data.length) {
+                document
+                    .getElementById(iconID)!
+                    .animate(keyFrames, { duration: 500 })
+    
+                return
+            }
+
+            tracks.set((v) => {
+                return [...v, ...message.data.map((v, i) => new TrackData(v, message.images[i]))]
+            })
+        })
+    }, [])
 
     const fileHandler = async (files: File[]) => {
         if (!files.length) return
 
-        const fileData = (await Promise.allSettled(files.map((v) => parseBlob(v))))
-            .filter((v): v is PromiseFulfilledResult<IAudioMetadata> => v.status === 'fulfilled')
-            .map((v) => v.value)
-
-        if (!fileData.length) {
-            document
-                .getElementById(iconID)!
-                .animate(keyFrames, { duration: 500 })
-
-            return
-        }
-
-        const data = fileData.map((data, index) => {
-            console.log(data)
-            
-            return {
-                image: handleImage(data.common.picture),
-                title: data.common.title ?? null,
-                artists: data.common.artists ?? [],
-                album: data.common.album ?? null,
-                codec: data.format.codec ?? null,
-                bitrate: data.format.bitrate ?? null,
-                fileName: files[index].name,
-                lossless: data.format.lossless ?? false
-            } as TrackData
-        })
-
-        tracks.set(data)
+        bridge.send('parse-metadata', files)
     }
 
-    const input = useInput(fileHandler)
-
-    let dndClassName = 'dnd-container'
-    if (tracks.value.length) dndClassName += ' dnd-container__tracks'
+    const input = useInput({
+        handler: fileHandler,
+        multiple: true
+    })
 
     return (
         <div className="section-content section-content__upload">
@@ -127,52 +85,32 @@ export function SidebarUpload() {
             </div>
 
             <OverlayScrollbarsComponent
-              className="content"
-              options={{ scrollbars: { theme: "os-theme-light" } }}
-              defer
+                className="content"
+                options={{scrollbars: {autoHide: 'leave', autoHideDelay: 0}}}
+                defer
             >
-                {(
-                    <div
-                        className={dndClassName}
-                        aria-label="file upload zone"
-                        ref={dndRef}
-                        onDragOver={(e) => {
-                            preventEvent(e)
-                            clearTimeout(dropClearInterval)
+                <DragAndDrop
+                    aria-label="file upload zone"
+                    className={tracks.value.length ? 'dnd-component__active' : undefined}
+                    onChange={fileHandler}
+                >
+                    {!tracks.value.length && (
+                        <div className="info-section">
+                            <MdCloudDownload id={iconID} />
+                            
+                            <span>Drag & Drop</span>
+                            <span>or <Button.Text value="browse" onClick={input.click} /></span>
+                        </div>
+                    )}
 
-                            dndRef.current!.classList.add('dnd-container__active')
-                            e.dataTransfer.dropEffect = 'copy'
-                        }}
-                        onDragLeave={(e) => {
-                            preventEvent(e)
-                            clearTimeout(dropClearInterval)
-
-                            dropClearInterval = setTimeout(() => {
-                                dndRef.current!.classList.remove('dnd-container__active')
-                            }, 10)
-                        }}
-                        onDrop={(e) => {
-                            preventEvent(e)
-                            clearTimeout(dropClearInterval)
-
-                            fileHandler(Array.from(e.dataTransfer.files))
-                            dndRef.current!.classList.remove('dnd-container__active')
-                        }}
-                    >
-                        {!tracks.value.length && (
-                            <div className="info-section">
-                                <MdCloudDownload id={iconID} />
-                                
-                                <span>Drag & Drop</span>
-                                <span>or <Button.Text value="browse" onClick={input.click} /></span>
-                            </div>
-                        )}
-
-                        {tracks.value.map((v, i) => (
-                            <Track key={i} data={v} />
-                        ))}
-                    </div>
-                )}
+                    {tracks.value.map((track) => (
+                        <UploadTrack
+                            key={track.key()}
+                            data={track}
+                            dispatcher={tracks.set}
+                        />
+                    ))}
+                </DragAndDrop>
             </OverlayScrollbarsComponent>
 
             {!!tracks.value.length && (
@@ -183,70 +121,5 @@ export function SidebarUpload() {
                 />
             )}
         </div>
-    )
-}
-
-interface TrackProps {
-    data: TrackData
-}
-
-function Track(props: TrackProps) {
-    return (
-        <button className="track-data">
-            <div className="column-field">
-                <div className="column">
-                    <div className="field">
-                        <div className="title">title</div>
-                        <div className="value">{props.data.title}</div>
-                    </div>
-                </div>
-
-                <div className="column">
-                    <div className="field field-image">
-                        <img src={props.data.image?.objectURL} />
-                    </div>
-                </div>
-            </div>
-
-            <div className="field">
-                <div className="title">artist</div>
-                <div className="value">{props.data.artists[0]}</div>
-            </div>
-
-            {props.data.artists.map((artist, index) => {
-                if (index == 0) return null
-                
-                return (
-                    <div className="field" key={artist + index}>
-                        <div className="title">artist</div>
-                        <div className="value">{artist}</div>
-                    </div>
-                )
-            })}
-
-            {props.data.album && (
-                <div className="field">
-                    <div className="title">album</div>
-                    <div className="value">{props.data.album}</div>
-                </div>
-            )}
-
-            
-            <div className="column-field">
-                <div className="column">
-                    <div className="field">
-                        <div className="title">codec</div>
-                        <div className="value">{props.data.codec}</div>
-                    </div>
-                </div>
-
-                <div className="column">
-                    <div className="field field-bitrate">
-                        <div className="title">bitrate</div>
-                        <div className="value">{props.data.bitrate ? (props.data.bitrate / 1000).toFixed(1) : 0} kbit/s</div>
-                    </div>
-                </div>
-            </div>
-        </button>
     )
 }

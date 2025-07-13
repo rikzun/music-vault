@@ -1,7 +1,7 @@
 import "./App.style.scss"
+import 'overlayscrollbars/overlayscrollbars.css'
 import axios from "axios"
 import { Auth } from "@components/Auth"
-import { Fragment } from "react"
 import { SidebarSection } from "@components/SidebarSection"
 import { PlayerSection } from "@components/PlayerSection"
 import { PlaylistSection } from "@components/PlaylistSection"

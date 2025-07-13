@@ -1,0 +1,77 @@
+.upload-track-component {
+    background-color: var(--background-b-color);
+    border-radius: 11px;
+    width: 100%;
+    padding: 8px;
+    font-size: 16px;
+    font-family: inherit;
+    margin-bottom: 8px;
+
+    -webkit-touch-callout: text;
+    -webkit-user-select: text;
+    -khtml-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+
+    &:last-child {
+        margin-bottom: unset;
+    }
+
+    .field {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        min-height: 36px;
+
+        > .title {
+            text-transform: uppercase;
+            font-size: 10px;
+            font-weight: 6700;
+            letter-spacing: 1px;
+            color: var(--text-caption-color);
+        }
+
+        > .value {
+            text-align: left;
+        }
+    }
+
+    .column-field {
+        display: flex;
+        justify-content: space-between;
+        min-height: 36px;
+
+        > .column {
+            margin-right: 4px;
+
+            &:last-child {
+                margin-right: unset;
+            }
+        }
+    }
+
+    .field-image {
+        height: 36px;
+
+        > img {
+            height: 76px;
+            width: 76px;
+            min-height: 76px;
+            border-radius: 11px;
+            background-color: var(--background-secondary-color);
+        }
+    }
+
+    .field-bitrate {
+        min-width: 100px;
+    }
+
+    > div {
+        margin-bottom: 4px;
+
+        &:last-child {
+            margin-bottom: unset
+        }
+    }
+}

@@ -1,0 +1,23 @@
+.dnd-component {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    height: calc(100% - 2px);
+    border: 1px dashed transparent;
+
+    &__hovered {
+        border: 1px dashed white;
+    }
+
+    > .info-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+
+        > svg {
+            height: 50px;
+            width: 50px;
+        }
+    }
+}

@@ -18,14 +18,14 @@
     "react-icons": "^5.5.0"
   },
   "devDependencies": {
-    "@rspack/cli": "^1.4.3",
-    "@rspack/core": "^1.4.3",
+    "@rspack/cli": "^1.4.6",
+    "@rspack/core": "^1.4.6",
     "@rspack/plugin-react-refresh": "^1.4.3",
     "@svgr/webpack": "^8.1.0",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.5",
     "cross-env": "^7.0.3",
-    "dotenv": "^16.5.0",
+    "dotenv": "^17.2.0",
     "react-refresh": "^0.17.0",
     "sass-embedded": "^1.89.2",
     "sass-loader": "^16.0.5",

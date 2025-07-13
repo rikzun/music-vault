@@ -15,3 +15,12 @@
     --button-text-color: #256AFF;
     --error-color: #E90000;
 }
+
+.os-scrollbar {
+    --os-size: 16px;
+    --os-padding-perpendicular: 4px;
+
+    --os-handle-bg: rgba(255, 255, 255, 0.44);
+    --os-handle-bg-hover: rgba(255, 255, 255, 0.55);
+    --os-handle-bg-active: rgba(255, 255, 255, 0.66);
+}
