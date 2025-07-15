@@ -7,7 +7,8 @@ import { TrackData } from '@components/SidebarUpload/SidebarUpload.types'
 import { DragAndDrop } from '@components/DragAndDrop'
 import { UploadTrack } from '@components/UploadTrack'
 import { useEffect } from 'react'
-import { bridge } from '@workers/track.worker'
+import { bridge, parseMetadata } from '@workers/track.worker'
+import { Bridge } from '@utils/bridge'
 
 // const reader = new FileReader()
 
@@ -37,6 +38,10 @@ import { bridge } from '@workers/track.worker'
 //     reader.readAsArrayBuffer(file)
 // })
 
+const workerSupported = Bridge.isWorkerSupported()
+let canvasSupported: boolean | null = workerSupported ? null : false
+if (workerSupported) bridge.send('check-canvas', null)
+
 const iconID = "cloud-download-icon"
 const keyFrames = [
     { fill: "var(--error-color)" },
@@ -51,27 +56,46 @@ const keyFrames = [
 export function SidebarUpload() {
     const tracks = useState<TrackData[]>([])
 
-    useEffect(() => {
-        bridge.on('metadata-parsed', async(message) => {
-            if (!message.data.length) {
-                document
-                    .getElementById(iconID)!
-                    .animate(keyFrames, { duration: 500 })
-    
-                return
-            }
-
-            tracks.set((v) => {
-                return [...v, ...message.data.map((v, i) => new TrackData(v, message.images[i]))]
-            })
-        })
-    }, [])
-
     const fileHandler = async (files: File[]) => {
         if (!files.length) return
 
-        bridge.send('parse-metadata', files)
+        if (workerSupported) {
+            bridge.send('parse-metadata', files)
+        } else {
+            const data = await Promise.all(await parseMetadata(files))
+            handleMetadata(data.filter(Boolean) as TrackData[])
+        }
     }
+
+    const handleMetadata = (metadata: TrackData[]) => {
+        if (!metadata) {
+            document
+                .getElementById(iconID)!
+                .animate(keyFrames, { duration: 500 })
+
+            return
+        }
+
+        tracks.set((v) => {
+            const data = metadata.map((data) => {
+                return Object.setPrototypeOf(data, TrackData.prototype)
+            })
+            
+            return [...v, ...data]
+        })
+    }
+
+    useEffect(() => {
+        if (!workerSupported) return
+
+        bridge.on('canvas-checked', (message) => {
+            canvasSupported = message
+        })
+
+        bridge.on('metadata-parsed', (message) => {
+            handleMetadata(message)
+        })
+    }, [])
 
     const input = useInput({
         handler: fileHandler,

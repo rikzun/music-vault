@@ -9,7 +9,7 @@ export class TrackData {
     bitrate: number | null
     lossless: boolean
 
-    constructor(data: IAudioMetadata, image: TrackImage | null) {
+    constructor(data: IAudioMetadata, image: TrackImage | null = null) {
         const bitrate = data.format.bitrate
 
         this.image = image
@@ -35,13 +35,8 @@ export interface TrackImage {
     objectURL: string
 }
 
-export type TrackWorkerMessage = {
-    key: 'parse-metadata'
-    data: File[]
-} | {
-    key: 'metadata-parsed'
-    data: {
-        data: IAudioMetadata[],
-        images: TrackImage[]
-    }
-}
+export type TrackWorkerMessage =
+    { key: 'check-canvas', data: null } |
+    { key: 'canvas-checked', data: boolean } |
+    { key: 'parse-metadata', data: File[] } |
+    { key: 'metadata-parsed', data: TrackData[] }
