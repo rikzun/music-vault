@@ -6,41 +6,10 @@ import { OverlayScrollbarsComponent } from 'overlayscrollbars-react'
 import { TrackData } from '@components/SidebarUpload/SidebarUpload.types'
 import { DragAndDrop } from '@components/DragAndDrop'
 import { UploadTrack } from '@components/UploadTrack'
-import { useEffect } from 'react'
-import { bridge, parseMetadata } from '@workers/track.worker'
-import { Bridge } from '@utils/bridge'
+import { Workers } from "@workers"
+import axios from 'axios'
 
-// const reader = new FileReader()
-
-// reader.onload = async (e) => {
-//     const encoder = new TextEncoder()
-
-//     const trackData = {
-//         title: 'test-track',
-//         author: 'test-author',
-//         codec: 'mp3',
-//         bitrate: 192,
-//         fileName: 'test-track'
-//     }
-    
-//     const trackDataBuffer = encoder.encode(JSON.stringify(trackData)).buffer
-//     const trackBuffer = e.target!.result as ArrayBuffer
-
-//     axios.post('/track/upload', new Blob([trackDataBuffer, trackBuffer]), {
-//         headers: {
-//             'Content-Type': 'application/octet-stream',
-//             'X-Meta-Size': trackDataBuffer.byteLength
-//         }
-//     })
-// }
-
-// files.forEach((file) => {
-//     reader.readAsArrayBuffer(file)
-// })
-
-const workerSupported = Bridge.isWorkerSupported()
-let canvasSupported: boolean | null = workerSupported ? null : false
-if (workerSupported) bridge.send('check-canvas', null)
+const trackWorker = Workers.Track()
 
 const iconID = "cloud-download-icon"
 const keyFrames = [
@@ -59,16 +28,11 @@ export function SidebarUpload() {
     const fileHandler = async (files: File[]) => {
         if (!files.length) return
 
-        if (workerSupported) {
-            bridge.send('parse-metadata', files)
-        } else {
-            const data = await Promise.all(await parseMetadata(files))
-            handleMetadata(data.filter(Boolean) as TrackData[])
-        }
-    }
+        const isCanvasSupported = await trackWorker.rpc.checkCanvasSupport()
+        const rpc = isCanvasSupported ? trackWorker.rpc : trackWorker.default
+        const meta = await rpc.parseMeta(files)
 
-    const handleMetadata = (metadata: TrackData[]) => {
-        if (!metadata) {
+        if (!meta.length) {
             document
                 .getElementById(iconID)!
                 .animate(keyFrames, { duration: 500 })
@@ -77,25 +41,35 @@ export function SidebarUpload() {
         }
 
         tracks.set((v) => {
-            const data = metadata.map((data) => {
+            const data = meta.map((data) => {
                 return Object.setPrototypeOf(data, TrackData.prototype)
             })
-            
+
             return [...v, ...data]
         })
     }
 
-    useEffect(() => {
-        if (!workerSupported) return
+    const onUpload = () => {
+        tracks.value.forEach((track) => {
+            const reader = new FileReader()
 
-        bridge.on('canvas-checked', (message) => {
-            canvasSupported = message
-        })
+            reader.onload = async(e) => {
+                const metaBuffer = track.extractMetadata()
+                const imageBuffer = track.extractImage()
+                const trackBuffer = e.target!.result as ArrayBuffer
+    
+                axios.post('/track/upload', new Blob([metaBuffer, imageBuffer, trackBuffer]), {
+                    headers: {
+                        'Content-Type': 'application/octet-stream',
+                        'X-Meta-Size': metaBuffer.byteLength,
+                        'X-Image-Size': imageBuffer.byteLength
+                    }
+                })
+            }
 
-        bridge.on('metadata-parsed', (message) => {
-            handleMetadata(message)
+            reader.readAsArrayBuffer(track.file)
         })
-    }, [])
+    }
 
     const input = useInput({
         handler: fileHandler,
@@ -140,7 +114,7 @@ export function SidebarUpload() {
             {!!tracks.value.length && (
                 <Button.Small
                     value="Upload"
-                    onClick={console.log}
+                    onClick={onUpload}
                     fullWidth
                 />
             )}

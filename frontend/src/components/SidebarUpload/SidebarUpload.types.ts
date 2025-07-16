@@ -1,6 +1,12 @@
 import type { IAudioMetadata } from "music-metadata"
 
+export interface TrackImage {
+    data: Uint8Array
+    objectURL: string
+}
+
 export class TrackData {
+    file: File
     image: TrackImage | null
     title: string | null
     artists: string[]
@@ -9,9 +15,10 @@ export class TrackData {
     bitrate: number | null
     lossless: boolean
 
-    constructor(data: IAudioMetadata, image: TrackImage | null = null) {
+    constructor(file: File, data: IAudioMetadata, image: TrackImage | null = null) {
         const bitrate = data.format.bitrate
 
+        this.file = file
         this.image = image
         this.title = data.common.title ?? null
         this.artists = data.common.artists ?? []
@@ -21,22 +28,47 @@ export class TrackData {
         this.lossless = data.format.lossless ?? false
     }
 
+    extractMetadata() {
+        const meta = JSON.stringify({
+            title: this.title,
+            artists: this.artists,
+            album: this.album,
+            codec: this.codec,
+            bitrate: this.bitrate,
+            lossless: this.lossless
+        })
+
+        const encoder = new TextEncoder()
+        return encoder.encode(meta).buffer
+    }
+
+    extractImage() {
+        return this.image?.data ?? new Uint8Array()
+    }
+
     key() {
-        return Object.entries(this).map(([key, value]) => {
-            if (key == 'image') return key + ':' + (value != null)
-            if (key == 'artists') return key + ':' + value.join('_')
-            return key + ':' + value
-        }).join('|')
+        const values: string[] = []
+
+        Object.entries(this).forEach(([key, value]) => {
+            switch (key) {
+                case 'file': return
+
+                case 'image': {
+                    values.push(key + ':' + (value != null))
+                    return
+                }
+
+                case 'artists': {
+                    values.push(key + ':' + value.join('+'))
+                    return
+                }
+
+                default: {
+                    values.push(key + ':' + value)
+                }
+            }
+        })
+
+        return values.join('|')
     }
 }
-
-export interface TrackImage {
-    data: Uint8Array
-    objectURL: string
-}
-
-export type TrackWorkerMessage =
-    { key: 'check-canvas', data: null } |
-    { key: 'canvas-checked', data: boolean } |
-    { key: 'parse-metadata', data: File[] } |
-    { key: 'metadata-parsed', data: TrackData[] }
