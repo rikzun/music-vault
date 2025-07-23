@@ -31,8 +31,8 @@ export namespace TrackWorkerRPC {
             imageSize, imageSize
         )
     
-        const finalImageData = ctx.getImageData(0, 0, imageSize, imageSize).data as unknown as Uint8Array
         const finalImageBlob = await canvas.convertToBlob()
+        const finalImageData = await finalImageBlob.arrayBuffer()
     
         return {
             data: finalImageData,

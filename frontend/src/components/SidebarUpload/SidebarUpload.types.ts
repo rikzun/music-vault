@@ -1,7 +1,7 @@
 import type { IAudioMetadata } from "music-metadata"
 
 export interface TrackImage {
-    data: Uint8Array
+    data: ArrayBuffer
     objectURL: string
 }
 
@@ -43,7 +43,7 @@ export class TrackData {
     }
 
     extractImage() {
-        return this.image?.data?.buffer ?? new ArrayBuffer(0)
+        return this.image?.data ?? new ArrayBuffer(0)
     }
 
     key() {
