@@ -8,18 +8,12 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"slices"
 	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
-
-var allowedCodecs = []string{
-	"mp3", "wav", "ogg",
-	"flac", "aac", "alac",
-}
 
 func EntryUploadTrack(ctx *gin.Context) {
 	if !strings.HasPrefix(ctx.GetHeader("Content-Type"), "application/octet-stream") {
@@ -30,66 +24,64 @@ func EntryUploadTrack(ctx *gin.Context) {
 		return
 	}
 
-	metaSize, metaHeaderParseErr := strconv.ParseInt(ctx.GetHeader("X-Meta-Size"), 10, 64)
-	if metaHeaderParseErr != nil {
-		metaSize = 0
-	}
-
-	limitedReader := io.LimitReader(ctx.Request.Body, metaSize)
-	metaBuffer := make([]byte, metaSize)
-	_, metaReadErr := limitedReader.Read(metaBuffer)
-	if metaReadErr != nil && metaReadErr != io.EOF {
-		core.SendError(ctx,
-			http.StatusInternalServerError,
-			fmt.Sprintf("Error reading metadata: %v", metaReadErr),
-		)
-		return
-	}
-
-	var metaData TrackMetaDataBody
-	metaParseErr := json.Unmarshal(metaBuffer, &metaData)
-	if metaParseErr != nil {
-		core.SendError(ctx,
-			http.StatusInternalServerError,
-			fmt.Sprintf("Error parsing metadata: %v", metaParseErr),
-		)
-		return
-	}
-
-	if !slices.Contains(allowedCodecs, metaData.Codec) {
+	metaSize, err := strconv.ParseInt(ctx.GetHeader("X-Meta-Size"), 10, 64)
+	if err != nil {
 		core.SendError(ctx,
 			http.StatusBadRequest,
-			"Unsupported codec",
+			"Error reading X-Meta-Size header",
 		)
+		return
+	}
+
+	metaReader := io.LimitReader(ctx.Request.Body, metaSize)
+	metaBuffer := make([]byte, metaSize)
+
+	_, err = io.ReadFull(metaReader, metaBuffer)
+	if err != nil && err != io.EOF {
+		core.SendError(ctx,
+			http.StatusInternalServerError,
+			fmt.Sprintf("Error reading meta: %v", err),
+		)
+		return
+	}
+
+	var meta TrackMetaBody
+	err = json.Unmarshal(metaBuffer, &meta)
+	if err != nil {
+		core.SendError(ctx,
+			http.StatusInternalServerError,
+			fmt.Sprintf("Error parsing meta: %v", err),
+		)
+		return
+	}
+
+	imageSize, err := strconv.ParseInt(ctx.GetHeader("X-Image-Size"), 10, 64)
+	if err != nil {
+		core.SendError(ctx,
+			http.StatusBadRequest,
+			"Error reading X-Image-Size header",
+		)
+		return
 	}
 
 	fileName := uuid.NewString()
+	imageReader := io.LimitReader(ctx.Request.Body, imageSize)
 
-	file, fileCreateErr := os.Create("./uploads/" + fileName)
-	if fileCreateErr != nil {
-		core.SendError(ctx,
-			http.StatusInternalServerError,
-			fmt.Sprintf("Cannot create file: %v", fileCreateErr),
-		)
-		return
-	}
-	defer file.Close()
+	imageFile, _ := os.Create("./uploads/" + fileName + "_image")
+	trackFile, _ := os.Create("./uploads/" + fileName + "_track")
+	defer imageFile.Close()
+	defer trackFile.Close()
 
-	_, fileCopyErr := io.Copy(file, ctx.Request.Body)
-	if fileCopyErr != nil {
-		core.SendError(ctx,
-			http.StatusInternalServerError,
-			fmt.Sprintf("Error saving file: %v", fileCopyErr),
-		)
-		return
-	}
+	io.Copy(imageFile, imageReader)
+	io.Copy(trackFile, ctx.Request.Body)
 
 	trackID := TrackService.Create(
-		metaData.Title,
-		metaData.Author,
-		metaData.Codec,
-		metaData.Bitrate,
-		metaData.FileName,
+		meta.Title,
+		meta.Artists,
+		&meta.Album,
+		meta.Codec,
+		meta.Bitrate,
+		meta.Lossless,
 	)
 
 	response := TrackCreateResponse{

@@ -43,7 +43,7 @@ export class TrackData {
     }
 
     extractImage() {
-        return this.image?.data ?? new Uint8Array()
+        return this.image?.data?.buffer ?? new ArrayBuffer(0)
     }
 
     key() {

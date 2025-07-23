@@ -22,6 +22,19 @@ const keyFrames = [
     { transform: "translateX(0)" }
 ]
 
+function concatArrayBuffers(...buffers: ArrayBufferLike[]): ArrayBuffer {
+    const totalLength = buffers.reduce((acc, buf) => acc + buf.byteLength, 0)
+    const temp = new Uint8Array(totalLength)
+    let offset = 0
+  
+    for (const buf of buffers) {
+      temp.set(new Uint8Array(buf), offset)
+      offset += buf.byteLength
+    }
+  
+    return temp.buffer
+  }
+
 export function SidebarUpload() {
     const tracks = useState<TrackData[]>([])
 
@@ -57,8 +70,9 @@ export function SidebarUpload() {
                 const metaBuffer = track.extractMetadata()
                 const imageBuffer = track.extractImage()
                 const trackBuffer = e.target!.result as ArrayBuffer
-    
-                axios.post('/track/upload', new Blob([metaBuffer, imageBuffer, trackBuffer]), {
+
+                const data = concatArrayBuffers(metaBuffer, imageBuffer, trackBuffer)
+                axios.post('/track/upload', data, {
                     headers: {
                         'Content-Type': 'application/octet-stream',
                         'X-Meta-Size': metaBuffer.byteLength,

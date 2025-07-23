@@ -1,11 +1,12 @@
 package track
 
-type TrackMetaDataBody struct {
-	Title    string `json:"title"`
-	Author   string `json:"author"`
-	Codec    string `json:"codec"`
-	Bitrate  uint   `json:"bitrate"`
-	FileName string `json:"fileName"`
+type TrackMetaBody struct {
+	Title    string   `json:"title"`
+	Artists  []string `json:"artists"`
+	Album    string   `json:"album"`
+	Codec    string   `json:"codec"`
+	Bitrate  uint     `json:"bitrate"`
+	Lossless bool     `json:"lossless"`
 }
 
 type TrackCreateResponse struct {
