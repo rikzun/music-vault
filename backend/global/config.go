@@ -1,8 +1,8 @@
-package core
+package global
 
 import "os"
 
-type ConfigStruct struct {
+type configStruct struct {
 	Secret string
 	DbPort string
 	DbName string
@@ -10,7 +10,7 @@ type ConfigStruct struct {
 	DbPass string
 }
 
-var Config = ConfigStruct{
+var config = configStruct{
 	Secret: getOrPanic("SECRET"),
 	DbPort: "5432",
 	DbName: getOrPanic("POSTGRES_NAME"),
@@ -18,8 +18,17 @@ var Config = ConfigStruct{
 	DbPass: getOrPanic("POSTGRES_PASS"),
 }
 
-func get(key string) string {
-	value, _ := os.LookupEnv(key)
+func Config() configStruct {
+	return config
+}
+
+func get(key string, orElse string) string {
+	value, exists := os.LookupEnv(key)
+
+	if !exists {
+		return orElse
+	}
+
 	return value
 }
 
@@ -27,7 +36,7 @@ func getOrPanic(key string) string {
 	value, exists := os.LookupEnv(key)
 
 	if !exists {
-		panic(key + "doesn't exists")
+		panic("env parameter " + key + " not found")
 	}
 
 	return value

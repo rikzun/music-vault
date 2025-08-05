@@ -1,35 +1,37 @@
 package track
 
 import (
-	"backend/core"
-	TrackService "backend/domain/tracks"
+	"backend/core/custom"
+	"backend/core/errors"
+	"backend/domain/services"
+	"backend/global"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"os"
+	"path"
 	"strconv"
 	"strings"
 
-	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
 
-func EntryUploadTrack(ctx *gin.Context) {
-	if !strings.HasPrefix(ctx.GetHeader("Content-Type"), "application/octet-stream") {
-		core.SendError(ctx,
-			http.StatusBadRequest,
-			"Invalid Content-Type, expected application/octet-stream",
-		)
+func EntryUploadTrack(ctx *custom.Context) {
+	contentType := ctx.GetHeader("Content-Type")
+	if !strings.HasPrefix(contentType, "application/octet-stream") {
+		ctx.ApiError(errors.CommonWrongContentType("application/octet-stream"))
 		return
 	}
 
-	metaSize, err := strconv.ParseInt(ctx.GetHeader("X-Meta-Size"), 10, 64)
-	if err != nil {
-		core.SendError(ctx,
-			http.StatusBadRequest,
-			"Error reading X-Meta-Size header",
-		)
+	metaSizeHeader := ctx.GetHeaderPtr("X-Meta-Size")
+	if metaSizeHeader == nil {
+		ctx.ApiError(errors.CommonMissingHeader("X-Meta-Size"))
+		return
+	}
+
+	metaSize, err := strconv.ParseInt(*metaSizeHeader, 10, 64)
+	if err != nil || metaSize < 0 {
+		ctx.ApiError(errors.CommonInvalidHeaderValue("X-Meta-Size", "uint"))
 		return
 	}
 
@@ -38,44 +40,65 @@ func EntryUploadTrack(ctx *gin.Context) {
 
 	_, err = io.ReadFull(metaReader, metaBuffer)
 	if err != nil && err != io.EOF {
-		core.SendError(ctx,
-			http.StatusInternalServerError,
-			fmt.Sprintf("Error reading meta: %v", err),
-		)
+		ctx.ApiError(errors.TrackMetaReadFailed())
 		return
 	}
 
 	var meta TrackMetaBody
 	err = json.Unmarshal(metaBuffer, &meta)
 	if err != nil {
-		core.SendError(ctx,
-			http.StatusInternalServerError,
-			fmt.Sprintf("Error parsing meta: %v", err),
-		)
+		ctx.ApiError(errors.TrackMetaParseFailed())
 		return
 	}
 
-	imageSize, err := strconv.ParseInt(ctx.GetHeader("X-Image-Size"), 10, 64)
-	if err != nil {
-		core.SendError(ctx,
-			http.StatusBadRequest,
-			"Error reading X-Image-Size header",
-		)
-		return
+	var imageReader io.Reader
+	if imageSizeHeader := ctx.GetHeaderPtr("X-Image-Size"); imageSizeHeader != nil {
+		imageSize, err := strconv.ParseInt(*imageSizeHeader, 10, 64)
+		if err != nil || imageSize < 0 {
+			ctx.ApiError(errors.CommonInvalidHeaderValue("X-Image-Size", "uint"))
+			return
+		}
+
+		imageReader = io.LimitReader(ctx.Request.Body, imageSize)
 	}
 
+	folder := "uploads"
+	os.MkdirAll(folder, os.ModePerm)
 	fileName := uuid.NewString()
-	imageReader := io.LimitReader(ctx.Request.Body, imageSize)
 
-	imageFile, _ := os.Create("./uploads/" + fileName + "_image")
-	trackFile, _ := os.Create("./uploads/" + fileName + "_track")
-	defer imageFile.Close()
+	audioPath := path.Join(folder, "track_"+fileName)
+	var imagePath *string
+	if imageReader != nil {
+		path := path.Join(folder, "image_"+fileName)
+		imagePath = &path
+	}
+
+	trackFile, err := os.Create(audioPath)
+	if err != nil {
+		ctx.ApiError(errors.CommonFileCreationFailed())
+		return
+	}
+
 	defer trackFile.Close()
-
-	io.Copy(imageFile, imageReader)
 	io.Copy(trackFile, ctx.Request.Body)
 
-	trackID := TrackService.Create(
+	if imagePath != nil {
+		imageFile, err := os.Create(*imagePath)
+		if err != nil {
+			ctx.ApiError(errors.CommonFileCreationFailed())
+			return
+		}
+
+		defer imageFile.Close()
+		io.Copy(imageFile, imageReader)
+	}
+
+	clientID := ctx.ClientID()
+
+	trackID := services.Track.Create(
+		*clientID,
+		audioPath,
+		imagePath,
 		meta.Title,
 		meta.Artists,
 		&meta.Album,
@@ -84,9 +107,25 @@ func EntryUploadTrack(ctx *gin.Context) {
 		meta.Lossless,
 	)
 
-	response := TrackCreateResponse{
+	ctx.JSON(http.StatusOK, global.ID{
 		ID: trackID,
+	})
+}
+
+func EntryGetUploaded(ctx *custom.Context) {
+	clientID := ctx.ClientID()
+	tracks := services.Track.FindByClient(*clientID)
+
+	data := make([]UploadedTrack, 0, len(tracks))
+	for _, track := range tracks {
+		data = append(data, UploadedTrack{
+			AudioURL: track.AudioPath,
+			ImageURL: track.ImagePath,
+		})
 	}
 
-	ctx.JSON(http.StatusOK, response)
+	ctx.JSON(
+		http.StatusOK,
+		UploadedTracks{data},
+	)
 }

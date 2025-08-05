@@ -1,15 +1,19 @@
 package domain
 
 type TrackEntity struct {
-	ID uint `gorm:"column:id; primaryKey"`
+	ID         uint    `gorm:"column:id; primaryKey"`
+	UploaderID uint    `gorm:"column:uploader_id; not null;"`
+	AudioPath  string  `gorm:"column:audio_path;  not null; type:string"`
+	ImagePath  *string `gorm:"column:image_path;            type:string"`
 
-	Title    string  `gorm:"column:title;    type:text"`
-	Album    *string `gorm:"column:album;    type:text"`
-	Codec    string  `gorm:"column:codec;    type:text"`
-	Bitrate  uint    `gorm:"column:bitrate;  type:int"`
-	Lossless bool    `gorm:"column:lossless; type:bool"`
+	Title    string  `gorm:"column:title;    not null; type:text"`
+	Album    *string `gorm:"column:album;              type:text"`
+	Codec    string  `gorm:"column:codec;              type:text"`
+	Bitrate  uint    `gorm:"column:bitrate;            type:int"`
+	Lossless bool    `gorm:"column:lossless; not null; type:bool"`
 
-	Artists []*ArtistEntity `gorm:"many2many:track_artists;"`
+	Artists  []*ArtistEntity `gorm:"many2many:track_artists"`
+	Uploader *ClientEntity   `gorm:"foreignKey:UploaderID; references:ID"`
 }
 
 func (TrackEntity) TableName() string {

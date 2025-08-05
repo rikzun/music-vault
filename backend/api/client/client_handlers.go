@@ -1,16 +1,12 @@
 package client
 
 import (
-	"backend/core"
-	ClientService "backend/domain/clients"
+	"backend/core/custom"
 	"net/http"
-
-	"github.com/gin-gonic/gin"
 )
 
-func EntryMe(ctx *gin.Context) {
-	clientID := core.GetClientID(ctx)
-	client := ClientService.FindByID(clientID)
+func EntryMe(ctx *custom.Context) {
+	client := ctx.Client()
 
 	data := ClientData{
 		ID:        client.ID,

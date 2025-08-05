@@ -10,3 +10,7 @@ type ClientSignInBody struct {
 	Login    string `json:"login"    binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
+
+type ClientTokenResponse struct {
+	Token string `json:"token"`
+}

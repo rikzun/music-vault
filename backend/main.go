@@ -4,24 +4,25 @@ import (
 	"backend/core"
 	"backend/core/middleware"
 	"backend/domain"
-	"os"
+	"backend/global"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	core.InitDatabase()
 	core.ConfigureValidator()
 
-	core.DB.AutoMigrate(
+	global.InitDatabase()
+	global.Database().AutoMigrate(
 		&domain.ClientEntity{},
 		&domain.AuthTokenEntity{},
 		&domain.TrackEntity{},
 	)
 
-	os.MkdirAll("./uploads/", os.ModePerm)
+	gin.SetMode(gin.ReleaseMode)
 
 	engine := gin.Default()
+	engine.SetTrustedProxies([]string{"127.0.0.1"})
 	engine.Use(middleware.DefaultHeaders)
 	InitRouting(engine)
 

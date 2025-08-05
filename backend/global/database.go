@@ -1,4 +1,4 @@
-package core
+package global
 
 import (
 	"fmt"
@@ -7,18 +7,18 @@ import (
 	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
+var db *gorm.DB
 
 func InitDatabase() {
-	host := "database"
+	config := Config()
 
 	dsn := fmt.Sprintf(
 		"host=%s port=%s dbname=%s user=%s password=%s sslmode=disable TimeZone=UTC",
-		host, Config.DbPort, Config.DbName, Config.DbUser, Config.DbPass,
+		"database", config.DbPort, config.DbName, config.DbUser, config.DbPass,
 	)
 
 	var err error
-	DB, err = gorm.Open(
+	db, err = gorm.Open(
 		postgres.Open(dsn),
 		&gorm.Config{},
 	)
@@ -26,4 +26,8 @@ func InitDatabase() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func Database() *gorm.DB {
+	return db
 }

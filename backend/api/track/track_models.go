@@ -9,6 +9,11 @@ type TrackMetaBody struct {
 	Lossless bool     `json:"lossless"`
 }
 
-type TrackCreateResponse struct {
-	ID uint `json:"id"`
+type UploadedTracks struct {
+	Data []UploadedTrack `json:"data"`
+}
+
+type UploadedTrack struct {
+	AudioURL string  `json:"audioURL"`
+	ImageURL *string `json:"imageURL"`
 }

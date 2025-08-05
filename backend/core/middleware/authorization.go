@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	AuthTokensService "backend/domain/auth_tokens"
+	"backend/domain/services"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -15,7 +15,8 @@ var Authorization = func(ctx *gin.Context) {
 		return
 	}
 
-	clientID := AuthTokensService.ValidateAndGetID(authToken)
+	clientID := services.AuthToken.
+		ValidateAndGetClientID(authToken)
 
 	if clientID == 0 {
 		ctx.AbortWithStatus(http.StatusUnauthorized)

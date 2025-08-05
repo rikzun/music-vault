@@ -1,6 +1,6 @@
 package domain
 
-import "backend/core"
+import "backend/global"
 
 type ClientEntity struct {
 	ID uint `gorm:"column:id; primaryKey"`
@@ -9,7 +9,7 @@ type ClientEntity struct {
 	Login    string `gorm:"column:login;    not null; type:text; uniqueIndex"`
 	Password string `gorm:"column:password; not null; type:text"`
 
-	AuthTokens []AuthTokenEntity `gorm:"foreignKey:ClientID;references:ID"`
+	AuthTokens []AuthTokenEntity `gorm:"foreignKey:ClientID; references:ID"`
 }
 
 func (ClientEntity) TableName() string {
@@ -17,5 +17,5 @@ func (ClientEntity) TableName() string {
 }
 
 func (client *ClientEntity) Delete() error {
-	return core.DB.Delete(client).Error
+	return global.Database().Delete(client).Error
 }
