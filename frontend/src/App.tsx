@@ -1,6 +1,6 @@
 import "./App.style.scss"
 import 'overlayscrollbars/overlayscrollbars.css'
-import axios from "axios"
+import axios, { AxiosError } from "axios"
 import { Auth } from "@components/Auth"
 import { SidebarSection } from "@components/SidebarSection"
 import { PlayerSection } from "@components/PlayerSection"
@@ -9,6 +9,10 @@ import { useTokenAtom } from "src/atoms/settings"
 import { IconContext } from "react-icons"
 
 axios.defaults.baseURL = ENV.BACKEND_URL
+axios.interceptors.response.use(undefined, (err: AxiosError) => {
+    if (err.response?.status !== 401) return err
+    console.log('any method returned 401')
+})
 
 export function App() {
     const token = useTokenAtom()
