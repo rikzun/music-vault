@@ -34,12 +34,12 @@ func EntrySignUp(ctx *custom.Context) {
 }
 
 func EntrySignIn(ctx *custom.Context) {
-	var body ClientSignUpBody
+	var body ClientSignInBody
 	if !ctx.BindJSON(&body) {
 		return
 	}
 
-	client := services.Client.FindOneByUnique(body.Login, body.Login)
+	client := services.Client.FindOneByUnique(body.Login)
 	if client == nil {
 		ctx.Status(http.StatusNotFound)
 		return

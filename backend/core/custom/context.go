@@ -17,6 +17,7 @@ type Context struct {
 func (ctx *Context) BindJSON(obj any) bool {
 	if err := ctx.raw.ShouldBindJSON(obj); err != nil {
 		// core.SendBindError(ctx, err)
+		ctx.raw.Status(http.StatusBadRequest)
 		ctx.raw.Abort()
 		return false
 	}

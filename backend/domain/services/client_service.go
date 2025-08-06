@@ -36,11 +36,11 @@ func (client) FindByID(id uint) *domain.ClientEntity {
 	return &record
 }
 
-func (client) FindOneByUnique(email string, login string) *domain.ClientEntity {
+func (client) FindOneByUnique(emailOrLogin string) *domain.ClientEntity {
 	var client domain.ClientEntity
 
 	result := global.Database().
-		Where("email = ? OR login = ?", email, login).
+		Where("email = ? OR login = ?", emailOrLogin, emailOrLogin).
 		First(&client)
 
 	if result.Error != nil {
