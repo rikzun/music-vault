@@ -4,6 +4,7 @@ import { FormEvent } from "react"
 import { useState } from "@utils/hooks"
 import { useTokenAtom } from "src/atoms/settings"
 import slideAudioUrl from "@assets/slide.mp3?url"
+import { SignResponse } from "src/common/types"
 
 interface SignData {
     email: string
@@ -27,19 +28,22 @@ export function Auth() {
     }
 
     const signInHandler = (data: SignData) => {
-        axios.post<string>('/auth/sign-in', data).then((res) => {
-            localStorage.setItem('token', res.data)
-            tokenAtom.set(res.data)
-            axios.defaults.headers["Authorization"] = res.data
+        axios.post<SignResponse>('auth/sign-in', data).then((res) => {
+            console.log(res)
+            localStorage.setItem('token', res.data.token)
+            tokenAtom.set(res.data.token)
+            axios.defaults.headers["Authorization"] = res.data.token
         }).catch((reason) => {
             console.log(reason)
         })
     }
 
     const signUpHandler = (data: SignData) => {
-        axios.post<string>('/auth/sign-up', data).then((res) => {
-            tokenAtom.set(res.data)
-            axios.defaults.headers["Authorization"] = res.data
+        axios.post<SignResponse>('auth/sign-up', data).then((res) => {
+            console.log(res)
+            localStorage.setItem('token', res.data.token)
+            tokenAtom.set(res.data.token)
+            axios.defaults.headers["Authorization"] = res.data.token
         }).catch((reason) => {
             console.log(reason)
         })

@@ -7,18 +7,37 @@ import { PlayerSection } from "@components/PlayerSection"
 import { PlaylistSection } from "@components/PlaylistSection"
 import { useTokenAtom } from "src/atoms/settings"
 import { IconContext } from "react-icons"
+import { useEffect } from "react"
+import { ClientResponse } from "./common/types"
+import { useClientAtom } from "@atoms/client"
 
-axios.defaults.baseURL = ENV.BACKEND_URL
-axios.interceptors.response.use(undefined, (err: AxiosError) => {
-    if (err.response?.status !== 401) return err
-    console.log('any method returned 401')
-})
+axios.defaults.baseURL = ENV.BACKEND_URL.endsWith('/') ? ENV.BACKEND_URL : ENV.BACKEND_URL + '/'
 
 export function App() {
     const token = useTokenAtom()
+    const client = useClientAtom()
+    axios.defaults.headers["Authorization"] = token.value
+
+    useEffect(() => {
+        axios.interceptors.response.use((res) => res, (err: AxiosError) => {
+            if (err.response?.status !== 401) return Promise.reject(err)
+            console.log('any method returned 401')
+            localStorage.removeItem('token')
+            token.set(null)
+            client.set(null)
+            return Promise.reject(err)
+        })
+
+        axios.get<ClientResponse>('client/me').then((res) => {
+            const { id, login, avatarURL } = res.data
+
+            client.set({ id, login, avatarURL })
+        }).catch((reason) => {
+            console.log(reason)
+        })
+    }, [])
 
     if (token.value == null) return <Auth />
-    axios.defaults.headers["Authorization"] = token.value
 
     return (
         <IconContext.Provider value={{ size: "24" }}>
