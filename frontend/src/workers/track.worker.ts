@@ -17,7 +17,7 @@ export namespace TrackWorkerRPC {
     }
 
     export async function resizeImage(data: Uint8Array, format: string) {
-        const blob = new Blob([data], { type: format })
+        const blob = new Blob([data as BlobPart], { type: format })
         const imageBitmap = await createImageBitmap(blob)
     
         const canvas = new OffscreenCanvas(imageSize, imageSize)

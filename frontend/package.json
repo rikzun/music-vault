@@ -8,29 +8,29 @@
     "dev-build": "cross-env NODE_ENV=production NODE_OPTIONS='--experimental-transform-types' rspack build -o ../build/frontend"
   },
   "dependencies": {
-    "axios": "^1.10.0",
+    "axios": "^1.11.0",
     "comlink": "^4.4.2",
-    "jotai": "^2.12.5",
-    "music-metadata": "^11.7.0",
-    "overlayscrollbars": "^2.11.4",
+    "jotai": "^2.13.1",
+    "music-metadata": "^11.8.3",
+    "overlayscrollbars": "^2.12.0",
     "overlayscrollbars-react": "^0.5.6",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
     "react-icons": "^5.5.0"
   },
   "devDependencies": {
-    "@rspack/cli": "^1.4.8",
-    "@rspack/core": "^1.4.8",
+    "@rspack/cli": "^1.5.0",
+    "@rspack/core": "^1.5.0",
     "@rspack/plugin-react-refresh": "^1.4.3",
     "@svgr/webpack": "^8.1.0",
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.5",
-    "cross-env": "^7.0.3",
-    "dotenv": "^17.2.0",
+    "@types/react": "^19.1.11",
+    "@types/react-dom": "^19.1.8",
+    "cross-env": "^10.0.0",
+    "dotenv": "^17.2.1",
     "react-refresh": "^0.17.0",
-    "sass-embedded": "^1.89.2",
+    "sass-embedded": "^1.91.0",
     "sass-loader": "^16.0.5",
-    "ts-checker-rspack-plugin": "^1.1.4",
-    "typescript": "^5.8.3"
+    "ts-checker-rspack-plugin": "^1.1.5",
+    "typescript": "^5.9.2"
   }
 }
