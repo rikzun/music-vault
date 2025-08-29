@@ -6,6 +6,7 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - ./frontend:/usr/share/nginx/html:ro
+      - ./uploads:/uploads:ro
     ports:
       - ${FRONTEND_PORT}:80
     environment:

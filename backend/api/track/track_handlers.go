@@ -66,23 +66,11 @@ func EntryUploadTrack(ctx *custom.Context) {
 	os.MkdirAll(folder, os.ModePerm)
 	fileName := uuid.NewString()
 
-	audioPath := path.Join(folder, "track_"+fileName)
 	var imagePath *string
 	if imageReader != nil {
 		path := path.Join(folder, "image_"+fileName)
 		imagePath = &path
-	}
 
-	trackFile, err := os.Create(audioPath)
-	if err != nil {
-		ctx.ApiError(errors.CommonFileCreationFailed())
-		return
-	}
-
-	defer trackFile.Close()
-	io.Copy(trackFile, ctx.Request.Body)
-
-	if imagePath != nil {
 		imageFile, err := os.Create(*imagePath)
 		if err != nil {
 			ctx.ApiError(errors.CommonFileCreationFailed())
@@ -92,6 +80,16 @@ func EntryUploadTrack(ctx *custom.Context) {
 		defer imageFile.Close()
 		io.Copy(imageFile, imageReader)
 	}
+
+	audioPath := path.Join(folder, "track_"+fileName)
+	trackFile, err := os.Create(audioPath)
+	if err != nil {
+		ctx.ApiError(errors.CommonFileCreationFailed())
+		return
+	}
+
+	defer trackFile.Close()
+	io.Copy(trackFile, ctx.Request.Body)
 
 	clientID := ctx.ClientID()
 

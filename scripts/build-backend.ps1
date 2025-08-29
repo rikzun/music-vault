@@ -4,8 +4,6 @@
 
 cd ../backend
 go build -o ../build/vault
-cd ../
+cd ../scripts
 
-Copy-Item -Path .env, docker-compose.yml, nginx.conf -Destination ./build/ -Force
-
-cd ./scripts
+./additionals
