@@ -35,5 +35,5 @@ if [ $preserveData != 0 ]; then
 fi
 
 sudo rm -rf ./build
-sudo docker compose up -d
+sudo docker compose up -V -d
 sudo docker compose logs -f
