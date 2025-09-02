@@ -1,11 +1,12 @@
-import { MdPlayArrow } from 'react-icons/md'
+import { MdPlayArrow, MdRepeat, MdShuffle, MdSkipNext, MdSkipPrevious } from 'react-icons/md'
 import './PlayerSection.style.scss'
 import { useState } from '@utils/hooks'
 import { useEffect } from 'react'
 
-const sampleAudioUrl = ENV.BACKEND_URL + "/uploads/track_5799fe7d-ac8c-4cd1-b75b-7a48f9c6f866"
+const sampleAudioUrl = "http://212.108.82.125:3000/uploads/track_0342c794-ca30-44a4-874f-58e45338fcb8"
 const audioContext = new AudioContext()
 const audioElement = new Audio(sampleAudioUrl)
+audioElement.crossOrigin = "anonymous"
 
 export function PlayerSection() {
     const isPlaying = useState<boolean>(false)
@@ -15,17 +16,16 @@ export function PlayerSection() {
 
         const gainNode = audioContext.createGain()
         track.connect(gainNode).connect(audioContext.destination)
-        gainNode.gain.value = 0.1
+        gainNode.gain.value = 0.3
 
-        //audioElement.onclick = onPlay
         audioElement.onended = onEnded
-
-        if (audioContext.state === "suspended") {
-            audioContext.resume()
-        }
     }, [])
 
     const onPlay = () => {
+        if (audioContext.state === "suspended") {
+            audioContext.resume()
+        }
+
         if (isPlaying.value) {
             audioElement.pause()
         } else {
@@ -41,19 +41,11 @@ export function PlayerSection() {
 
     return (
         <div className="player-section">
+            <MdShuffle size={36} />
+            <MdSkipPrevious size={50} />
             <MdPlayArrow onClick={onPlay} size={50} />
+            <MdSkipNext size={50} />
+            <MdRepeat size={36} />
         </div>
     )
 }
-
-// const audioPlay = async url => {
-//   const context = new AudioContext();
-//   const source = context.createBufferSource();
-//   const audioBuffer = await fetch(url)
-//     .then(res => res.arrayBuffer())
-//     .then(ArrayBuffer => context.decodeAudioData(ArrayBuffer));
-
-//   source.buffer = audioBuffer;
-//   source.connect(context.destination);
-//   source.start();
-// };
