@@ -127,7 +127,7 @@ if ($frontend) {
         Build-Frontend
     }
 
-    $deployFiles += "./build/frontend"
+    $deployFiles += "./build/frontend/"
 }
 
 if ($environment) {
