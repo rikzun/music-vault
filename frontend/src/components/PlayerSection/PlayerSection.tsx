@@ -3,7 +3,7 @@ import './PlayerSection.style.scss'
 import { useState } from '@utils/hooks'
 import { useEffect } from 'react'
 
-const sampleAudioUrl = "http://212.108.82.125:3000/uploads/track_0342c794-ca30-44a4-874f-58e45338fcb8"
+const sampleAudioUrl = ENV.BACKEND_URL + "/uploads/track_0342c794-ca30-44a4-874f-58e45338fcb8"
 const audioContext = new AudioContext()
 const audioElement = new Audio(sampleAudioUrl)
 audioElement.crossOrigin = "anonymous"

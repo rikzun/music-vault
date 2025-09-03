@@ -1,0 +1,57 @@
+.volume {
+    display: flex;
+    align-items: center;
+    height: 32px;
+    box-sizing: border-box;
+
+    padding-top: 4px;
+    padding-right: 11px;
+    padding-bottom: 4px;
+    padding-left: 11px;
+    background-color: var(--background-a-color);
+
+    > .volume-icon {
+        background-color: unset;
+        padding: unset;
+        height: 100%;
+    }
+
+    > .range {
+        height: 100%;
+        width: 100%;
+        margin-inline: 5px;
+
+        display: flex;
+        align-items: center;
+        user-select: none;
+
+        > .track {
+            height: 2px;
+            width: 100%;
+
+            position: relative;
+            background-color: white;
+
+            > .thumb {
+                position: absolute;
+                top: calc(50% - 6px);
+                
+                height: var(--thumb-size);
+                width: var(--thumb-size);
+                border-radius: 50%;
+                background-color: white;
+            }
+        }
+    }
+
+    > input[type="text"] {
+        height: 100%;
+        width: 38px;
+        background: unset;
+        border: 1px solid white;
+        border-radius: 4px;
+        color: white;
+        font-size: 14px;
+        text-align: center;
+    }
+}
