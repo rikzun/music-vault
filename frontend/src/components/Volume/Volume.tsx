@@ -1,6 +1,6 @@
 import './Volume.style.scss'
 import { useState } from '@utils/hooks'
-import { KeyboardEvent, SyntheticEvent, WheelEvent, useEffect, useLayoutEffect, useRef } from 'react'
+import { KeyboardEvent, PointerEvent as ReactPointerEvent, SyntheticEvent, WheelEvent, useEffect, useLayoutEffect, useRef } from 'react'
 import { MdVolumeOff, MdVolumeUp } from 'react-icons/md'
 
 const THUMB_SIZE = 12
@@ -15,7 +15,8 @@ export function Volume() {
     const volume = useState(Number.parseInt(localStorage.getItem('volume') ?? '') || 50)
 
     useLayoutEffect(() => {
-        const savedVolume = localStorage.getItem('volume') ?? '50'
+        let savedVolume = Number.parseInt(localStorage.getItem('volume') ?? '') || 50
+        if (savedVolume > 100) savedVolume = 100
         thumbRef.current!.style.left = `calc(${savedVolume}% - ${THUMB_SIZE}px)`
     }, [])
 
@@ -28,28 +29,36 @@ export function Volume() {
         volumeInputRef.current!.value = percent.toString()
     }
 
-    // FIX left anchor VAHBKAWHLSJDAJWILFH
+    const mouseClick = (pageX: number) => {
+        const rangeRect = rangeRef.current!.getBoundingClientRect()
+        const start = rangeRect.x + (THUMB_SIZE / 2)
+        const end = rangeRect.width - THUMB_SIZE
+
+        let current = pageX - start
+        if (current < 0) current = 0
+        if (current > end) current = end
+
+        let left = current
+        if (left < 0) left = 0
+        if (left > end) left = end
+        
+        thumbRef.current!.style.left = left + 'px'
+
+        const percent = Math.floor((current / end) * 100)
+        setVolume(percent)
+        setVolumeInput(percent)
+    }
+
+    const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
+        handleMouseMove.set(true)
+        mouseClick(e.pageX)
+    }
+
     useEffect(() => {
         if (!handleMouseMove.value) return
 
         const moveListener = (e: PointerEvent) => {
-            const rangeRect = rangeRef.current!.getBoundingClientRect()
-            const start = rangeRect.x
-            const end = rangeRect.width - THUMB_SIZE
-
-            let current = e.pageX - start
-            if (current < 0) current = 0
-            if (current > end) current = end
-
-            let left = current
-            if (left < 0) left = 0
-            if (left > end) left = end
-            
-            thumbRef.current!.style.left = left + 'px'
-
-            const percent = Math.floor((current / end) * 100)
-            setVolume(percent)
-            setVolumeInput(percent)
+            mouseClick(e.pageX)
         }
 
         const upListener = () => {
@@ -64,7 +73,7 @@ export function Volume() {
         }
     }, [handleMouseMove])
 
-    const onMouseWheel = (e: WheelEvent<HTMLDivElement>) => {
+    const onMouseWheel = (e: WheelEvent<HTMLDivElement>, isFromInput: boolean = false) => {
         let value = (e.deltaY < 0 ? 1 : -1)
         if (e.shiftKey) value *= 5
 
@@ -72,7 +81,34 @@ export function Volume() {
 
         let next = volume.value + value
         if (next < 0) next = 0
-        if (next > 100) next = 100
+        if (!isFromInput && next > 100) next = 100
+        if (isFromInput && next > 300) next = 300
+
+        let left = end * (next / 100)
+        if (left < 0) left = 0
+        if (left > end) left = end
+
+        setVolume(next)
+        thumbRef.current!.style.left = left + 'px'
+        setVolumeInput(next)
+    }
+
+    const onVolumeKeyDown = (e: KeyboardEvent<HTMLDivElement>, isFromInput: boolean = false) => {
+        let value = (e.key == "ArrowDown" || e.key == "ArrowLeft")
+            ? -1
+            : (e.key == "ArrowUp" || e.key == "ArrowRight")
+                ? 1
+                : 0
+
+        if (value == 0) return
+        if (e.shiftKey) value *= 5
+
+        const end = rangeRef.current!.getBoundingClientRect().width - THUMB_SIZE
+
+        let next = volume.value + value
+        if (next < 0) next = 0
+        if (!isFromInput && next > 100) next = 100
+        if (isFromInput && next > 300) next = 300
 
         let left = end * (next / 100)
         if (left < 0) left = 0
@@ -84,6 +120,7 @@ export function Volume() {
     }
 
     const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+        onVolumeKeyDown(e, true)
         if (e.key == "Tab") return
         if (e.key == "Enter") return
         if (e.key == "Backspace") return
@@ -146,8 +183,9 @@ export function Volume() {
                 tabIndex={0}
                 ref={rangeRef}
                 className="range"
-                onMouseDown={() => handleMouseMove.set(true)}
+                onPointerDown={onPointerDown}
                 onWheel={onMouseWheel}
+                onKeyDown={onVolumeKeyDown}
             >
                 <div
                     className="track"
@@ -156,8 +194,9 @@ export function Volume() {
                         ref={thumbRef}
                         className="thumb"
                         style={{
+                            "color": "red",
                             "--thumb-size": THUMB_SIZE + 'px'
-                        } as Record<string, string>}
+                        }}
                     />
                 </div>
             </div>
@@ -169,6 +208,7 @@ export function Volume() {
                 onKeyDown={onKeyDown}
                 onKeyUp={(e) => e.key == "Enter" ? onBlur(e) : undefined}
                 onBlur={onBlur}
+                onWheel={(e) => onMouseWheel(e, true)}
             />
         </div>
     )

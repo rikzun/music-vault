@@ -52,9 +52,9 @@ export namespace TrackWorkerRPC {
 
             console.log(meta)
     
-            const image = meta.common.picture?.at(0)
+            const image = meta.common.picture?.[0]
             const imageData = image?.data
-            const imageFormat = image?.format
+            const imageFormat = image?.format   
     
             if (
                 image == null ||
