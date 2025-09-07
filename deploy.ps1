@@ -108,7 +108,21 @@ function Ensure-Build {
     }
 }
 
-$deployFiles = @()
+function Send-Files {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string] $Destination,
+
+        [Parameter(Mandatory=$true)]
+        [string[]] $Files
+    )
+
+    & scp -r $Files root@212.108.82.125:$Destination
+    if ($LASTEXITCODE -ne 0) {
+        & ssh root@212.108.82.125 "mkdir -p $Destination"
+        & scp -r $Files root@212.108.82.125:$Destination
+    }
+}
 
 if ($backend) {
     if ($skipBuild) {
@@ -117,7 +131,7 @@ if ($backend) {
         Build-Backend
     }
 
-    $deployFiles += "./build/vault"
+    Send-Files -Destination "~/vault/build" -Files "./build/vault"
 }
 
 if ($frontend) {
@@ -127,24 +141,10 @@ if ($frontend) {
         Build-Frontend
     }
 
-    $deployFiles += "./build/frontend/"
+    Send-Files -Destination "~/vault/build/frontend" -Files "./build/frontend/*"
 }
 
 if ($environment) {
     Build-Environment
-
-    $deployFiles += "./build/.env"
-    $deployFiles += "./build/docker-compose.yml"
-    $deployFiles += "./build/nginx.conf"
-}
-
-try {
-    & scp -r $deployFiles root@212.108.82.125:~/vault/build
-} catch {
-    if ($_.Exception.Message -match "No such file or directory") {
-        & ssh root@212.108.82.125 "mkdir -p ~/vault/build"
-        & scp -r $deployFiles root@212.108.82.125:~/vault/build
-    } else {
-        throw $_
-    }
+    Send-Files -Destination "~/vault/build" -Files "./build/.env","./build/docker-compose.yml","./build/nginx.conf"
 }
