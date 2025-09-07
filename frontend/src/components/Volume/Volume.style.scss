@@ -25,7 +25,6 @@
         align-items: center;
         user-select: none;
         outline: unset;
-        cursor: pointer;
 
         > .track {
             height: 2px;
@@ -34,12 +33,12 @@
             position: relative;
             background-color: white;
 
-            > .thumb {
+            > .knob {
                 position: absolute;
                 top: calc(50% - 6px);
                 
-                height: var(--thumb-size);
-                width: var(--thumb-size);
+                height: var(--knob-size);
+                width: var(--knob-size);
                 border-radius: 50%;
                 background-color: white;
             }

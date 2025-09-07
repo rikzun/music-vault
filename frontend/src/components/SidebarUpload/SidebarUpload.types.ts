@@ -51,24 +51,24 @@ export class TrackData {
 
         Object.entries(this).forEach(([key, value]) => {
             switch (key) {
-                case 'file': return
+                case "file": return
 
-                case 'image': {
-                    values.push(key + ':' + (value != null))
+                case "image": {
+                    values.push(key + ":" + (value != null))
                     return
                 }
 
-                case 'artists': {
-                    values.push(key + ':' + value.join('+'))
+                case "artists": {
+                    values.push(key + ":" + value.join("+"))
                     return
                 }
 
                 default: {
-                    values.push(key + ':' + value)
+                    values.push(key + ":" + value)
                 }
             }
         })
 
-        return values.join('|')
+        return values.join("|")
     }
 }

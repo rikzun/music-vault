@@ -1,13 +1,13 @@
-import './SidebarUpload.style.scss'
-import { Button } from '@components/Button'
-import { useInput, useState } from '@utils/hooks'
+import "./SidebarUpload.style.scss"
+import { Button } from "@components/Button"
+import { useInput, useState } from "@utils/hooks"
 import { MdCloudDownload } from "react-icons/md"
-import { OverlayScrollbarsComponent } from 'overlayscrollbars-react'
-import { TrackData } from '@components/SidebarUpload/SidebarUpload.types'
-import { DragAndDrop } from '@components/DragAndDrop'
-import { UploadTrack } from '@components/UploadTrack'
+import { OverlayScrollbarsComponent } from "overlayscrollbars-react"
+import { TrackData } from "@components/SidebarUpload/SidebarUpload.types"
+import { DragAndDrop } from "@components/DragAndDrop"
+import { UploadTrack } from "@components/UploadTrack"
 import { Workers } from "@workers"
-import axios from 'axios'
+import axios from "axios"
 
 const trackWorker = Workers.Track()
 
@@ -72,11 +72,11 @@ export function SidebarUpload() {
                 const trackBuffer = e.target!.result as ArrayBuffer
 
                 const data = concatArrayBuffers(metaBuffer, imageBuffer, trackBuffer)
-                axios.post('/track/upload', data, {
+                axios.post("/track/upload", data, {
                     headers: {
-                        'Content-Type': 'application/octet-stream',
-                        'X-Meta-Size': metaBuffer.byteLength,
-                        'X-Image-Size': imageBuffer.byteLength
+                        "Content-Type": "application/octet-stream",
+                        "X-Meta-Size": metaBuffer.byteLength,
+                        "X-Image-Size": imageBuffer.byteLength
                     }
                 })
             }
@@ -98,12 +98,12 @@ export function SidebarUpload() {
 
             <OverlayScrollbarsComponent
                 className="content"
-                options={{scrollbars: {autoHide: 'leave', autoHideDelay: 0}}}
+                options={{scrollbars: {autoHide: "leave", autoHideDelay: 0}}}
                 defer
             >
                 <DragAndDrop
                     aria-label="file upload zone"
-                    className={tracks.value.length ? 'dnd-component__active' : undefined}
+                    className={tracks.value.length ? "dnd-component__active" : undefined}
                     onChange={fileHandler}
                 >
                     {!tracks.value.length && (

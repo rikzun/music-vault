@@ -1,7 +1,7 @@
-import { MdPlayArrow, MdRepeat, MdShuffle, MdSkipNext, MdSkipPrevious } from 'react-icons/md'
-import './PlayerSection.style.scss'
-import { useState } from '@utils/hooks'
-import { useEffect } from 'react'
+import { MdPlayArrow, MdRepeat, MdShuffle, MdSkipNext, MdSkipPrevious } from "react-icons/md"
+import "./PlayerSection.style.scss"
+import { useState } from "@utils/hooks"
+import { useEffect } from "react"
 
 const sampleAudioUrl = ENV.BACKEND_URL + "/uploads/track_0342c794-ca30-44a4-874f-58e45338fcb8"
 const audioContext = new AudioContext()

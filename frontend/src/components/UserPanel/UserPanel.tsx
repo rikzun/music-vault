@@ -1,6 +1,6 @@
-import './UserPanel.style.scss'
-import { MdSettings } from 'react-icons/md'
-import { Volume } from '@components/Volume'
+import "./UserPanel.style.scss"
+import { MdSettings } from "react-icons/md"
+import { Volume } from "@components/Volume"
 
 export function UserPanel() {
     return (

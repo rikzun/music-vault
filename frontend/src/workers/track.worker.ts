@@ -59,7 +59,7 @@ export namespace TrackWorkerRPC {
             if (
                 image == null ||
                 (imageData == null || imageData.length == 0) ||
-                (imageFormat == null || imageFormat == '')
+                (imageFormat == null || imageFormat == "")
             ) return new TrackData(file, meta)
     
             const resizedImage = await resizeImage(imageData, imageFormat)

@@ -1,8 +1,8 @@
-import { MouseEvent } from 'react'
-import type { IconType } from 'react-icons'
+import { MouseEvent } from "react"
+import type { IconType } from "react-icons"
 
 interface ButtonPropsBase {
-    'aria-label'?: string
+    "aria-label"?: string
     className?: string
     onClick: (e: MouseEvent<HTMLButtonElement>) => void
 }

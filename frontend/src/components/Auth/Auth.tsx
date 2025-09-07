@@ -2,7 +2,7 @@ import "./Auth.style.scss"
 import axios from "axios"
 import { FormEvent } from "react"
 import { useState } from "@utils/hooks"
-import { useTokenAtom } from "src/atoms/settings"
+import { SettingsAtoms } from "src/atoms/settings"
 import slideAudioUrl from "@assets/slide.mp3?url"
 import { SignResponse } from "src/common/types"
 
@@ -14,7 +14,7 @@ interface SignData {
 
 export function Auth() {
     const isSignIn = useState<boolean>(true)
-    const tokenAtom = useTokenAtom()
+    const tokenAtom = SettingsAtoms.useToken()
 
     const onSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -28,9 +28,9 @@ export function Auth() {
     }
 
     const signInHandler = (data: SignData) => {
-        axios.post<SignResponse>('auth/sign-in', data).then((res) => {
+        axios.post<SignResponse>("auth/sign-in", data).then((res) => {
             console.log(res)
-            localStorage.setItem('token', res.data.token)
+            localStorage.setItem("token", res.data.token)
             tokenAtom.set(res.data.token)
             axios.defaults.headers["Authorization"] = res.data.token
         }).catch((reason) => {
@@ -39,9 +39,9 @@ export function Auth() {
     }
 
     const signUpHandler = (data: SignData) => {
-        axios.post<SignResponse>('auth/sign-up', data).then((res) => {
+        axios.post<SignResponse>("auth/sign-up", data).then((res) => {
             console.log(res)
-            localStorage.setItem('token', res.data.token)
+            localStorage.setItem("token", res.data.token)
             tokenAtom.set(res.data.token)
             axios.defaults.headers["Authorization"] = res.data.token
         }).catch((reason) => {
@@ -58,7 +58,7 @@ export function Auth() {
 
     return (
         <div className="signFormBox">
-            <div className="signBox" style={{ translate: !isSignIn.value ? '-60%' : '0' }}>
+            <div className="signBox" style={{ translate: !isSignIn.value ? "-60%" : "0" }}>
                 <form className="signInBox" onSubmit={onSubmit}>
                     <div className="title">Sign In</div>
 

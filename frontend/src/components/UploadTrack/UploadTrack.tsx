@@ -69,5 +69,5 @@ function formatBitrate(value: number | null) {
         number = Math.round(value / 1000 * 10) / 10
     }
 
-    return number + ' kbit/s'
+    return number + " kbit/s"
 }

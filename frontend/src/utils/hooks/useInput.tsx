@@ -11,13 +11,13 @@ export interface InputHook {
 
 export function useInput(props: InputHookProps): InputHook {
     const onClick = () => {
-        const input = document.createElement('input')
-        input.type = 'file'
+        const input = document.createElement("input")
+        input.type = "file"
 
         if (props.extensions?.length) {
             input.accept = props.extensions
-                .map((v) => '.' + v)
-                .join(',')
+                .map((v) => "." + v)
+                .join(",")
         }
 
         if (props.multiple) input.multiple = true

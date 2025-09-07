@@ -1,4 +1,4 @@
-import './PlaylistSection.style.scss'
+import "./PlaylistSection.style.scss"
 
 export function PlaylistSection() {
     return (

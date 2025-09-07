@@ -1,1 +1,1 @@
-export * from './UploadTrack'
+export * from "./UploadTrack"

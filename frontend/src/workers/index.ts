@@ -1,5 +1,5 @@
 import * as Comlink from "comlink"
-import { TrackWorkerRPC } from './track.worker'
+import { TrackWorkerRPC } from "./track.worker"
 
 export namespace Workers {
     export const supported = (() => {
