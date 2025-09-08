@@ -1,13 +1,14 @@
 import { TrackData } from "@components/SidebarUpload/SidebarUpload.types"
 import { type IAudioMetadata, parseBlob } from "music-metadata"
 import * as Comlink from "comlink"
+import { WorkerLib } from "@workers/lib"
 
-export namespace TrackWorkerRPC {
-    const imageSize = 152
+export class TrackWorkerRPC extends WorkerLib.RPC {
+    imageSize = 152
 
-    export async function checkCanvasSupport() {
+    async checkCanvasSupport() {
         try {
-            const canvas = new OffscreenCanvas(imageSize, imageSize)
+            const canvas = new OffscreenCanvas(this.imageSize, this.imageSize)
             if (canvas.getContext("2d") == null) throw Error()
 
             return true
@@ -16,11 +17,11 @@ export namespace TrackWorkerRPC {
         }
     }
 
-    export async function resizeImage(data: Uint8Array, format: string) {
+    async resizeImage(data: Uint8Array, format: string) {
         const blob = new Blob([data as BlobPart], { type: format })
         const imageBitmap = await createImageBitmap(blob)
     
-        const canvas = new OffscreenCanvas(imageSize, imageSize)
+        const canvas = new OffscreenCanvas(this.imageSize, this.imageSize)
         const ctx = canvas.getContext("2d")!
         ctx.imageSmoothingEnabled = true
         ctx.imageSmoothingQuality = "high"
@@ -28,7 +29,7 @@ export namespace TrackWorkerRPC {
         ctx.drawImage(
             imageBitmap,
             0, 0,
-            imageSize, imageSize
+            this.imageSize, this.imageSize
         )
     
         const finalImageBlob = await canvas.convertToBlob()
@@ -40,7 +41,7 @@ export namespace TrackWorkerRPC {
         }
     }
 
-    export async function parseMeta(files: File[]) {
+    async parseMeta(files: File[]) {
         return (await Promise.all(files.map(async(file) => {
             let meta: IAudioMetadata
     
@@ -62,10 +63,10 @@ export namespace TrackWorkerRPC {
                 (imageFormat == null || imageFormat == "")
             ) return new TrackData(file, meta)
     
-            const resizedImage = await resizeImage(imageData, imageFormat)
+            const resizedImage = await this.resizeImage(imageData, imageFormat)
             return new TrackData(file, meta, resizedImage)
         }))).filter(Boolean) as TrackData[]
     }
 }
 
-Comlink.expose(TrackWorkerRPC)
+Comlink.expose(new TrackWorkerRPC(true))

@@ -46,7 +46,7 @@ export function UploadTrack(props: UploadTrackProps) {
             <div className="column-field">
                 <div className="column">
                     <div className="field">
-                        <div className="title">codec</div>
+                        <div className="title">codec{props.data.lossless ? " (lossless)" : " (lossy)"}</div>
                         <div className="value">{props.data.codec}</div>
                     </div>
                 </div>

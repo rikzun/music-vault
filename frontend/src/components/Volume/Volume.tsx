@@ -13,7 +13,7 @@ export function Volume() {
     const volume = VolumeAtoms.useVolume()
     const muted = VolumeAtoms.useMuted()
 
-    const position = useState(volume.value)
+    const position = useState(Math.min(volume.value, 100))
     const rangeRef = useRef<HTMLDivElement|null>(null)
     const inputRef = useRef<HTMLInputElement|null>(null)
     const handleMouseMove = useState(false)
