@@ -1,7 +1,53 @@
 import "./UploadTrack.styles.scss"
 import { UploadTrackProps } from "./UploadTrack.types"
+import { MdInfoOutline } from "react-icons/md"
 
 export function UploadTrack(props: UploadTrackProps) {
+    if (props.data.progress != null) {
+        const artists = props.data.artists.join(", ")
+
+        let progressVar = props.data.progress + "%"
+        let infoColor: string | undefined
+
+        switch (props.data.status) {
+            case "unknown_error": {
+                progressVar = "0%"
+                infoColor = "#EF5350"
+                break
+            }
+        }
+
+        return (
+            <div
+                className="upload-track-component upload-track-component__uploading"
+                style={{"--progress": progressVar}}
+            >
+                <div className="track-info">
+                    <div
+                        className="artists"
+                        title={artists}
+                        children={artists}
+                    />
+
+                    <div
+                        className="title"
+                        title={props.data.title!}
+                        children={props.data.title}
+                    />
+                </div>
+
+                {props.data.status != null &&
+                    <MdInfoOutline
+                        className="info"
+                        color={infoColor}
+                        size={22}
+                        title={props.data.status}
+                    />
+                }
+            </div>
+        )
+    }
+
     return (
         <button className="upload-track-component">
             <div className="column-field">

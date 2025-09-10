@@ -15,6 +15,9 @@ export class TrackData {
     bitrate: number | null
     lossless: boolean
 
+    progress: number | null = null
+    status: TrackStatus | null = null
+
     constructor(file: File, data: IAudioMetadata, image: TrackImage | null = null) {
         const bitrate = data.format.bitrate
 
@@ -38,8 +41,9 @@ export class TrackData {
             lossless: this.lossless
         })
 
-        const encoder = new TextEncoder()
-        return encoder.encode(meta).buffer
+        return new TextEncoder()
+            .encode(meta)
+            .buffer as ArrayBuffer
     }
 
     extractImage() {
@@ -59,7 +63,9 @@ export class TrackData {
                 }
 
                 case "artists": {
-                    values.push(key + ":" + value.join("+"))
+                    value.forEach((artist: string) => {
+                        values.push("artist:" + artist)
+                    })
                     return
                 }
 
@@ -72,3 +78,6 @@ export class TrackData {
         return values.join("|")
     }
 }
+
+type TrackStatus =
+    | "unknown_error"

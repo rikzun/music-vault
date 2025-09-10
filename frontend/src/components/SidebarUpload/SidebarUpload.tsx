@@ -2,13 +2,13 @@ import "./SidebarUpload.style.scss"
 import { Button } from "@components/Button"
 import { useInput, useState } from "@utils/hooks"
 import { MdCloudDownload } from "react-icons/md"
-import { OverlayScrollbarsComponent } from "overlayscrollbars-react"
 import { TrackData } from "@components/SidebarUpload/SidebarUpload.types"
 import { DragAndDrop } from "@components/DragAndDrop"
 import { UploadTrack } from "@components/UploadTrack"
 import { Workers } from "@workers"
 import axios from "axios"
 import { concatArrayBuffers } from "@utils/std"
+import { Scrollbar } from "@components/Scrollbar"
 
 const trackWorker = Workers.Track()
 
@@ -24,6 +24,7 @@ const keyFrames = [
 ]
 
 export function SidebarUpload() {
+    const isUploading = useState<boolean>(false)
     const tracks = useState<TrackData[]>([])
 
     const fileHandler = async (files: File[]) => {
@@ -51,6 +52,8 @@ export function SidebarUpload() {
     }
 
     const onUpload = () => {
+        isUploading.set(true)
+
         tracks.value.forEach((track) => {
             const reader = new FileReader()
 
@@ -65,7 +68,26 @@ export function SidebarUpload() {
                         "Content-Type": "application/octet-stream",
                         "X-Meta-Size": metaBuffer.byteLength,
                         "X-Image-Size": imageBuffer.byteLength
+                    },
+                    onUploadProgress: (e) => {
+                        const progress = Math.round((e.progress ?? 0) * 100)
+
+                        tracks.set((v) => {
+                            const index = v.findIndex((vv) => vv.key() == track.key())
+                            if (index == -1) return v
+
+                            v[index].progress = progress
+                            return [...v]
+                        })
                     }
+                }).catch((res) => {
+                    tracks.set((v) => {
+                        const index = v.findIndex((vv) => vv.key() == track.key())
+                        if (index == -1) return v
+
+                        v[index].status = "unknown_error"
+                        return [...v]
+                    })
                 })
             }
 
@@ -84,11 +106,7 @@ export function SidebarUpload() {
                 Upload
             </div>
 
-            <OverlayScrollbarsComponent
-                className="content"
-                options={{scrollbars: {autoHide: "leave", autoHideDelay: 0}}}
-                defer
-            >
+            <Scrollbar>
                 <DragAndDrop
                     aria-label="file upload zone"
                     className={tracks.value.length ? "dnd-component__active" : undefined}
@@ -110,9 +128,9 @@ export function SidebarUpload() {
                         />
                     ))}
                 </DragAndDrop>
-            </OverlayScrollbarsComponent>
+            </Scrollbar>
 
-            {!!tracks.value.length && (
+            {(tracks.value.length > 0 && !isUploading.value) && (
                 <Button.Small
                     value="Upload"
                     onClick={onUpload}
