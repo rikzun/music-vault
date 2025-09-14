@@ -62,7 +62,7 @@ export function UploadTrack(props: UploadTrackProps) {
     )
 }
 
-function formatBitrate(value: number | null) {
+function formatBitrate(value: numberN) {
     let number = 0
     
     if (value != null) {
