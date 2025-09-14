@@ -14,6 +14,7 @@ type UploadedTracks struct {
 }
 
 type UploadedTrack struct {
+	ID       uint    `json:"id"`
 	AudioURL string  `json:"audioURL"`
 	ImageURL *string `json:"imageURL"`
 }

@@ -117,6 +117,7 @@ func EntryGetUploaded(ctx *custom.Context) {
 	data := make([]UploadedTrack, 0, len(tracks))
 	for _, track := range tracks {
 		data = append(data, UploadedTrack{
+			ID:       track.ID,
 			AudioURL: track.AudioPath,
 			ImageURL: track.ImagePath,
 		})
