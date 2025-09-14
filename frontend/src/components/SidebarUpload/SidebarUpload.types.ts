@@ -15,6 +15,7 @@ export class TrackData {
     bitrate: number | null
     lossless: boolean
 
+    id: number | null = null
     progress: number | null = null
     status: TrackStatus | null = null
 

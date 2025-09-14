@@ -1,0 +1,34 @@
+.upload-track-progress-component {
+    display: flex;
+    justify-content: space-between;
+    padding: unset;
+    background: linear-gradient(90deg, var(--background-a-color) var(--progress), var(--background-b-color) 0%);
+
+    > .track-info {
+        padding-block: 4px;
+        padding-left: 10px;
+        width: 100%;
+        overflow: hidden;
+
+        > .artists {
+            font-size: 14px;
+        }
+
+        > .artists, > .title {
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+    }
+
+    > .info {
+        height: 100%;
+        padding-left: 10px;
+        box-sizing: content-box;
+        flex-shrink: 0;
+    }
+
+    > *:last-child {
+        padding-right: 10px;
+    }
+}

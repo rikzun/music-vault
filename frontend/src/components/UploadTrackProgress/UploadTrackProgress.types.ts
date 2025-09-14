@@ -1,5 +1,5 @@
 import type { TrackData } from "@components/SidebarUpload"
 
-export interface UploadTrackProps {
+export interface UploadTrackProgressProps {
     data: TrackData
 }
