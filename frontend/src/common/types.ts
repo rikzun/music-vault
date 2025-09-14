@@ -7,3 +7,9 @@ export interface ClientResponse {
     login: string
     avatarURL?: string
 }
+
+export interface Track {
+    id: number
+    audioURL: string
+    imageURL: string
+}

@@ -1,4 +1,4 @@
-import "./UploadTrack.styles.scss"
+import "./UploadTrackProgress.styles.scss"
 import { UploadTrackProgressProps } from "./UploadTrackProgress.types"
 import { MdInfoOutline } from "react-icons/md"
 

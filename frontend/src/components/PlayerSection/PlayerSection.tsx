@@ -2,24 +2,42 @@ import { MdPlayArrow, MdRepeat, MdShuffle, MdSkipNext, MdSkipPrevious } from "re
 import "./PlayerSection.style.scss"
 import { useState } from "@utils/hooks"
 import { useEffect } from "react"
+import { PlayerAtoms } from "@atoms/player"
+import { VolumeAtoms } from "@atoms/volume"
 
-const sampleAudioUrl = ENV.BACKEND_URL + "/uploads/track_0342c794-ca30-44a4-874f-58e45338fcb8"
+const uploadsUrlPrefix = (location.hostname === "localhost" ? "https://vault.hex3.space" : location.origin) + "/"
+
 const audioContext = new AudioContext()
-const audioElement = new Audio(sampleAudioUrl)
+const audioElement = new Audio()
 audioElement.crossOrigin = "anonymous"
 
+const gainNode = audioContext.createGain()
+const track = audioContext.createMediaElementSource(audioElement)
+track.connect(gainNode).connect(audioContext.destination)
+
 export function PlayerSection() {
+    const currentTrack = PlayerAtoms.useCurrentTrack()
+    const trackList = PlayerAtoms.useTracklist()
+    const volume = VolumeAtoms.useVolume()
+    const muted = VolumeAtoms.useMuted()
+
     const isPlaying = useState<boolean>(false)
 
     useEffect(() => {
-        const track = audioContext.createMediaElementSource(audioElement)
+        if (!currentTrack.value) return
 
-        const gainNode = audioContext.createGain()
-        track.connect(gainNode).connect(audioContext.destination)
-        gainNode.gain.value = 0.3
+        audioElement.pause()
+        audioElement.src = uploadsUrlPrefix + (trackList.value.get(currentTrack.value)?.audioURL ?? "")
+        audioElement.play()
+    }, [currentTrack.value])
 
+    useEffect(() => {
         audioElement.onended = onEnded
     }, [])
+
+    useEffect(() => {
+        gainNode.gain.value = muted.value ? 0 : volume.value * 0.01
+    }, [volume.value, muted.value])
 
     const onPlay = () => {
         if (audioContext.state === "suspended") {

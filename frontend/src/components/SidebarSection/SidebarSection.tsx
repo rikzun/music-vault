@@ -4,6 +4,7 @@ import { Button } from "@components/Button"
 import { useState } from "@utils/hooks"
 import { SidebarUpload } from "@components/SidebarUpload"
 import { MdQueueMusic, MdPeopleAlt, MdForum, MdSearch, MdDownload } from "react-icons/md"
+import { SidebarPlaylist } from "@components/SidebarPlaylist"
 
 type MenuItems =
     | "Playlists"
@@ -23,28 +24,28 @@ export function SidebarSection() {
                         <Button.Menu
                             aria-label="QueueMusic"
                             icon={MdQueueMusic}
-                            isPressed={menu.value == "Playlists"}
+                            isPressed={menu.value === "Playlists"}
                             onClick={() => menu.set("Playlists")}
                         />
 
                         <Button.Menu
                             aria-label="PeopleAlt"
                             icon={MdPeopleAlt}
-                            isPressed={menu.value == "Friends"}
+                            isPressed={menu.value === "Friends"}
                             onClick={() => menu.set("Friends")}
                         />
 
                         <Button.Menu
                             aria-label="Forum"
                             icon={MdForum}
-                            isPressed={menu.value == "RoomChat"}
+                            isPressed={menu.value === "RoomChat"}
                             onClick={() => menu.set("RoomChat")}
                         />
 
                         <Button.Menu
                             aria-label="Search"
                             icon={MdSearch}
-                            isPressed={menu.value == "Search"}
+                            isPressed={menu.value === "Search"}
                             onClick={() => menu.set("Search")}
                         />
                     </div>
@@ -53,13 +54,14 @@ export function SidebarSection() {
                         <Button.Menu
                             aria-label="Download"
                             icon={MdDownload}
-                            isPressed={menu.value == "Upload"}
+                            isPressed={menu.value === "Upload"}
                             onClick={() => menu.set("Upload")}
                         />
                     </div>
                 </div>
 
-                {menu.value == "Upload" && <SidebarUpload />}
+                {menu.value === "Upload" && <SidebarUpload />}
+                {menu.value === "Playlists" && <SidebarPlaylist />}
             </div>
 
             <UserPanel />
