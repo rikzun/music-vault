@@ -49,12 +49,9 @@ function Build-Frontend {
 }
 
 function Build-Environment {
-    try {
-        Copy-Item -Path .env, docker-compose.yml, nginx.conf -Destination ./build/ -Force -ErrorAction SilentlyContinue
-        Remove-Item -Recurse -Force ./build/database, ./build/uploads -ErrorAction SilentlyContinue
-    } finally {
-        Set-Location $pwd
-    }
+    New-Item -Path ./build/ -ItemType Directory
+    Copy-Item -Path .env, docker-compose.yml, nginx.conf -Destination ./build/ -Force -ErrorAction SilentlyContinue
+    Remove-Item -Recurse -Force ./build/database, ./build/uploads -ErrorAction SilentlyContinue
 }
 
 function Start-Confirmation {
@@ -146,5 +143,5 @@ if ($frontend) {
 
 if ($environment) {
     Build-Environment
-    Send-Files -Destination "~/vault/build" -Files "./build/.env","./build/docker-compose.yml","./build/nginx.conf"
+    Send-Files -Destination "~/vault/build" -Files "./build/.env", "./build/docker-compose.yml", "./build/nginx.conf"
 }
