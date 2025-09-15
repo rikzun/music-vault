@@ -26,7 +26,12 @@ export function PlaylistSection() {
     return (
         <div className="playlist-section">
             {Array.from(trackList.value.values()).map((track) => (
-                <button key={track.id} onClick={() => currentTrack.set(track.id)}>{track.audioURL}</button>
+                <button
+                    key={track.id}
+                    onClick={() => currentTrack.set(track.id)}
+                >
+                    {track.audioURL}
+                </button>
             ))}
         </div>
     )

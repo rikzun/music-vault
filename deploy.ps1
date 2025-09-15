@@ -49,7 +49,7 @@ function Build-Frontend {
 }
 
 function Build-Environment {
-    New-Item -Path ./build/ -ItemType Directory
+    New-Item -Path ./build/ -ItemType Directory -ErrorAction SilentlyContinue
     Copy-Item -Path .env, docker-compose.yml, nginx.conf -Destination ./build/ -Force -ErrorAction SilentlyContinue
     Remove-Item -Recurse -Force ./build/database, ./build/uploads -ErrorAction SilentlyContinue
 }
