@@ -5,44 +5,52 @@ import { MdInfoOutline } from "react-icons/md"
 export function UploadTrackProgress(props: UploadTrackProgressProps) {
     const artists = props.data.artists.join(", ")
 
-    let progressVar = props.data.progress + "%"
+    let progress = props.data.progress
     let infoColor: string | undefined
     
     switch (props.data.status) {
         case "unknown_error": {
-            progressVar = "0%"
+            progress = 0
             infoColor = "#EF5350"
             break
         }
     }
 
+    if (progress === 100) {
+        progress = 0
+    }
+
     return (
-        <div
-            className="upload-track-progress-component"
-            style={{"--progress": progressVar}}
-        >
-            <div className="track-info">
-                <div
-                    className="artists"
-                    title={artists}
-                    children={artists}
-                />
+        <div className="upload-track-progress-component">
+            <div className="container">
+                <div className="track-info">
+                    <div
+                        className="artists"
+                        title={artists}
+                        children={artists}
+                    />
 
-                <div
-                    className="title"
-                    title={props.data.title!}
-                    children={props.data.title}
-                />
+                    <div
+                        className="title"
+                        title={props.data.title!}
+                        children={props.data.title}
+                    />
+                </div>
+
+                {props.data.status != null &&
+                    <MdInfoOutline
+                        className="info"
+                        color={infoColor}
+                        size={22}
+                        title={props.data.status}
+                    />
+                }
             </div>
-
-            {props.data.status != null &&
-                <MdInfoOutline
-                    className="info"
-                    color={infoColor}
-                    size={22}
-                    title={props.data.status}
-                />
-            }
+            
+            <div
+                className="progress"
+                style={{width: progress + "%"}}
+            />
         </div>
     )
 }

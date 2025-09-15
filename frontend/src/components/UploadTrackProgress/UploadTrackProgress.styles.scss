@@ -1,34 +1,57 @@
-.upload-track-progress-component {
-    display: flex;
-    justify-content: space-between;
-    padding: unset;
-    background: linear-gradient(90deg, var(--background-a-color) var(--progress), var(--background-b-color) 0%);
+.upload-track-progress-component {  
+    position: relative;
+    background-color: var(--background-b-color);
+    border-radius: 11px;
+    overflow: hidden;
 
-    > .track-info {
-        padding-block: 4px;
-        padding-left: 10px;
+    &:not(:last-child) {
+        margin-bottom: 10px;
+    }
+
+    > .container {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row;
         width: 100%;
-        overflow: hidden;
-
-        > .artists {
-            font-size: 14px;
-        }
-
-        > .artists, > .title {
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
-        }
-    }
-
-    > .info {
         height: 100%;
-        padding-left: 10px;
-        box-sizing: content-box;
-        flex-shrink: 0;
+        z-index: 1;
+
+        > .track-info {
+            padding-block: 4px;
+            padding-left: 10px;
+            width: 100%;
+            overflow: hidden;
+    
+            > .artists {
+                font-size: 14px;
+            }
+    
+            > .artists, > .title {
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+        }
+    
+        > .info {
+            height: 100%;
+            padding-left: 10px;
+            box-sizing: content-box;
+            flex-shrink: 0;
+        }
+
+        > *:last-child {
+            padding-right: 10px;
+        }
     }
 
-    > *:last-child {
-        padding-right: 10px;
+    > .progress {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        background-color: var(--background-a-color);
+        transition: width 0.2s ease;
     }
 }
