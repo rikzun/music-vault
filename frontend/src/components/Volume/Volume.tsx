@@ -32,7 +32,7 @@ export function Volume() {
         localStorage.setItem("volume.value", value.toString())
     }
 
-    const moveVolume = (posX: number) => {
+    const moveVolume = (posX: number, shiftKey?: boolean) => {
         const rect = rangeRef.current!
             .getBoundingClientRect()
 
@@ -42,10 +42,19 @@ export function Volume() {
             rect.width - KNOB_SIZE_HALF
         )
 
-        const percent = (
+        let percent = (
             (pos - KNOB_SIZE_HALF) /
             (rect.width - KNOB_SIZE)
         ) * 100
+
+        if (shiftKey) {
+            percent = Math.round(percent)
+            const remainder = percent % 5
+
+            if (remainder != 0) {
+                percent += 5 - remainder
+            }
+        }
 
         setVolume(percent)
         position.set(percent)
@@ -99,7 +108,7 @@ export function Volume() {
     useEffect(() => {
         if (!handleMouseMove.value) return
 
-        const moveListener = (e: PointerEvent) => moveVolume(e.clientX)
+        const moveListener = (e: PointerEvent) => moveVolume(e.clientX, e.shiftKey)
         const upListener = () => handleMouseMove.set(false)
 
         addEventListener("pointermove", moveListener)
@@ -168,7 +177,7 @@ export function Volume() {
                 tabIndex={0}
                 ref={rangeRef}
                 className="range"
-                onPointerDown={(e) => moveVolume(e.clientX)}
+                onPointerDown={(e) => moveVolume(e.clientX, e.shiftKey)}
                 onKeyDown={(e) => shiftVolume(calculateShift(e))}
                 onWheel={(e) => shiftVolume(calculateShift(e))}
             >
