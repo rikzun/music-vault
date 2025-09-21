@@ -22,21 +22,21 @@ export function SidebarSection() {
                 <div className="buttons">
                     <div className="top">
                         <Button.Menu
-                            aria-label="QueueMusic"
+                            aria-label="Playlists"
                             icon={MdQueueMusic}
                             isPressed={menu.value === "Playlists"}
                             onClick={() => menu.set("Playlists")}
                         />
 
                         <Button.Menu
-                            aria-label="PeopleAlt"
+                            aria-label="Friends"
                             icon={MdPeopleAlt}
                             isPressed={menu.value === "Friends"}
                             onClick={() => menu.set("Friends")}
                         />
 
                         <Button.Menu
-                            aria-label="Forum"
+                            aria-label="RoomChat"
                             icon={MdForum}
                             isPressed={menu.value === "RoomChat"}
                             onClick={() => menu.set("RoomChat")}
@@ -52,7 +52,7 @@ export function SidebarSection() {
 
                     <div className="bottom">
                         <Button.Menu
-                            aria-label="Download"
+                            aria-label="Upload"
                             icon={MdDownload}
                             isPressed={menu.value === "Upload"}
                             onClick={() => menu.set("Upload")}

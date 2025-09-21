@@ -14,8 +14,8 @@ export function Volume() {
     const muted = VolumeAtoms.useMuted()
 
     const position = useState(Math.min(volume.value, 100))
-    const rangeRef = useRef<HTMLDivElement|null>(null)
-    const inputRef = useRef<HTMLInputElement|null>(null)
+    const rangeRef = useRef<HTMLDivElementN>(null)
+    const inputRef = useRef<HTMLInputElementN>(null)
     const handleMouseMove = useState(false)
 
     const muteVolume = () => {
@@ -33,8 +33,7 @@ export function Volume() {
     }
 
     const moveVolume = (posX: number, shiftKey?: boolean) => {
-        const rect = rangeRef.current!
-            .getBoundingClientRect()
+        const rect = rangeRef.current!.getBoundingClientRect()
 
         const pos = clamp(
             posX - rect.left,
@@ -42,10 +41,7 @@ export function Volume() {
             rect.width - KNOB_SIZE_HALF
         )
 
-        let percent = (
-            (pos - KNOB_SIZE_HALF) /
-            (rect.width - KNOB_SIZE)
-        ) * 100
+        let percent = ((pos - KNOB_SIZE_HALF) / (rect.width - KNOB_SIZE)) * 100
 
         if (shiftKey) {
             percent = Math.round(percent)
@@ -83,12 +79,12 @@ export function Volume() {
                     case "ArrowRight": {
                         return 1 * mod
                     }
-        
+
                     case "ArrowDown":
                     case "ArrowLeft": {
                         return -1 * mod
                     }
-                   }
+                }
             }
 
             if (e.target instanceof HTMLInputElement) {
@@ -96,7 +92,7 @@ export function Volume() {
                     case "ArrowUp": {
                         return 1 * mod
                     }
-        
+
                     case "ArrowDown": {
                         return -1 * mod
                     }
@@ -133,8 +129,8 @@ export function Volume() {
 
         const target = e.currentTarget
         const value = target.value
-        
-        if (value.length == 3 && (target.selectionStart == target.selectionEnd)) {
+
+        if (value.length == 3 && target.selectionStart == target.selectionEnd) {
             e.preventDefault()
             return
         }
@@ -170,7 +166,7 @@ export function Volume() {
     return (
         <div className="volume">
             <button className="volume-icon" onClick={muteVolume}>
-                {muted.value ? <MdVolumeOff /> : <MdVolumeUp /> }
+                {muted.value ? <MdVolumeOff /> : <MdVolumeUp />}
             </button>
 
             <div
@@ -186,8 +182,8 @@ export function Volume() {
                         className="knob"
                         style={{
                             left: `calc(${position.value}%)`,
-                            transform: `translateX(-${KNOB_SIZE * position.value / 100}px)`,
-                            "--knob-size": KNOB_SIZE + "px"
+                            transform: `translateX(-${(KNOB_SIZE * position.value) / 100}px)`,
+                            "--knob-size": KNOB_SIZE + "px",
                         }}
                     />
                 </div>

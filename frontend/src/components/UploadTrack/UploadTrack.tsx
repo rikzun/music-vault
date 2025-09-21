@@ -1,5 +1,7 @@
+import { MdHideImage } from "react-icons/md"
 import "./UploadTrack.styles.scss"
 import { UploadTrackProps } from "./UploadTrack.types"
+
 
 export function UploadTrack(props: UploadTrackProps) {
     return (
@@ -14,9 +16,20 @@ export function UploadTrack(props: UploadTrackProps) {
 
                 <div className="column">
                     <div className="field field-image">
-                        <img src={props.data.image?.objectURL} />
+                        {props.data.image &&
+                            <img
+                                className="image"
+                                src={props.data.image?.objectURL}
+                            />
+                        }
+
+                        {!props.data.image &&
+                            <div className="image image-empty">
+                                <MdHideImage size={38} />
+                            </div>
+                        }
                     </div>
-                </div>
+                </div>  
             </div>
 
             <div className="field">
