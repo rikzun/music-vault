@@ -1,21 +1,20 @@
 button {
-    background-color: var(--background-color);
     border: unset;
     color: inherit;
-    font-size: var(--default-font-size);
+    background-color: unset;
+    font-size: inherit;
     cursor: pointer;
 }
 
 input {
     border-radius: unset;
     border: unset;
-    font-size: var(--default-font-size);
-    font-family: 'Nunito';
+    font-size: inherit;
+    font-family: inherit;
+    outline: unset;
     
     &::placeholder {
         color: inherit;
-        font-family: 'Nunito';
+        font-family: inherit;
     }
-
-    outline: unset;
 }
