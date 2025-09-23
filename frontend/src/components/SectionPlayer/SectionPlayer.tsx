@@ -1,5 +1,5 @@
 import { MdPlayArrow, MdRepeat, MdShuffle, MdSkipNext, MdSkipPrevious } from "react-icons/md"
-import "./PlayerSection.style.scss"
+import "./SectionPlayer.style.scss"
 import { useState } from "@utils/hooks"
 import { useEffect } from "react"
 import { PlayerAtoms } from "@atoms/player"
@@ -15,7 +15,7 @@ const gainNode = audioContext.createGain()
 const track = audioContext.createMediaElementSource(audioElement)
 track.connect(gainNode).connect(audioContext.destination)
 
-export function PlayerSection() {
+export function SectionPlayer() {
     const currentTrack = PlayerAtoms.useCurrentTrack()
     const trackList = PlayerAtoms.useTracklist()
     const volume = VolumeAtoms.useVolume()
@@ -58,7 +58,7 @@ export function PlayerSection() {
     }
 
     return (
-        <div className="player-section">
+        <div className="section-player">
             <MdShuffle size={36} />
             <MdSkipPrevious size={50} />
             <MdPlayArrow onClick={onPlay} size={50} />

@@ -13,11 +13,11 @@ type MenuItems =
     | "Search"
     | "Upload"
 
-export function SidebarSection() {
+export function SectionSidebar() {
     const menu = useState<MenuItems>("Playlists")
 
     return (
-        <div className="sidebar-section">
+        <div className="section-sidebar">
             <div className="container">
                 <div className="buttons">
                     <div className="top">
@@ -60,8 +60,8 @@ export function SidebarSection() {
                     </div>
                 </div>
 
-                {menu.value === "Upload" && <SidebarUpload />}
                 {menu.value === "Playlists" && <SidebarPlaylist />}
+                {menu.value === "Upload" && <SidebarUpload />}
             </div>
 
             <UserPanel />

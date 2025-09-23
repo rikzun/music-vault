@@ -3,10 +3,10 @@ import "./PlaylistSection.style.scss"
 import axios from "axios"
 import { PlaylistAtoms } from "@atoms/playlist"
 import { Track } from "src/common/types"
-import { UploadedTracksResponse } from "./PlaylistSection.types"
+import { UploadedTracksResponse } from "./SectionPlaylist.types"
 import { PlayerAtoms } from "@atoms/player"
 
-export function PlaylistSection() {
+export function SectionPlaylist() {
     const playlist = PlaylistAtoms.usePlaylistID()
     const currentTrack = PlayerAtoms.useCurrentTrack()
     const trackList = PlayerAtoms.useTracklist()
@@ -24,7 +24,7 @@ export function PlaylistSection() {
     }, [])
 
     return (
-        <div className="playlist-section">
+        <div className="section-playlist">
             {Array.from(trackList.value.values()).map((track) => (
                 <button
                     key={track.id}

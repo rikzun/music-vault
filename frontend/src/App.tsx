@@ -2,9 +2,9 @@ import "./App.style.scss"
 import "overlayscrollbars/overlayscrollbars.css"
 import axios, { AxiosError } from "axios"
 import { Auth } from "@components/Auth"
-import { SidebarSection } from "@components/SidebarSection"
-import { PlayerSection } from "@components/PlayerSection"
-import { PlaylistSection } from "@components/PlaylistSection"
+import { SectionSidebar } from "@components/SectionSidebar"
+import { SectionPlayer } from "@components/SectionPlayer"
+import { SectionPlaylist } from "@components/SectionPlaylist"
 import { SettingsAtoms } from "src/atoms/settings"
 import { IconContext } from "react-icons"
 import { useEffect } from "react"
@@ -41,9 +41,9 @@ export function App() {
 
     return (
         <IconContext.Provider value={{ size: "24" }}>
-            <SidebarSection />
-            <PlayerSection />
-            <PlaylistSection />
+            <SectionSidebar />
+            <SectionPlayer />
+            <SectionPlaylist />
         </IconContext.Provider>
     )
 }
