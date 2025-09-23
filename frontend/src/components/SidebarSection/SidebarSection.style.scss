@@ -6,6 +6,11 @@
     display: flex;
     flex-direction: column;
 
+    @media (max-width: 1072px) {
+        flex: 0 0 100%;
+        scroll-snap-align: start;
+    }
+
     > .container {
         display: flex;
         height: 100%;

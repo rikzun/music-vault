@@ -11,4 +11,12 @@
     border-bottom-right-radius: 11px;
     
     background-color: var(--background-third-color);
+
+    @media (max-width: 1072px) {
+        flex: 0 0 100%;
+        scroll-snap-align: start;
+        height: 100%;
+        margin: unset;
+        border-radius: unset;
+    }
 }

@@ -16,6 +16,19 @@ body {
         justify-content: center;
         height: inherit;
         width: inherit;
+
+        @media (max-width: 1072px) {
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            justify-content: unset;
+
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+
+            &::-webkit-scrollbar {
+                display: none;
+            }
+        }
     }
 }
 
