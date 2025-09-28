@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import "./PlaylistSection.style.scss"
+import "./SectionPlaylist.style.scss"
 import axios from "axios"
 import { PlaylistAtoms } from "@atoms/playlist"
 import { Track } from "src/common/types"

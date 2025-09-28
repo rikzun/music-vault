@@ -1,4 +1,4 @@
-import "./SidebarSection.style.scss"
+import "./SectionSidebar.style.scss"
 import { UserPanel } from "@components/UserPanel"
 import { Button } from "@components/Button"
 import { useState } from "@utils/hooks"

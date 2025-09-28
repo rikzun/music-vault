@@ -1,15 +1,15 @@
-import { MdPlayArrow, MdRepeat, MdShuffle, MdSkipNext, MdSkipPrevious } from "react-icons/md"
+import { MdPause, MdPlayArrow, MdRepeat, MdShuffle, MdSkipNext, MdSkipPrevious } from "react-icons/md"
 import "./SectionPlayer.style.scss"
 import { useState } from "@utils/hooks"
 import { useEffect } from "react"
 import { PlayerAtoms } from "@atoms/player"
 import { VolumeAtoms } from "@atoms/volume"
+import axios from "axios"
 
 const uploadsUrlPrefix = (location.hostname === "localhost" ? "https://vault.hex3.space" : location.origin) + "/"
 
 const audioContext = new AudioContext()
 const audioElement = new Audio()
-audioElement.crossOrigin = "anonymous"
 
 const gainNode = audioContext.createGain()
 const track = audioContext.createMediaElementSource(audioElement)
@@ -22,17 +22,26 @@ export function SectionPlayer() {
     const muted = VolumeAtoms.useMuted()
 
     const isPlaying = useState<boolean>(false)
+    const audioBuffer = useState<AudioBufferN>(null)
 
     useEffect(() => {
         if (!currentTrack.value) return
 
-        audioElement.pause()
-        audioElement.src = uploadsUrlPrefix + (trackList.value.get(currentTrack.value)?.audioURL ?? "")
-        audioElement.play()
+        const url = uploadsUrlPrefix + (trackList.value.get(currentTrack.value)?.audioURL ?? "")
+
+        axios.get<ArrayBuffer>(url, { responseType: 'arraybuffer' })
+            .then((res) => {
+                audioElement.src = URL.createObjectURL(new Blob([res.data]))
+                return audioContext.decodeAudioData(res.data)
+            })
+            .then((ab) => audioBuffer.set(ab))
+            .catch((e) => console.log(e))
     }, [currentTrack.value])
 
     useEffect(() => {
         audioElement.onended = onEnded
+        audioElement.onpause = onPause
+        audioElement.oncanplay = onCanPlay
     }, [])
 
     useEffect(() => {
@@ -44,6 +53,8 @@ export function SectionPlayer() {
             audioContext.resume()
         }
 
+        if (!audioElement.src) return
+
         if (isPlaying.value) {
             audioElement.pause()
         } else {
@@ -54,14 +65,25 @@ export function SectionPlayer() {
     }
 
     const onEnded = () => {
-        isPlaying.invert()
+        isPlaying.set(false)
     }
+
+    const onPause = () => {
+        isPlaying.set(false)
+    }
+
+    const onCanPlay = () => {
+        audioElement.play()
+        isPlaying.set(true)
+    }
+
+    const PlayStateButton = isPlaying.value ?  MdPause : MdPlayArrow
 
     return (
         <div className="section-player">
             <MdShuffle size={36} />
             <MdSkipPrevious size={50} />
-            <MdPlayArrow onClick={onPlay} size={50} />
+            <PlayStateButton size={50} onClick={onPlay} />
             <MdSkipNext size={50} />
             <MdRepeat size={36} />
         </div>

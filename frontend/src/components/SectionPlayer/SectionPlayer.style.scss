@@ -15,6 +15,10 @@
     justify-content: center;
     align-items: center;
 
+    > svg {
+        cursor: pointer;
+    }
+
     @media (max-width: 1072px) {
         flex: 0 0 100%;
         scroll-snap-align: start;

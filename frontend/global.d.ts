@@ -130,6 +130,8 @@ declare global {
     type SVGViewElementN = N<SVGViewElement>
 
     type BlobN = N<Blob>
+    type ArrayBufferN = N<ArrayBuffer>
+    type AudioBufferN = N<AudioBuffer>
 }
 
 export {}
