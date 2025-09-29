@@ -1,7 +1,8 @@
 import "./UserPanel.style.scss"
-import { MdSettings } from "react-icons/md"
+import { MdHideImage, MdSettings } from "react-icons/md"
 import { Volume } from "@components/Volume"
 import { ClientAtoms } from "@atoms/client"
+import { Button } from "@components/Button"
 
 export function UserPanel() {
     const client = ClientAtoms.useClient()
@@ -12,7 +13,10 @@ export function UserPanel() {
 
             <div className="main">
                 <div className="info">
-                    <img />
+                    {client.value?.avatarURL
+                        ? <img className="avatar" src={client.value.avatarURL} />
+                        : <div className="avatar avatar__empty" children={<MdHideImage />} />
+                    }
 
                     <div className="login">
                         {client.value?.login}
@@ -20,7 +24,10 @@ export function UserPanel() {
                 </div>
 
                 <div className="settings-button">
-                    <MdSettings />
+                    <Button.Icon
+                        onClick={console.log}
+                        icon={MdSettings}
+                    />
                 </div>
             </div>
         </div>

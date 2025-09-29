@@ -1,8 +1,8 @@
 import "./Button.style.scss"
-import { ButtonPropsMenu, ButtonPropsSmall, ButtonPropsText } from "./Button.types"
+import { ButtonIconProps, ButtonMenuProps, ButtonSmallProps, ButtonTextProps } from "./Button.types"
 
 export namespace Button {
-    export function Menu(props: ButtonPropsMenu) {
+    export function Menu(props: ButtonMenuProps) {
         let className = "button-component button-menu"
         if (props.className) className += " " + props.className
         if (props.isPressed) className += " button-component__active"
@@ -21,7 +21,7 @@ export namespace Button {
         )
     }
 
-    export function Small(props: ButtonPropsSmall) {
+    export function Small(props: ButtonSmallProps) {
         let className = "button-component button-small"
         if (props.fullWidth) className += " button-small__full-width"
         if (props.className) className += " " + props.className
@@ -36,7 +36,7 @@ export namespace Button {
         )
     }
 
-    export function Text(props: ButtonPropsText) {
+    export function Text(props: ButtonTextProps) {
         let className = "button-component button-text"
         if (props.className) className += " " + props.className
 
@@ -46,6 +46,20 @@ export namespace Button {
                 className={className}
                 onClick={props.onClick}
                 children={props.value}
+            />
+        )
+    }
+
+    export function Icon(props: ButtonIconProps) {
+        let className = "button-component button-icon"
+        if (props.className) className += " " + props.className
+
+        return (
+            <button
+                aria-label={props["aria-label"]}
+                className={className}
+                onClick={props.onClick}
+                children={<props.icon />}
             />
         )
     }

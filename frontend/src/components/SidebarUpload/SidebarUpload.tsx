@@ -101,7 +101,7 @@ export function SidebarUpload() {
                 Upload
             </div>
 
-            <Scrollbar className="content">
+            <Scrollbar>
                 <DragAndDrop
                     aria-label="file upload zone"
                     className={tracks.value.length ? "dnd-component__active" : undefined}

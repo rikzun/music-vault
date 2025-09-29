@@ -1,0 +1,15 @@
+.input-component {
+    &__expanded {
+        resize: none;
+        outline: unset;
+        overflow: hidden;
+
+        background-color: var(--background-color);
+        color: white;
+        
+        padding-block: 1px;
+        padding-inline: 4px;
+        border: 1px solid var(--background-main-color);
+        border-radius: 7px;
+    }
+}

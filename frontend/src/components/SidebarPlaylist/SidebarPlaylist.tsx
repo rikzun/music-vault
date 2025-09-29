@@ -1,4 +1,5 @@
-import { PlaylistAtoms } from "@atoms/playlist";
+import "./SidebarPlaylist.style.scss"
+import { PlaylistAtoms } from "@atoms/playlist"
 import { Playlist } from "@components/Playlist"
 import { Scrollbar } from "@components/Scrollbar"
 
@@ -11,8 +12,10 @@ export function SidebarPlaylist() {
                 Playlists
             </div>
 
-            <Scrollbar className="content">
-                <Playlist onClick={() => playlist.set(0)} />
+            <Scrollbar>
+                <div className="content">
+                    <Playlist onClick={() => playlist.set(0)} />
+                </div>
             </Scrollbar>
         </div>
     )

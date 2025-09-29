@@ -1,14 +1,10 @@
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react"
 import { PropsWithChildren } from "react"
 
-interface ScrollbarProps extends PropsWithChildren {
-    className?: string
-}
-
-export function Scrollbar(props: ScrollbarProps) {
+export function Scrollbar(props: PropsWithChildren) {
     return (
         <OverlayScrollbarsComponent
-            className={props.className}
+            className="scrollbar"
             options={{
                 scrollbars: {
                     autoHide: "leave",

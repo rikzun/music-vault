@@ -55,4 +55,9 @@
         font-size: var(--default-font-size);
         background-color: unset;
     }
+
+    &.button-icon {
+        background-color: unset;
+        padding: unset;
+    }
 }

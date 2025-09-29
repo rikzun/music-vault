@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react"
 import { MdVolumeOff, MdVolumeUp } from "react-icons/md"
 import { clamp } from "@utils/std"
 import { ReactEvent } from "@utils/react"
+import { Button } from "@components/Button"
 
 const KNOB_SIZE = 12
 const KNOB_SIZE_HALF = KNOB_SIZE / 2
@@ -163,9 +164,11 @@ export function Volume() {
 
     return (
         <div className="volume">
-            <button className="volume-icon" onClick={muteVolume}>
-                {muted.value ? <MdVolumeOff /> : <MdVolumeUp />}
-            </button>
+            <Button.Icon
+                aria-label="volume mute"
+                onClick={muteVolume}
+                icon={muted.value ? MdVolumeOff : MdVolumeUp}
+            />
 
             <div
                 tabIndex={0}
