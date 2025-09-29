@@ -38,13 +38,15 @@
             }
 
             > .content {
-                display: flex;
-                flex-direction: column;
                 height: 100%;
                 padding-left: 1rem;
                 padding-right: 1rem;
                 padding-bottom: 1rem;
-                overflow: auto;
+
+                > div[data-overlayscrollbars-contents] {
+                    display: flex;
+                    flex-direction: column;
+                }
             }
         }
     }

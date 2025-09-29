@@ -3,7 +3,7 @@ import "./SectionPlaylist.style.scss"
 import axios from "axios"
 import { PlaylistAtoms } from "@atoms/playlist"
 import { Track } from "src/common/types"
-import { UploadedTracksResponse } from "./SectionPlaylist.types"
+import { UploadedPlaylistResponse } from "./SectionPlaylist.types"
 import { PlayerAtoms } from "@atoms/player"
 
 export function SectionPlaylist() {
@@ -12,7 +12,7 @@ export function SectionPlaylist() {
     const trackList = PlayerAtoms.useTracklist()
 
     useEffect(() => {
-        axios.get<UploadedTracksResponse>("/track/get-uploaded").then((res) => {
+        axios.get<UploadedPlaylistResponse>("/playlist/uploaded").then((res) => {
             const trackMap = new Map<number, Track>()
 
             res.data.data.forEach((track) => {
@@ -25,14 +25,15 @@ export function SectionPlaylist() {
 
     return (
         <div className="section-playlist">
-            {Array.from(trackList.value.values()).map((track) => (
-                <button
-                    key={track.id}
-                    onClick={() => currentTrack.set(track.id)}
-                >
-                    {track.audioURL}
-                </button>
-            ))}
+            <div className="container">
+                {Array.from(trackList.value.values()).map((track) => (
+                    <button
+                        key={track.id}
+                        onClick={() => currentTrack.set(track.id)}
+                        children={track.artists.map((artist) => artist.name).join(", ") + " - " + track.title}
+                    />
+                ))}
+            </div>
         </div>
     )
 }

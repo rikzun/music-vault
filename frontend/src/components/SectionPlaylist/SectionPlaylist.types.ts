@@ -1,5 +1,5 @@
 import { Track } from "src/common/types";
 
-export interface UploadedTracksResponse {
+export interface UploadedPlaylistResponse {
     data: Track[]
 }

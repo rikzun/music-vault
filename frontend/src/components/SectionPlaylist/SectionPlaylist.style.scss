@@ -19,4 +19,10 @@
         margin: unset;
         border-radius: unset;
     }
+
+    > .container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }

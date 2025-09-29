@@ -131,6 +131,16 @@ declare global {
 
     type BlobN = N<Blob>
     type ArrayBufferN = N<ArrayBuffer>
+    type Int8ArrayN = N<Int8Array>
+    type Uint8ArrayN = N<Uint8Array>
+    type Uint8ClampedArrayN = N<Uint8ClampedArray>
+    type Int16ArrayN = N<Int16Array>
+    type Uint16ArrayN = N<Uint16Array>
+    type Int32ArrayN = N<Int32Array>
+    type Uint32ArrayN = N<Uint32Array>
+    type Float32ArrayN = N<Float32Array>
+    type Float64ArrayN = N<Float64Array>
+
     type AudioBufferN = N<AudioBuffer>
 }
 

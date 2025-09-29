@@ -1,0 +1,27 @@
+.playlist-component {
+    display: flex;
+    align-items: center;
+    border-radius: 7px;
+    background-color: var(--background-b-color);
+    padding: unset;
+    overflow: hidden;
+
+    > .cover {
+        height: 36px;
+        width: 36px;
+        background-color: var(--background-main-color);
+        margin-right: 8px;
+        flex-shrink: 0;
+
+        &__icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+
+    > .title {
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+}

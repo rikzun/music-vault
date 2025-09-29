@@ -22,19 +22,24 @@ export function App() {
         axios.interceptors.response.use((res) => res, (err: AxiosError) => {
             if (err.response?.status !== 401) return Promise.reject(err)
             console.log("any method returned 401")
+
             localStorage.removeItem("token")
+            localStorage.removeItem("client.id")
+            localStorage.removeItem("client.login")
             token.set(null)
             client.set(null)
+            
             return Promise.reject(err)
         })
 
-        axios.get<ClientResponse>("client/me").then((res) => {
-            const { id, login, avatarURL } = res.data
-
-            client.set({ id, login, avatarURL })
-        }).catch((reason) => {
-            console.log(reason)
-        })
+        axios.get<ClientResponse>("client/me")
+            .then((res) => {
+                localStorage.setItem("client.id", res.data.id.toString())
+                localStorage.setItem("client.login", res.data.login)
+                client.set(res.data)
+            }).catch((reason) => {
+                console.log(reason)
+            })
     }, [])
 
     if (token.value == null) return <Auth />

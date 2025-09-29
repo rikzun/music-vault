@@ -109,22 +109,3 @@ func EntryUploadTrack(ctx *custom.Context) {
 		ID: trackID,
 	})
 }
-
-func EntryGetUploaded(ctx *custom.Context) {
-	clientID := ctx.ClientID()
-	tracks := services.Track.FindByClient(*clientID)
-
-	data := make([]UploadedTrack, 0, len(tracks))
-	for _, track := range tracks {
-		data = append(data, UploadedTrack{
-			ID:       track.ID,
-			AudioURL: track.AudioPath,
-			ImageURL: track.ImagePath,
-		})
-	}
-
-	ctx.JSON(
-		http.StatusOK,
-		UploadedTracks{data},
-	)
-}

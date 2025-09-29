@@ -3,12 +3,14 @@ import {
     useAtom as useJotaiAtom
 } from "jotai"
 
+export type AtomInvertCB = (newValue: boolean) => void
+
 export type AtomHook<Value, Args extends unknown[], Result> = {
     value: Value
     set: SetAtom<Args, Result>
 } & (
     Value extends boolean ? {
-        invert: () => void
+        invert: (cb?: AtomInvertCB) => void
     } : {}
 )
 
@@ -22,7 +24,12 @@ export function useAtom<Value, Args extends unknown[], Result>(
     return {
         value,
         set,
-        //@ts-ignore
-        invert: () => set((v) => !v)
+        invert: (cb?: AtomInvertCB) => {
+            //@ts-ignore
+            set((v) => {
+                cb?.(!v)
+                return !v
+            })
+        }
     }
 }

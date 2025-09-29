@@ -8,13 +8,3 @@ type TrackMetaBody struct {
 	Bitrate  uint     `json:"bitrate"`
 	Lossless bool     `json:"lossless"`
 }
-
-type UploadedTracks struct {
-	Data []UploadedTrack `json:"data"`
-}
-
-type UploadedTrack struct {
-	ID       uint    `json:"id"`
-	AudioURL string  `json:"audioURL"`
-	ImageURL *string `json:"imageURL"`
-}

@@ -19,10 +19,8 @@ export function Volume() {
     const handleMouseMove = useState(false)
 
     const muteVolume = () => {
-        muted.set((v) => {
-            const value = !v
-            localStorage.setItem("volume.muted", value.toString())
-            return value
+        muted.invert((newValue) => {
+            localStorage.setItem("volume.muted", newValue.toString())
         })
     }
 

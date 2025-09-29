@@ -3,6 +3,7 @@ package main
 import (
 	"backend/api/auth"
 	"backend/api/client"
+	"backend/api/playlist"
 	"backend/api/track"
 	"backend/core/custom"
 	"backend/core/middleware"
@@ -12,12 +13,14 @@ import (
 
 func InitRouting(engine *gin.Engine) {
 	public := engine.Group("/api")
+	protected := engine.Group("/api", middleware.Authorization)
+
 	public.POST("auth/sign-up", custom.Handler(auth.EntrySignUp))
 	public.POST("auth/sign-in", custom.Handler(auth.EntrySignIn))
 
-	protected := engine.Group("/api", middleware.Authorization)
 	protected.GET("client/me", custom.Handler(client.EntryMe))
 
 	protected.POST("track/upload", custom.Handler(track.EntryUploadTrack))
-	protected.GET("track/get-uploaded", custom.Handler(track.EntryGetUploaded))
+
+	protected.GET("playlist/uploaded", custom.Handler(playlist.EntryGetUploaded))
 }

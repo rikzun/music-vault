@@ -73,6 +73,7 @@ func (track) FindByClient(clientID uint) []*domain.TrackEntity {
 	var records []*domain.TrackEntity
 
 	result := global.Database().
+		Preload("Artists").
 		Where("uploader_id = ?", clientID).
 		Find(&records)
 

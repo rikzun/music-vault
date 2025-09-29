@@ -1,4 +1,6 @@
 import { PlaylistAtoms } from "@atoms/playlist";
+import { Playlist } from "@components/Playlist"
+import { Scrollbar } from "@components/Scrollbar"
 
 export function SidebarPlaylist() {
     const playlist = PlaylistAtoms.usePlaylistID()
@@ -9,7 +11,9 @@ export function SidebarPlaylist() {
                 Playlists
             </div>
 
-            <button onClick={() => playlist.set(0)}>Загруженные треки</button>
+            <Scrollbar className="content">
+                <Playlist onClick={() => playlist.set(0)} />
+            </Scrollbar>
         </div>
     )
 }

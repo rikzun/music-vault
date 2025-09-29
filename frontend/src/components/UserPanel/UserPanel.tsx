@@ -1,8 +1,11 @@
 import "./UserPanel.style.scss"
 import { MdSettings } from "react-icons/md"
 import { Volume } from "@components/Volume"
+import { ClientAtoms } from "@atoms/client"
 
 export function UserPanel() {
+    const client = ClientAtoms.useClient()
+
     return (
         <div className="user-panel">
             <Volume />
@@ -12,7 +15,7 @@ export function UserPanel() {
                     <img />
 
                     <div className="login">
-                        user_login
+                        {client.value?.login}
                     </div>
                 </div>
 
