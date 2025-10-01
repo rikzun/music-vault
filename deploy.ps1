@@ -128,7 +128,7 @@ if ($backend) {
         Build-Backend
     }
 
-    Send-Files -Destination "~/vault/build" -Files "./build/vault"
+    Send-Files -Destination "~/vault/build/" -Files "./build/vault"
 }
 
 if ($frontend) {
@@ -138,10 +138,10 @@ if ($frontend) {
         Build-Frontend
     }
 
-    Send-Files -Destination "~/vault/build/frontend" -Files "./build/frontend/*"
+    Send-Files -Destination "~/vault/build/frontend/" -Files "./build/frontend/*"
 }
 
 if ($environment) {
     Build-Environment
-    Send-Files -Destination "~/vault/build" -Files "./build/.env", "./build/docker-compose.yml", "./build/nginx.conf"
+    Send-Files -Destination "~/vault/build/" -Files "./build/.env", "./build/docker-compose.yml", "./build/nginx.conf"
 }
