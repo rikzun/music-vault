@@ -2,36 +2,39 @@ name: music-vault
 
 services:
   frontend:
-    image: nginx:1.28.0-alpine3.21
+    image: nginx:1.29.1-alpine3.22
+    security_opt:
+      - no-new-privileges:true
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - ./frontend:/usr/share/nginx/html:ro
-      - ./uploads:/uploads:ro
-      - ./certbot/conf:/etc/letsencrypt:ro
-      - ./certbot/www:/var/www/certbot:ro
-    ports:
-      - 80:80
-      - 443:443
-    environment:
-      - NGINX_PORT=80
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
-
-  certbot:
-    image: certbot/certbot
-    restart: unless-stopped
-    volumes:
-      - ./certbot/conf:/etc/letsencrypt:rw
-      - ./certbot/www:/var/www/certbot:rw
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+      - ./uploads:/usr/share/nginx/uploads:ro
+    networks:
+      - proxy
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.frontend.rule=Host(`vault.hex3.space`) && !PathPrefix(`/api`)
+      - traefik.http.routers.frontend.entrypoints=websecure
+      - traefik.http.routers.frontend.tls.certresolver=letsencrypt
   
   backend:
     image: alpine:3.22
+    security_opt:
+      - no-new-privileges:true
     volumes:
       - ./vault:/vault
-      - ./uploads:/uploads
+      - ./uploads:/uploads:rw
+    networks:
+      - proxy
+    expose:
+      - 8080
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.backend.rule=Host(`vault.hex3.space`) && PathPrefix(`/api`)
+      - traefik.http.routers.backend.entrypoints=websecure
+      - traefik.http.routers.backend.tls.certresolver=letsencrypt
+      - traefik.http.services.backend.loadbalancer.server.port=8080
     entrypoint: sh -c "chmod +x /vault && /vault"
-    ports:
-      - ${BACKEND_PORT}:8080
     env_file: .env
     depends_on:
       database:
@@ -39,9 +42,13 @@ services:
   
   database:
     image: postgres:17.5-alpine3.22
-    restart: always
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
     volumes:
       - ./database:/var/lib/postgresql/data
+    networks:
+      - proxy
     environment:
       POSTGRES_DB: ${POSTGRES_NAME}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -49,8 +56,41 @@ services:
       PGDATABASE: ${POSTGRES_NAME}
       PGUSER: ${POSTGRES_USER}
       PGPASSWORD: ${POSTGRES_PASS}
+      POSTGRES_INITDB_ARGS: --encoding=UTF8
     healthcheck:
       test: [CMD-SHELL, pg_isready]
       interval: 1s
       timeout: 5s
       retries: 10
+
+  traefik:
+    image: traefik:3.5.3
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - proxy
+    command:
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --entryPoints.websecure.http.tls=true
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --entrypoints.web.http.redirections.entrypoint.permanent=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.network=proxy
+      - --certificatesresolvers.letsencrypt.acme.email=rik.zunqq@gmail.com
+      - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
+      - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
+      - --log.level=INFO
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./letsencrypt:/letsencrypt
+
+networks:
+  proxy:
+    name: proxy
