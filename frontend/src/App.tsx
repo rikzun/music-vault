@@ -32,14 +32,13 @@ export function App() {
             return Promise.reject(err)
         })
 
-        axios.get<ClientResponse>("client/me")
-            .then((res) => {
+        if (axios.defaults.headers["Authorization"] != null) {
+            axios.get<ClientResponse>("client/me").then((res) => {
                 localStorage.setItem("client.id", res.data.id.toString())
                 localStorage.setItem("client.login", res.data.login)
                 client.set(res.data)
-            }).catch((reason) => {
-                console.log(reason)
             })
+        }
     }, [])
 
     if (token.value == null) return <Auth />
