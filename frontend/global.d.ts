@@ -1,3 +1,5 @@
+import { Track } from "src/common/types"
+
 declare global {
     type N<T> = T | null
 
@@ -142,6 +144,8 @@ declare global {
     type Float64ArrayN = N<Float64Array>
 
     type AudioBufferN = N<AudioBuffer>
+
+    type TrackN = N<Track>
 }
 
 export {}

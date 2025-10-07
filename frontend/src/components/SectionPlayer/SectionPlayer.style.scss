@@ -14,9 +14,40 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
 
-    > svg {
-        cursor: pointer;
+    > .track-data {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+
+        > .cover {
+            height: 384px;
+            width: 384px;
+
+            &.cover__empty {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                & > svg {
+                    height: 140px;
+                    width: 140px;
+                }
+            }
+        }
+    }
+
+    > .control-btns {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 8px;
+
+        > svg {
+            cursor: pointer;
+        }
     }
 
     @media (max-width: 1072px) {
