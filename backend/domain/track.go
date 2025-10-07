@@ -12,6 +12,8 @@ type TrackEntity struct {
 	Bitrate  uint    `gorm:"column:bitrate;            type:int"`
 	Lossless bool    `gorm:"column:lossless; not null; type:bool"`
 
+	Duration float64 `gorm:"column:duration; not null; type:decimal(10,3)"`
+
 	Artists  []*ArtistEntity `gorm:"many2many:track_artists"`
 	Uploader *ClientEntity   `gorm:"foreignKey:UploaderID; references:ID"`
 }

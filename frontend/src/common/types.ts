@@ -21,6 +21,8 @@ export interface Track {
     bitrate: number
     lossless: boolean
 
+    duration: number
+
     artists: TrackArsits[]
 }
 

@@ -22,6 +22,7 @@ func (track) Create(
 	codec string,
 	bitrate uint,
 	lossless bool,
+	duration float64,
 ) uint {
 	var artistEntities []*domain.ArtistEntity
 
@@ -48,6 +49,7 @@ func (track) Create(
 		Codec:      codec,
 		Bitrate:    bitrate,
 		Lossless:   lossless,
+		Duration:   duration,
 		Artists:    artistEntities,
 	}
 

@@ -17,6 +17,8 @@ type TrackData struct {
 	Bitrate  uint    `json:"bitrate"`
 	Lossless bool    `json:"lossless"`
 
+	Duration float64 `json:"duration"`
+
 	Artists []TrackArtist `json:"artists"`
 }
 

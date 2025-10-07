@@ -18,6 +18,14 @@ import (
 	"github.com/google/uuid"
 )
 
+type Format struct {
+	Duration string `json:"duration"`
+}
+
+type ProbeOutput struct {
+	Format Format `json:"format"`
+}
+
 func EntryUploadTrack(ctx *custom.Context) {
 	contentType := ctx.GetHeader("Content-Type")
 	if !strings.HasPrefix(contentType, "application/octet-stream") {
@@ -85,9 +93,7 @@ func EntryUploadTrack(ctx *custom.Context) {
 
 		defer imageFile.Close()
 
-		n, err := io.Copy(imageFile, imageReader)
-		fmt.Printf("imagefile: %d", n)
-
+		_, err = io.Copy(imageFile, imageReader)
 		if err != nil {
 			ctx.ApiError(errors.Common.FileWritingFailed())
 			return
@@ -103,11 +109,33 @@ func EntryUploadTrack(ctx *custom.Context) {
 
 	defer trackFile.Close()
 
-	n, err := io.Copy(trackFile, ctx.Request.Body)
-	fmt.Printf("trackfile: %d", n)
+	_, err = io.Copy(trackFile, ctx.Request.Body)
 	if err != nil {
 		ctx.ApiError(errors.Common.FileWritingFailed())
 		return
+	}
+
+	cmd := exec.Command("ffprobe",
+		"-v", "quiet",
+		"-print_format", "json",
+		"-show_format",
+		"./"+audioPath,
+	)
+
+	output, err := cmd.Output()
+	if err != nil {
+		fmt.Errorf("err: %v", err)
+	}
+
+	var probeOutput ProbeOutput
+	if err := json.Unmarshal(output, &probeOutput); err != nil {
+		fmt.Errorf("parse err: %v", err)
+	}
+
+	duration, err := strconv.ParseFloat(probeOutput.Format.Duration, 64)
+	if err != nil {
+		duration = 0
+		fmt.Errorf("conv err: %v", err)
 	}
 
 	clientID := ctx.ClientID()
@@ -122,6 +150,7 @@ func EntryUploadTrack(ctx *custom.Context) {
 		meta.Codec,
 		meta.Bitrate,
 		meta.Lossless,
+		duration,
 	)
 
 	ctx.JSON(http.StatusOK, global.ID{

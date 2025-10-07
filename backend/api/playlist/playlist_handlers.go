@@ -32,6 +32,7 @@ func EntryGetUploaded(ctx *custom.Context) {
 			Codec:      track.Codec,
 			Bitrate:    track.Bitrate,
 			Lossless:   track.Lossless,
+			Duration:   track.Duration,
 			Artists:    artists,
 		})
 	}

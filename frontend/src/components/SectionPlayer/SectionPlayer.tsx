@@ -1,7 +1,7 @@
 import { MdHideImage, MdPause, MdPlayArrow, MdRepeat, MdShuffle, MdSkipNext, MdSkipPrevious } from "react-icons/md"
 import "./SectionPlayer.style.scss"
 import { useState } from "@utils/hooks"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { PlayerAtoms } from "@atoms/player"
 import { VolumeAtoms } from "@atoms/volume"
 import { TrackWaveform } from "@components/TrackWaveform"
@@ -9,6 +9,9 @@ import { Track } from "src/common/types"
 
 const audioContext = new AudioContext()
 const audioElement = new Audio()
+audioElement.currentTime
+
+;(window as any).kekw = audioElement
 
 const gainNode = audioContext.createGain()
 const track = audioContext.createMediaElementSource(audioElement)
@@ -34,6 +37,8 @@ export function SectionPlayer() {
     
     const currentTrackData = useState<TrackN>(null)
     const isPlaying = useState<boolean>(false)
+    const currentTime = useState<numberN>(null)
+    const currentTimeTimer = useRef<NodeJS.Timeout>(null)
 
     useEffect(() => {
         if (!currentTrack.value) return
@@ -59,6 +64,22 @@ export function SectionPlayer() {
         gainNode.gain.value = muted.value ? 0 : volume.value * 0.01
     }, [volume.value, muted.value])
 
+    const startTimer = () => {
+        clearInterval(currentTimeTimer.current ?? undefined)
+
+        const id = setInterval(() => {
+            currentTime.set(audioElement.currentTime)
+        }, 100)
+
+        currentTimeTimer.current = id
+    }
+
+    const stopTimer = () => {
+
+        clearInterval(currentTimeTimer.current ?? undefined)
+        currentTimeTimer.current = null
+    }
+
     const onPlayClick = () => {
         if (audioContext.state === "suspended") {
             audioContext.resume()
@@ -67,8 +88,10 @@ export function SectionPlayer() {
         if (!audioElement.src) return
 
         if (isPlaying.value) {
+            stopTimer()
             audioElement.pause()
         } else {
+            startTimer()
             audioElement.play()
         }
 
@@ -80,7 +103,9 @@ export function SectionPlayer() {
     }
 
     const onPause = () => {
+        stopTimer()
         isPlaying.set(false)
+        currentTime.set(audioElement.currentTime)
     }
 
     const onPlay = () => {
@@ -103,9 +128,15 @@ export function SectionPlayer() {
 
                 <div>{currentTrackData.value?.title ?? "No track"}</div>
                 <div>{currentTrackData.value?.artists.map((artist) => artist.name).join(", ")}</div>
+                <div>{currentTime.value}</div>
             </div>
 
-            <TrackWaveform data={data} />
+            <TrackWaveform
+                samples={data}
+                currentTime={currentTime.value}
+                duration={currentTrackData.value?.duration || null}
+                onTimeChange={(time) => audioElement.currentTime = time}
+            />
 
             <div className="control-btns">
                 <MdShuffle size={36} />
