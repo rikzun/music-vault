@@ -32,6 +32,14 @@ export function SectionPlayer() {
         if (!audioURL) return
 
         currentTrackData.set(trackData)
+
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: trackData.title,
+            artist: trackData.artists.map((v) => v.name).join(", "),
+            album: trackData.album || undefined,
+            artwork: [ { src: ENV.APP_URL + trackData.imageURL } ]
+        })
+
         audioElement.src = ENV.APP_URL + audioURL
     }, [currentTrack.value])
 
