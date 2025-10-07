@@ -1,6 +1,10 @@
 .section-content__upload {
     .content {
-        padding-bottom: unset;
+        height: 100%;
+
+        .dnd-component__active {
+            outline: 1px;
+        }
 
         .dnd-component {
             &__active {

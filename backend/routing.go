@@ -21,6 +21,7 @@ func InitRouting(engine *gin.Engine) {
 	protected.GET("client/me", custom.Handler(client.EntryMe))
 
 	protected.POST("track/upload", custom.Handler(track.EntryUploadTrack))
+	protected.GET("track/:id/waveform", custom.Handler(track.EntryTrackWaveform))
 
 	protected.GET("playlist/uploaded", custom.Handler(playlist.EntryGetUploaded))
 }

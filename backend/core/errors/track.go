@@ -1,37 +1,38 @@
 package errors
 
-import (
-	"backend/core/custom"
-	"net/http"
-)
+import "net/http"
 
-func TrackMetaReadFailed() custom.ApiError {
+type trackErrors struct{}
+
+var Track = trackErrors{}
+
+func (trackErrors) MetaReadFailed() ApiError {
 	code := "track.metadata_read_failed"
 	details := map[string]string{}
 
-	return custom.MakeApiError(
+	return MakeApiError(
 		http.StatusBadRequest,
 		code,
 		details,
 	)
 }
 
-func TrackMetaParseFailed() custom.ApiError {
+func (trackErrors) MetaParseFailed() ApiError {
 	code := "track.metadata_parse_failed"
 	details := map[string]string{}
 
-	return custom.MakeApiError(
+	return MakeApiError(
 		http.StatusBadRequest,
 		code,
 		details,
 	)
 }
 
-func TrackImageReadFailed() custom.ApiError {
+func (trackErrors) ImageReadFailed() ApiError {
 	code := "track.image_read_failed"
 	details := map[string]string{}
 
-	return custom.MakeApiError(
+	return MakeApiError(
 		http.StatusBadRequest,
 		code,
 		details,

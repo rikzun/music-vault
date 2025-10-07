@@ -22,9 +22,10 @@ services:
     security_opt:
       - no-new-privileges:true
     user: root
+    working_dir: /app/
     volumes:
-      - ./vault:/vault
-      - ./uploads:/uploads:rw
+      - ./vault:/app/vault
+      - ./uploads:/app/uploads:rw
     networks:
       - proxy
     expose:
@@ -35,7 +36,7 @@ services:
       - traefik.http.routers.backend.entrypoints=websecure
       - traefik.http.routers.backend.tls.certresolver=letsencrypt
       - traefik.http.services.backend.loadbalancer.server.port=8080
-    entrypoint: sh -c "chmod +x /vault && /vault"
+    entrypoint: sh -c "chmod +x /app/vault && /app/vault"
     env_file: .env
     depends_on:
       database:

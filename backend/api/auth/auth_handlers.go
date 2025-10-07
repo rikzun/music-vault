@@ -9,7 +9,7 @@ import (
 
 func EntrySignUp(ctx *custom.Context) {
 	var body ClientSignUpBody
-	if !ctx.BindJSON(&body) {
+	if !ctx.RequireBindJSON(&body) {
 		return
 	}
 
@@ -35,7 +35,7 @@ func EntrySignUp(ctx *custom.Context) {
 
 func EntrySignIn(ctx *custom.Context) {
 	var body ClientSignInBody
-	if !ctx.BindJSON(&body) {
+	if !ctx.RequireBindJSON(&body) {
 		return
 	}
 

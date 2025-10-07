@@ -11,7 +11,7 @@ import { useEffect } from "react"
 import { ClientResponse } from "./common/types"
 import { ClientAtoms } from "@atoms/client"
 
-axios.defaults.baseURL = ENV.BACKEND_URL.endsWith("/") ? ENV.BACKEND_URL : ENV.BACKEND_URL + "/"
+axios.defaults.baseURL = ENV.APP_URL + "api"
 
 export function App() {
     const token = SettingsAtoms.useToken()

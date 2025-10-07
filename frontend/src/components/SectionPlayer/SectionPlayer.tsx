@@ -6,8 +6,6 @@ import { PlayerAtoms } from "@atoms/player"
 import { VolumeAtoms } from "@atoms/volume"
 import axios from "axios"
 
-const uploadsUrlPrefix = (location.hostname === "localhost" ? "https://vault.hex3.space" : location.origin) + "/"
-
 const audioContext = new AudioContext()
 const audioElement = new Audio()
 
@@ -27,9 +25,10 @@ export function SectionPlayer() {
     useEffect(() => {
         if (!currentTrack.value) return
 
-        const url = uploadsUrlPrefix + (trackList.value.get(currentTrack.value)?.audioURL ?? "")
+        const audioURL = trackList.value.get(currentTrack.value)?.audioURL
+        if (!audioURL) return
 
-        axios.get<ArrayBuffer>(url, { responseType: 'arraybuffer' })
+        axios.get<ArrayBuffer>(ENV.APP_URL + audioURL, { responseType: 'arraybuffer' })
             .then((res) => {
                 audioElement.src = URL.createObjectURL(new Blob([res.data]))
                 return audioContext.decodeAudioData(res.data)

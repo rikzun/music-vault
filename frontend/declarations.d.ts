@@ -1,3 +1,3 @@
 declare const ENV: {
-    readonly BACKEND_URL: string
+    readonly APP_URL: string
 }

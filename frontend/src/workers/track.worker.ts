@@ -1,10 +1,10 @@
-import { TrackData } from "@components/SidebarUpload/SidebarUpload.types"
+import { TrackData, TrackImage } from "@components/SidebarUpload/SidebarUpload.types"
 import { type IAudioMetadata, parseBlob } from "music-metadata"
 import * as Comlink from "comlink"
 import { WorkerLib } from "@workers/lib"
 
 export class TrackWorkerRPC extends WorkerLib.RPC {
-    imageSize = 152
+    imageSize = 1024
 
     async checkCanvasSupport() {
         try {
@@ -17,9 +17,16 @@ export class TrackWorkerRPC extends WorkerLib.RPC {
         }
     }
 
-    async resizeImage(data: Uint8Array, format: string) {
+    async resizeImage(data: Uint8Array, format: string): Promise<TrackImage> {
         const blob = new Blob([data as BlobPart], { type: format })
         const imageBitmap = await createImageBitmap(blob)
+
+        if (imageBitmap.height <= this.imageSize && imageBitmap.width <= this.imageSize) {
+            return {
+                data: await blob.arrayBuffer(),
+                objectURL: URL.createObjectURL(blob)
+            }
+        }
     
         const canvas = new OffscreenCanvas(this.imageSize, this.imageSize)
         const ctx = canvas.getContext("2d")!

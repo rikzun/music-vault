@@ -1,6 +1,7 @@
 package custom
 
 import (
+	"backend/core/errors"
 	"encoding/json"
 	"fmt"
 
@@ -27,7 +28,7 @@ func transform(bindError error) any {
 		}
 	}
 
-	return ErrorContent{
+	return errors.ErrorContent{
 		Code:    code,
 		Details: details,
 	}

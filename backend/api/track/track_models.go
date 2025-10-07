@@ -8,3 +8,7 @@ type TrackMetaBody struct {
 	Bitrate  uint     `json:"bitrate"`
 	Lossless bool     `json:"lossless"`
 }
+
+type TrackWaveform struct {
+	Data []int8 `json:"data"`
+}

@@ -15,6 +15,9 @@ const IS_DEVELOPMENT = process.env.NODE_ENV !== "production"
 const IS_SERVE = process.env.WEBPACK_SERVE == "true"
 const ENV = dotenv({ path: "../.env", quiet: true }).parsed!
 
+let APP_URL = ENV["APP_URL"]
+if (!APP_URL.endsWith("/")) APP_URL += "/"
+
 const PATH_NODE_MODULES_FOLDER = path.join(__dirname, "node_modules")
 const PATH_OUTPUT_FOLDER = path.join(__dirname, "build")
 const PATH_PUBLIC_FOLDER = path.join(__dirname, "public")
@@ -146,7 +149,7 @@ const config: Configuration = {
             }).filter((location) => location.from != PATH_PUBLIC_ENTRY)
         }),
         new DefinePlugin({
-            "ENV.BACKEND_URL": "'" + ENV["BACKEND_URL"] + "'"
+            "ENV.APP_URL": "'" + APP_URL + "'"
         }),
         (IS_DEVELOPMENT && IS_SERVE) && new ReactRefreshRspackPlugin()
     ],

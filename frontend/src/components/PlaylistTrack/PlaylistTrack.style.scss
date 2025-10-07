@@ -1,0 +1,49 @@
+.track-component {
+    padding: unset;
+
+    display: flex;
+    flex-direction: row;
+    position: relative;
+
+    border-radius: 7px;
+    overflow: hidden;
+
+    background-color: var(--background-color);
+
+    > .cover {
+        height: 48px;
+        width: 48px;
+    }
+
+    > .info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        margin-inline: 8px;
+
+        > .artists {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+
+            > .artist {
+                font-size: 14px;
+            }
+
+            > .separator {
+                font-size: 10px;
+                margin-inline: 4px;
+            }
+        }
+    }
+
+    > .background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        transform: translateY(-50%);
+        opacity: .2;
+    }
+}

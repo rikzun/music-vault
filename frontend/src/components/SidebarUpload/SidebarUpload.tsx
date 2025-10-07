@@ -102,33 +102,35 @@ export function SidebarUpload() {
             </div>
 
             <Scrollbar>
-                <DragAndDrop
-                    aria-label="file upload zone"
-                    className={tracks.value.length ? "dnd-component__active" : undefined}
-                    onChange={fileHandler}
-                >
-                    {!tracks.value.length && (
-                        <div className="info-section">
-                            <MdCloudDownload id={iconID} />
-                            
-                            <span>Drag & Drop</span>
-                            <span>or <Button.Text value="browse" onClick={input.click} /></span>
-                        </div>
-                    )}
+                <div className="content">
+                    <DragAndDrop
+                        aria-label="file upload zone"
+                        className={tracks.value.length ? "dnd-component__active" : undefined}
+                        onChange={fileHandler}
+                    >
+                        {!tracks.value.length && (
+                            <div className="info-section">
+                                <MdCloudDownload id={iconID} />
+                                
+                                <span>Drag & Drop</span>
+                                <span>or <Button.Text value="browse" onClick={input.click} /></span>
+                            </div>
+                        )}
 
-                    {tracks.value.map((track) => {
-                        const Component = track.progress == null
-                            ? UploadTrack
-                            : UploadTrackProgress
+                        {tracks.value.map((track) => {
+                            const Component = track.progress == null
+                                ? UploadTrack
+                                : UploadTrackProgress
 
-                        return (
-                            <Component
-                                key={track.key()}
-                                data={track}
-                            />
-                        )
-                    })}
-                </DragAndDrop>
+                            return (
+                                <Component
+                                    key={track.key()}
+                                    data={track}
+                                />
+                            )
+                        })}
+                    </DragAndDrop>
+                </div>
             </Scrollbar>
 
             {(tracks.value.length > 0 && !isUploading.value) && (
