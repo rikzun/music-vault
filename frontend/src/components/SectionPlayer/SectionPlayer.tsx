@@ -4,8 +4,8 @@ import { useState } from "@utils/hooks"
 import { useEffect } from "react"
 import { PlayerAtoms } from "@atoms/player"
 import { VolumeAtoms } from "@atoms/volume"
-import { Track } from "src/common/types"
 import { TrackWaveform } from "@components/TrackWaveform"
+import { Track } from "src/common/types"
 
 const audioContext = new AudioContext()
 const audioElement = new Audio()
@@ -14,6 +14,17 @@ const gainNode = audioContext.createGain()
 const track = audioContext.createMediaElementSource(audioElement)
 track.connect(gainNode).connect(audioContext.destination)
 audioElement.crossOrigin = "anonymous"
+
+const setTrackMetadata = "mediaSession" in navigator
+    ? (track: Track) => {
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: track.title,
+            artist: track.artists.map((v) => v.name).join(", "),
+            album: track.album || undefined,
+            artwork: [ { src: ENV.APP_URL + track.imageURL } ]
+        })
+    }
+    : () => {}
 
 export function SectionPlayer() {
     const currentTrack = PlayerAtoms.useCurrentTrack()
@@ -32,13 +43,7 @@ export function SectionPlayer() {
         if (!audioURL) return
 
         currentTrackData.set(trackData)
-
-        navigator.mediaSession.metadata = new MediaMetadata({
-            title: trackData.title,
-            artist: trackData.artists.map((v) => v.name).join(", "),
-            album: trackData.album || undefined,
-            artwork: [ { src: ENV.APP_URL + trackData.imageURL } ]
-        })
+        setTrackMetadata(trackData)
 
         audioElement.src = ENV.APP_URL + audioURL
     }, [currentTrack.value])
