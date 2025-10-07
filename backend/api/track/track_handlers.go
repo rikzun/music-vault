@@ -143,9 +143,9 @@ func EntryTrackWaveform(ctx *custom.Context) {
 
 	cmd := exec.Command("ffmpeg", []string{
 		"-v", "quiet",
-		"-i", "/" + track.AudioPath,
+		"-i", "./" + track.AudioPath,
 		"-ac", "1",
-		"-af", "aresample=500",
+		"-af", "aresample=1000",
 		"-f", "s16le",
 		"-",
 	}...)
@@ -174,7 +174,7 @@ func EntryTrackWaveform(ctx *custom.Context) {
 		return
 	}
 
-	targetSize := 500
+	targetSize := 100
 	data := make([]int8, targetSize)
 
 	maxAbs := int16(0)
