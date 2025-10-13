@@ -5,9 +5,12 @@ import (
 	"backend/core/errors"
 	"backend/domain/services"
 	"backend/global"
+	"bytes"
+	"encoding/binary"
 	"encoding/json"
 	"fmt"
 	"io"
+	"math"
 	"net/http"
 	"os"
 	"os/exec"
@@ -170,30 +173,38 @@ func EntryTrackWaveform(ctx *custom.Context) {
 		return
 	}
 
-	cmd := exec.Command("ffmpeg", []string{
+	// Prepare the ffmpeg command.
+	cmd := exec.Command("ffmpeg",
 		"-v", "quiet",
-		"-i", "./" + track.AudioPath,
+		"-i", "./"+track.AudioPath,
 		"-ac", "1",
 		"-af", "aresample=1000",
 		"-f", "s16le",
 		"-",
-	}...)
+	)
 
-	cmd.Stderr = os.Stderr
-
+	// Capture the output.
+	var stderr bytes.Buffer
+	cmd.Stderr = &stderr
 	output, err := cmd.Output()
 	if err != nil {
-		fmt.Printf("err: %v\n", err)
+		fmt.Printf("Failed to process audio file: %s", stderr.String())
 		return
 	}
 
-	if len(output)%2 != 0 {
-		fmt.Printf("err: %d\n", len(output))
+	// Read the raw 16-bit little-endian samples.
+	numBytes := len(output)
+	if numBytes%2 != 0 {
+		fmt.Printf("Raw audio data has an uneven number of bytes")
+		return
 	}
 
-	samples := make([]int16, len(output)/2)
-	for i := range samples {
-		samples[i] = int16(output[i*2]) | int16(output[i*2+1])<<8
+	numSamples := numBytes / 2
+	samples := make([]int16, numSamples)
+	buf := bytes.NewReader(output)
+	if err := binary.Read(buf, binary.LittleEndian, &samples); err != nil {
+		fmt.Printf("Failed to parse raw audio data")
+		return
 	}
 
 	if len(samples) == 0 {
@@ -206,12 +217,11 @@ func EntryTrackWaveform(ctx *custom.Context) {
 	targetSize := 100
 	data := make([]int8, targetSize)
 
-	maxAbs := int16(0)
+	// Calculate the global maximum absolute sample value for normalization.
+	// This will be used as the peak for the entire track.
+	var maxAbs float64
 	for _, s := range samples {
-		absVal := s
-		if absVal < 0 {
-			absVal = -absVal
-		}
+		absVal := math.Abs(float64(s))
 		if absVal > maxAbs {
 			maxAbs = absVal
 		}
@@ -219,21 +229,36 @@ func EntryTrackWaveform(ctx *custom.Context) {
 
 	if maxAbs == 0 {
 		ctx.JSON(http.StatusOK, TrackWaveform{
-			Data: make([]int8, 0),
+			Data: make([]int8, targetSize), // Return all zeros if no sound
 		})
 		return
 	}
 
-	step := max(len(samples)/targetSize, 1)
+	samplesPerPoint := numSamples / targetSize
+	if samplesPerPoint == 0 {
+		samplesPerPoint = 1
+	}
 
-	for i := range targetSize {
-		idx := i * step
-		if idx >= len(samples) {
-			break
+	// Process each block to find both positive and negative peaks.
+	for i := 0; i < targetSize; i++ {
+		startIdx := i * samplesPerPoint
+		endIdx := startIdx + samplesPerPoint
+		if endIdx > numSamples {
+			endIdx = numSamples
 		}
 
-		normalized := float64(samples[idx]) / float64(maxAbs) * 100
+		// Find the peak value in the current block, preserving its sign.
+		var blockPeak int16
+		for j := startIdx; j < endIdx; j++ {
+			if math.Abs(float64(samples[j])) > math.Abs(float64(blockPeak)) {
+				blockPeak = samples[j]
+			}
+		}
 
+		// Normalize the block's peak value to the range [-100, 100].
+		normalized := (float64(blockPeak) / maxAbs) * 100
+
+		// Clamp the result to the desired range, just in case of float inaccuracies.
 		if normalized > 100 {
 			normalized = 100
 		} else if normalized < -100 {
