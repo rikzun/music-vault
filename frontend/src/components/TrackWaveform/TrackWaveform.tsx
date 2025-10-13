@@ -10,7 +10,8 @@ interface TrackWaveformProps {
 export function TrackWaveform(props: TrackWaveformProps) {
     const canvasRef = useRef<HTMLCanvasElementN>(null)
     const width = 500
-    const height = 200
+    const height = 150
+    const actualMaxHeight = height * .5
   
     useEffect(() => {
         const canvas = canvasRef.current!
@@ -25,24 +26,17 @@ export function TrackWaveform(props: TrackWaveformProps) {
         const trackPercent = (props.currentTime ?? 0) / props.duration
 
         const centerY = height / 2
-        const barWidth = 2
+        const barWidthWithSpace = Math.round(width / props.samples.length)
+        const barWidth = barWidthWithSpace - 2
 
         // ctx.beginPath()
         // ctx.fillStyle = "white"
 
-        let lastIndex = 0
-
-        for (let i = 0; i < props.samples.length; i += barWidth) {
-            const values: Array<number> = []
-
-            for (let ii = lastIndex; ii < i; ii += 1) {
-                values.push(props.samples[ii])
-            }
-
-            const x = i + (i * .5)
+        props.samples.forEach((value, index) => {
+            const x = (index * barWidthWithSpace)
             const y = centerY
-            const mid = (values.reduce((prev, curr) => prev + curr, 0) / values.length) * 4
-            const height = -(Math.abs(mid) / 2)
+
+            const barHeight = (Math.abs(value) * (actualMaxHeight / 100))
 
             const xPercent = x / width
             if (xPercent <= trackPercent) {
@@ -52,17 +46,17 @@ export function TrackWaveform(props: TrackWaveformProps) {
             }
 
             ctx.beginPath()
-            ctx.rect(x, y, barWidth, height)
-            // ctx.rect(x, y, barWidth, -height)
+            ctx.rect(x, y, barWidth, -barHeight)
+            ctx.rect(x, y + 4, barWidth, (barHeight / 4))
             ctx.fill()
             ctx.closePath()
+        })
 
-            lastIndex = i
-        }
-        
-        // ctx.closePath()
-        // ctx.fill()
-
+        ctx.beginPath()
+        ctx.fillStyle = "white"
+        ctx.rect(0, centerY + 1, width, 2)
+        ctx.fill()
+        ctx.closePath()
     }, [props.samples, props.currentTime, props.duration])
   
     return (
