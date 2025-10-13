@@ -30,3 +30,8 @@ export interface TrackArsits {
     id: number
     name: string
 }
+
+export interface Position {
+    x: number
+    y: number
+}

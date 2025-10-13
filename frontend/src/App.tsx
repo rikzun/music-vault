@@ -10,6 +10,7 @@ import { IconContext } from "react-icons"
 import { useEffect } from "react"
 import { ClientResponse } from "./common/types"
 import { ClientAtoms } from "@atoms/client"
+import { ContextMenuProvider } from "@components/ContextMenu"
 
 axios.defaults.baseURL = ENV.APP_URL + "api"
 
@@ -44,10 +45,12 @@ export function App() {
     if (token.value == null) return <Auth />
 
     return (
-        <IconContext.Provider value={{ size: "24" }}>
-            <SectionSidebar />
-            <SectionPlayer />
-            <SectionPlaylist />
-        </IconContext.Provider>
+        <ContextMenuProvider>
+            <IconContext.Provider value={{ size: "24" }}>
+                <SectionSidebar />
+                <SectionPlayer />
+                <SectionPlaylist />
+            </IconContext.Provider>
+        </ContextMenuProvider>
     )
 }
