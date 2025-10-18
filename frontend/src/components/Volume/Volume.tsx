@@ -103,15 +103,22 @@ export function Volume() {
     useEffect(() => {
         if (!handleMouseMove.value) return
 
-        const moveListener = (e: PointerEvent) => moveVolume(e.clientX, e.shiftKey)
+        const pointerMoveListener = (e: PointerEvent) => moveVolume(e.clientX, e.shiftKey)
+        const touchMoveListener = (e: TouchEvent) => moveVolume(e.touches[0].clientX, false)
         const upListener = () => handleMouseMove.set(false)
 
-        addEventListener("pointermove", moveListener)
+        addEventListener("pointermove", pointerMoveListener)
         addEventListener("pointerup", upListener)
 
+        addEventListener("touchmove", touchMoveListener)
+        addEventListener("touchend", upListener)
+
         return () => {
-            removeEventListener("pointermove", moveListener)
+            removeEventListener("pointermove", pointerMoveListener)
             removeEventListener("pointerup", upListener)
+
+            removeEventListener("touchmove", touchMoveListener)
+            removeEventListener("touchend", upListener)
         }
     }, [handleMouseMove])
 
