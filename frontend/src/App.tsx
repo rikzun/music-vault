@@ -40,6 +40,16 @@ export function App() {
                 client.set(res.data)
             })
         }
+
+        //prevent page from loading file
+        document.addEventListener("dragover", (e) => {
+            e.preventDefault()
+            e.dataTransfer!.dropEffect = "none"
+        })
+        
+        document.addEventListener("drop", (e) => {
+            e.preventDefault()
+        })
     }, [])
 
     if (token.value == null) return <Auth />
