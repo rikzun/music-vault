@@ -9,6 +9,7 @@
     }
 
     &.button-menu {
+        display: block;
         padding-top: 8px;
         padding-right: 16px;
         padding-bottom: 8px;
@@ -32,6 +33,7 @@
     }
 
     &.button-small {
+        display: block;
         width: 32px;
         height: 32px;
         border-radius: 11px;
@@ -57,7 +59,12 @@
     }
 
     &.button-icon {
+        display: block;
         background-color: unset;
         padding: unset;
+
+        > svg {
+            display: block;
+        }
     }
 }
