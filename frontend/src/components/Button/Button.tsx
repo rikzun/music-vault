@@ -13,7 +13,7 @@ export namespace Button {
                 aria-pressed={props.isPressed}
                 className={className}
                 onClick={props.onClick}
-                onPointerDown={props.onClick}
+                onPointerDown={(e) => e.button == 0 && props.onClick(e)}
             >
                 <div className="content">
                     <props.icon color="var(--background-color)" />
@@ -32,7 +32,7 @@ export namespace Button {
                 aria-label={props["aria-label"]}
                 className={className}
                 onClick={props.onClick}
-                onPointerDown={props.onClick}
+                onPointerDown={(e) => e.button == 0 && props.onClick(e)}
                 children={props.value}
             />
         )
@@ -47,7 +47,7 @@ export namespace Button {
                 aria-label={props["aria-label"]}
                 className={className}
                 onClick={props.onClick}
-                onPointerDown={props.onClick}
+                onPointerDown={(e) => e.button == 0 && props.onClick(e)}
                 children={props.value}
             />
         )
@@ -62,7 +62,7 @@ export namespace Button {
                 aria-label={props["aria-label"]}
                 className={className}
                 onClick={props.onClick}
-                onPointerDown={props.onClick}
+                onPointerDown={(e) => e.button == 0 && props.onClick(e)}
                 children={<props.icon />}
             />
         )

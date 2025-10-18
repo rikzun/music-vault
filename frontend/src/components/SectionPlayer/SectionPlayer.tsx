@@ -154,7 +154,7 @@ export function SectionPlayer() {
             <div className="control-btns">
                 <MdShuffle size={36} />
                 <MdSkipPrevious size={50} />
-                <PlayStateButton size={50} onPointerDown={onPlayClick} />
+                <PlayStateButton size={50} onPointerDown={(e) => e.button == 0 && onPlayClick} />
                 <MdSkipNext size={50} />
                 <MdRepeat size={36} />
             </div>

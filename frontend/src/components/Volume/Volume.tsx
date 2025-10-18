@@ -181,7 +181,7 @@ export function Volume() {
                 tabIndex={0}
                 ref={rangeRef}
                 className="range"
-                onPointerDown={(e) => moveVolume(e.clientX, e.shiftKey)}
+                onPointerDown={(e) => e.button == 0 && moveVolume(e.clientX, e.shiftKey)}
                 onKeyDown={(e) => shiftVolume(calculateShift(e))}
                 onWheel={(e) => shiftVolume(calculateShift(e))}
             >
