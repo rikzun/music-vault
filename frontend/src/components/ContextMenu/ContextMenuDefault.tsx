@@ -42,8 +42,8 @@ export function DefaultMenu(props: DefaultMenuProps) {
             ref={ref}
             style={{
                 visibility: pos.value ? "visible" : "hidden",
-                left: pos.value ? pos.value.x + "px" : undefined,
-                top: pos.value ? pos.value.y + "px" : undefined
+                left: (pos.value?.x ?? 0) + "px",
+                top: (pos.value?.y ?? 0) + "px",
             }}
             onContextMenu={(e) => { e.stopPropagation(); e.preventDefault() }}
             onTouchStart={(e) => e.stopPropagation()}
