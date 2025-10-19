@@ -31,10 +31,22 @@
             flex-direction: column;
             width: calc(100% - 72px);
 
-            > .title {
+            > .top {
+                display: flex;
+                justify-content: space-between;
+
                 font-size: 16px;
                 text-transform: uppercase;
                 padding: 1rem;
+
+                > .button-component {
+                    border-radius: 7px;
+
+                    &:hover {
+                        cursor: pointer;
+                        background-color: var(--background-b-color);
+                    }
+                }
             }
 
             > .scrollbar {

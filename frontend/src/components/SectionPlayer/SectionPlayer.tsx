@@ -10,9 +10,6 @@ import axios from "axios"
 
 const audioContext = new AudioContext()
 const audioElement = new Audio()
-audioElement.currentTime
-
-;(window as any).kekw = audioElement
 
 const gainNode = audioContext.createGain()
 const track = audioContext.createMediaElementSource(audioElement)
@@ -154,7 +151,7 @@ export function SectionPlayer() {
             <div className="control-btns">
                 <MdShuffle size={36} />
                 <MdSkipPrevious size={50} />
-                <PlayStateButton size={50} onPointerDown={(e) => e.button == 0 && onPlayClick} />
+                <PlayStateButton size={50} onPointerDown={(e) => e.button == 0 && onPlayClick()} />
                 <MdSkipNext size={50} />
                 <MdRepeat size={36} />
             </div>

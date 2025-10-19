@@ -1,6 +1,6 @@
 import { useState } from "@utils/hooks"
 import { useEffect, useRef } from "react"
-import { Position } from "src/common/types"
+import { Vector2 } from "src/common/types"
 
 export interface DefaultContextMenuData {
     xPos: number
@@ -14,7 +14,7 @@ export interface DefaultMenuProps {
 const PADDING = 16
 
 export function DefaultMenu(props: DefaultMenuProps) {
-    const pos = useState<Position | null>(null)
+    const pos = useState<Vector2 | null>(null)
     const ref = useRef<HTMLDivElement>(null)
 
     useEffect(() => {

@@ -31,7 +31,7 @@ export interface TrackArsits {
     name: string
 }
 
-export interface Position {
+export interface Vector2 {
     x: number
     y: number
 }

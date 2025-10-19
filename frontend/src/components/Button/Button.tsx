@@ -65,6 +65,7 @@ export namespace Button {
                 onPointerDown={(e) => e.button == 0 && props.onClick(e)}
                 onKeyDown={handleEnter}
                 children={<props.icon />}
+                ref={props.ref}
             />
         )
     }
