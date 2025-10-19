@@ -1,7 +1,7 @@
-import { MdHideImage } from "react-icons/md"
 import "./PlaylistTrack.style.scss"
 import { Track } from "src/common/types"
 import { ReactNode } from "react"
+import { handleEnter } from "@utils/events"
 
 interface PlaylistTrackProps {
     data: Track
@@ -10,7 +10,7 @@ interface PlaylistTrackProps {
 
 export function PlaylistTrack(props: PlaylistTrackProps) {
     return (
-        <button className="track-component" onClick={props.onClick}>
+        <button className="track-component" onPointerDown={(e) => e.button == 0 && props.onClick?.()} onKeyDown={handleEnter}>
             {props.data.imageURL
                 ? <img className="cover" src={ENV.APP_URL + props.data.imageURL} />
                 : <div className="cover cover__empty" />

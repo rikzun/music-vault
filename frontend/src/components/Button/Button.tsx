@@ -1,5 +1,6 @@
 import "./Button.style.scss"
 import { ButtonIconProps, ButtonMenuProps, ButtonSmallProps, ButtonTextProps } from "./Button.types"
+import { handleEnter } from "@utils/events"
 
 export namespace Button {
     export function Menu(props: ButtonMenuProps) {
@@ -12,8 +13,8 @@ export namespace Button {
                 aria-label={props["aria-label"]}
                 aria-pressed={props.isPressed}
                 className={className}
-                onClick={props.onClick}
                 onPointerDown={(e) => e.button == 0 && props.onClick(e)}
+                onKeyDown={handleEnter}
             >
                 <div className="content">
                     <props.icon color="var(--background-color)" />
@@ -31,8 +32,8 @@ export namespace Button {
             <button
                 aria-label={props["aria-label"]}
                 className={className}
-                onClick={props.onClick}
                 onPointerDown={(e) => e.button == 0 && props.onClick(e)}
+                onKeyDown={handleEnter}
                 children={props.value}
             />
         )
@@ -46,8 +47,8 @@ export namespace Button {
             <button
                 aria-label={props["aria-label"]}
                 className={className}
-                onClick={props.onClick}
                 onPointerDown={(e) => e.button == 0 && props.onClick(e)}
+                onKeyDown={handleEnter}
                 children={props.value}
             />
         )
@@ -61,8 +62,8 @@ export namespace Button {
             <button
                 aria-label={props["aria-label"]}
                 className={className}
-                onClick={props.onClick}
                 onPointerDown={(e) => e.button == 0 && props.onClick(e)}
+                onKeyDown={handleEnter}
                 children={<props.icon />}
             />
         )
