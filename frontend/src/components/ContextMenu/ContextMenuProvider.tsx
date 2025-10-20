@@ -10,44 +10,53 @@ export function ContextMenuProvider(props: PropsWithChildren) {
     const touchMenuData = useState<true | null>(null)
 
     useLayoutEffect(() => {
+        const onClickCM = (e: MouseEvent, target: Element) => {
+            defaultMenuData.set({xPos: e.pageX, yPos: e.pageY})
+        }
+
+        const onTouchCM = (e: TouchEvent, target: Element) => {
+            touchMenuData.set(true)
+        }
+
         const defaultListener = (e: MouseEvent) => {
             e.preventDefault()
 
             const target = (e.target as HTMLElement)?.closest("[data-cm]")
-            // if (!target) return
+            if (!target) return
 
-            defaultMenuData.set({xPos: e.pageX, yPos: e.pageY})
-        }
-
-        const touchListener = (e: TouchEvent) => {
-            const target = (e.target as HTMLElement)?.closest("[data-cm]")
-            // if (!target) return  
-
-            touchMenuData.set(true)
+            onClickCM(e, target)
         }
 
         let touchStartTimeoutID: NodeJS.Timeout
 
-        const touchStartListener = (e: TouchEvent) => {
+        const touchListener = (e: TouchEvent) => {
+            const target = (e.target as HTMLElement)?.closest("[data-cm]")
+
+            if (!target) return
             e.preventDefault()
 
             touchStartTimeoutID = setTimeout(() => {
-                console.log(e)
-                touchListener(e)
+                onTouchCM(e, target)
             }, 500)
         }
 
-        const touchEndListener = () => { clearTimeout(touchStartTimeoutID) }
-        const windowResize = () => { defaultMenuData.set(null) }
+        const touchEndListener = () => {
+            clearTimeout(touchStartTimeoutID)
+        }
+
+        const windowResize = () => {
+            defaultMenuData.set(null)
+            touchMenuData.set(null)
+        }
 
         document.body.addEventListener("contextmenu", defaultListener, { passive: false })
-        document.body.addEventListener("touchstart", touchStartListener, { passive: false })
+        document.body.addEventListener("touchstart", touchListener, { passive: false })
         document.body.addEventListener("touchend", touchEndListener)
         window.addEventListener("resize", windowResize)
 
         return () => {
             document.body.removeEventListener("contextmenu", defaultListener)
-            document.body.removeEventListener("touchstart", touchStartListener)
+            document.body.removeEventListener("touchstart", touchListener)
             document.body.removeEventListener("touchend", touchEndListener)
             window.removeEventListener("resize", windowResize)
         }
