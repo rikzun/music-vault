@@ -10,6 +10,7 @@
         flex: 0 0 100%;
         min-width: unset;
         scroll-snap-align: start;
+        scroll-snap-stop: always;
     }
 
     > .container {
