@@ -8,6 +8,7 @@
 
     @media (max-width: 1072px) {
         flex: 0 0 100%;
+        min-width: unset;
         scroll-snap-align: start;
     }
 
