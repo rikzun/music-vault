@@ -9,7 +9,8 @@ type ClientEntity struct {
 	Login    string `gorm:"column:login;    not null; type:text; uniqueIndex"`
 	Password string `gorm:"column:password; not null; type:text"`
 
-	AuthTokens []AuthTokenEntity `gorm:"foreignKey:ClientID; references:ID"`
+	AuthTokens      []*AuthTokenEntity       `gorm:"foreignKey:ClientID"`
+	ClientPlaylists []*ClientPlaylistsEntity `gorm:"foreignKey:ClientID"`
 }
 
 func (ClientEntity) TableName() string {

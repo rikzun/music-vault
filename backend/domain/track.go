@@ -15,7 +15,7 @@ type TrackEntity struct {
 	Duration float64 `gorm:"column:duration; not null; type:decimal(10,3)"`
 
 	Artists  []*ArtistEntity `gorm:"many2many:track_artists"`
-	Uploader *ClientEntity   `gorm:"foreignKey:UploaderID; references:ID"`
+	Uploader *ClientEntity   `gorm:"foreignKey:UploaderID"`
 }
 
 func (TrackEntity) TableName() string {

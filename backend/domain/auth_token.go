@@ -11,7 +11,7 @@ type AuthTokenEntity struct {
 	UserAgent *string   `gorm:"column:user_agent; type:text"`
 	CreatedAt time.Time `gorm:"column:created_at; not null; autoCreateTime"`
 
-	Client ClientEntity `gorm:"foreignKey:ClientID"`
+	Client *ClientEntity `gorm:"foreignKey:ClientID"`
 }
 
 func (AuthTokenEntity) TableName() string {

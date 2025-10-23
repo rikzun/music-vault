@@ -26,3 +26,21 @@ type TrackArtist struct {
 	ID   uint   `json:"id"`
 	Name string `json:"name"`
 }
+
+type PlaylistMetaBody struct {
+	Title string `json:"title"`
+}
+
+type PlaylistData struct {
+	ID       uint    `json:"id"`
+	ImageURL *string `json:"imageURL"`
+	Title    string  `json:"Title"`
+}
+
+type Playlists struct {
+	Data []PlaylistData `json:"data"`
+}
+
+type PlaylistAddBody struct {
+	Data []uint `json:"data"`
+}
