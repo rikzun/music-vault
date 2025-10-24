@@ -20,3 +20,17 @@ export function concatArrayBuffers(...buffers: ArrayBufferLike[]): ArrayBuffer {
 export function clamp(value: number, min: number, max: number) {
     return Math.min(Math.max(value, min), max)
 }
+
+export const mobileRegex = /Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Kindle|Silk-Accelerated|(hpw|web)OS|Fennec|Minimo|Opera M(obi|ini)|Blazer|Dolfin|Dolphin|Skyfire|Zune|AvantGo|Bolt|Boost|Cricket|Docomo|Fone|Hiptop|Palm|Phone|Pie|Tablet|UP\.Browser|UP\.Link|SM-[A-Z]|GT-[A-Z]|SCH-[A-Z]|SAMSUNG|Samsung|Pixel/i
+
+export function isMobile(): boolean {
+    if ("userAgentData" in navigator) {
+        const userAgentData = navigator.userAgentData as any
+
+        if ("mobile" in userAgentData) {
+            return userAgentData.mobile
+        }
+    }
+
+    return mobileRegex.test(navigator.userAgent)
+}
