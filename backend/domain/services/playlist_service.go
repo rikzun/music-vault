@@ -66,3 +66,17 @@ func (playlist) GetTracksIDByID(playlistID uint) []uint {
 
 	return data
 }
+
+func (playlist) GetPlaylistsTracksByID(playlistID uint) []*domain.PlaylistTracksEntity {
+	var records []*domain.PlaylistTracksEntity
+
+	global.Database().
+		Model(&domain.PlaylistTracksEntity{}).
+		Preload("Track").
+		Preload("Track.Artists").
+		Preload("OriginPlaylist").
+		Where("playlist_id = ?", playlistID).
+		Find(&records)
+
+	return records
+}

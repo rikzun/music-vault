@@ -1,6 +1,6 @@
 package playlist
 
-type UploadedTracks struct {
+type PlaylistTracks struct {
 	Data []TrackData `json:"data"`
 }
 
@@ -19,7 +19,8 @@ type TrackData struct {
 
 	Duration float64 `json:"duration"`
 
-	Artists []TrackArtist `json:"artists"`
+	Artists        []TrackArtist `json:"artists"`
+	OriginPlaylist *PlaylistData `json:"originPlaylist"`
 }
 
 type TrackArtist struct {

@@ -3,6 +3,8 @@ package services
 import (
 	"backend/domain"
 	"backend/global"
+
+	"gorm.io/gorm/clause"
 )
 
 type clientPlaylist struct{}
@@ -57,7 +59,7 @@ func (q *ClientPlaylistQuery) Build(clientID uint) []*domain.ClientPlaylistsEnti
 	db := global.Database().Where("client_id = ?", clientID)
 
 	if q.withPlaylist {
-		db = db.Order("Position")
+		db = db.Order(clause.OrderByColumn{Column: clause.Column{Name: "Position"}, Desc: true})
 	}
 	if q.withPlaylist {
 		db = db.Preload("Playlist")

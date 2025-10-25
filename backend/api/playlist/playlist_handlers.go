@@ -50,7 +50,7 @@ func EntryGetUploaded(ctx *custom.Context) {
 
 	ctx.JSON(
 		http.StatusOK,
-		UploadedTracks{data},
+		PlaylistTracks{data},
 	)
 }
 
@@ -145,6 +145,57 @@ func EntryGetList(ctx *custom.Context) {
 	)
 }
 
+func EntryGetTracks(ctx *custom.Context) {
+	paramID := ctx.RequireIDParam("id")
+	if paramID == nil {
+		return
+	}
+
+	playlistTracks := services.Playlist.GetPlaylistsTracksByID(*paramID)
+	data := make([]TrackData, 0, len(playlistTracks))
+
+	for _, playlistTrack := range playlistTracks {
+		track := playlistTrack.Track
+		artists := make([]TrackArtist, 0, len(track.Artists))
+
+		for _, artist := range track.Artists {
+			artists = append(artists, TrackArtist{
+				ID:   artist.ID,
+				Name: artist.Name,
+			})
+		}
+
+		var originPlaylist *PlaylistData
+		if playlistTrack.OriginPlaylistID != nil {
+			originPlaylist = &PlaylistData{
+				ID:       playlistTrack.OriginPlaylist.ID,
+				ImageURL: playlistTrack.OriginPlaylist.ImagePath,
+				Title:    playlistTrack.OriginPlaylist.Title,
+			}
+		}
+
+		data = append(data, TrackData{
+			ID:             track.ID,
+			UploaderID:     track.UploaderID,
+			AudioURL:       track.AudioPath,
+			ImageURL:       track.ImagePath,
+			Title:          track.Title,
+			Album:          track.Album,
+			Codec:          track.Codec,
+			Bitrate:        track.Bitrate,
+			Lossless:       track.Lossless,
+			Duration:       track.Duration,
+			Artists:        artists,
+			OriginPlaylist: originPlaylist,
+		})
+	}
+
+	ctx.JSON(
+		http.StatusOK,
+		PlaylistTracks{data},
+	)
+}
+
 func EntryAddTrack(ctx *custom.Context) {
 	paramID := ctx.RequireIDParam("id")
 	if paramID == nil {
@@ -161,7 +212,6 @@ func EntryAddTrack(ctx *custom.Context) {
 		records = append(records, domain.PlaylistTracksEntity{
 			PlaylistID: *paramID,
 			TrackID:    trackID,
-			OriginID:   nil,
 		})
 	}
 
@@ -185,9 +235,9 @@ func EntryAddPlaylist(ctx *custom.Context) {
 
 		for _, trackID := range tracks {
 			records = append(records, domain.PlaylistTracksEntity{
-				PlaylistID: *paramID,
-				TrackID:    trackID,
-				OriginID:   &playlistID,
+				PlaylistID:       *paramID,
+				TrackID:          trackID,
+				OriginPlaylistID: &playlistID,
 			})
 		}
 	}

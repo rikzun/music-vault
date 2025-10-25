@@ -26,6 +26,7 @@ func InitRouting(engine *gin.Engine) {
 	protected.GET("playlist/uploaded", custom.Handler(playlist.EntryGetUploaded))
 	protected.POST("playlist/create", custom.Handler(playlist.EntryCreate))
 	protected.GET("playlist/get-list", custom.Handler(playlist.EntryGetList))
+	protected.GET("playlist/:id/get-tracks", custom.Handler(playlist.EntryGetTracks))
 	protected.POST("playlist/:id/add-track", custom.Handler(playlist.EntryAddTrack))
 	protected.POST("playlist/:id/add-playlist", custom.Handler(playlist.EntryAddPlaylist))
 }
