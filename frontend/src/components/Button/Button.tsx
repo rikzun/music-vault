@@ -11,13 +11,14 @@ export namespace Button {
         return (
             <button
                 aria-label={props["aria-label"]}
+                data-cm={props["data-cm"]}
                 aria-pressed={props.isPressed}
                 className={className}
                 onPointerDown={(e) => e.button == 0 && props.onClick(e)}
                 onKeyDown={handleEnter}
             >
                 <div className="content">
-                    <props.icon color="var(--background-color)" />
+                    <props.icon htmlColor="var(--background-color)" />
                 </div>
             </button>
         )
@@ -31,6 +32,7 @@ export namespace Button {
         return (
             <button
                 aria-label={props["aria-label"]}
+                data-cm={props["data-cm"]}
                 className={className}
                 onPointerDown={(e) => e.button == 0 && props.onClick(e)}
                 onKeyDown={handleEnter}
@@ -46,6 +48,7 @@ export namespace Button {
         return (
             <button
                 aria-label={props["aria-label"]}
+                data-cm={props["data-cm"]}
                 className={className}
                 onPointerDown={(e) => e.button == 0 && props.onClick(e)}
                 onKeyDown={handleEnter}
@@ -61,6 +64,7 @@ export namespace Button {
         return (
             <button
                 aria-label={props["aria-label"]}
+                data-cm={props["data-cm"]}
                 className={className}
                 onPointerDown={(e) => e.button == 0 && props.onClick(e)}
                 onKeyDown={handleEnter}

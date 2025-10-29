@@ -1,4 +1,3 @@
-import { MdHideImage, MdPause, MdPlayArrow, MdRepeat, MdShuffle, MdSkipNext, MdSkipPrevious } from "react-icons/md"
 import "./SectionPlayer.style.scss"
 import { useState } from "@utils/hooks"
 import { useEffect, useRef } from "react"
@@ -7,9 +6,18 @@ import { VolumeAtoms } from "@atoms/volume"
 import { TrackWaveform } from "@components/TrackWaveform"
 import { Track } from "src/common/types"
 import axios from "axios"
+import HideImageRounded from "@mui/icons-material/HideImageRounded"
+import ShuffleRounded from "@mui/icons-material/ShuffleRounded"
+import SkipPreviousRounded from "@mui/icons-material/SkipPreviousRounded"
+import PlayArrowRounded from "@mui/icons-material/PlayArrowRounded"
+import PauseRounded from "@mui/icons-material/PauseRounded"
+import SkipNextRounded from "@mui/icons-material/SkipNextRounded"
+import RepeatRounded from "@mui/icons-material/RepeatRounded"
+import { TrackImage } from "@components/TrackImage"
 
 const audioContext = new AudioContext()
 const audioElement = new Audio()
+;(window as any).kekw = audioElement
 
 const gainNode = audioContext.createGain()
 const track = audioContext.createMediaElementSource(audioElement)
@@ -29,6 +37,7 @@ const setTrackMetadata = "mediaSession" in navigator
 
 export function SectionPlayer() {
     const currentTrack = PlayerAtoms.useCurrentTrack()
+    const currentTrackCache = useRef<number>(null)
     const trackList = PlayerAtoms.useTracklist()
     const volume = VolumeAtoms.useVolume()
     const muted = VolumeAtoms.useMuted()
@@ -60,7 +69,7 @@ export function SectionPlayer() {
         audioElement.onpause = onPause
         audioElement.oncanplay = onCanPlay
         audioElement.onplay = onPlay
-    }, [])
+    }, [currentTrack.value])
 
     useEffect(() => {
         gainNode.gain.value = muted.value ? 0 : volume.value * 0.01
@@ -114,46 +123,54 @@ export function SectionPlayer() {
     }
 
     const onCanPlay = (event: Event) => {
+        if (currentTrackCache.current && (currentTrackCache.current == currentTrack.value)) return
+        currentTrackCache.current = currentTrack.value
+
         const target = event.target as HTMLAudioElement
         if (!target.paused) return
 
         onPlayClick()
     }
 
-    const onTimeChange = (time: number) => {
-        onPlayClick()
-        audioElement.currentTime = time
-        onPlayClick()
-    }
-
-    const PlayStateButton = isPlaying.value ?  MdPause : MdPlayArrow
+    const PlayStateButton = isPlaying.value ? PauseRounded : PlayArrowRounded
 
     return (
         <div className="section-player">
             <div className="track-data">
-                {currentTrackData.value?.imageURL
-                    ? <img className="cover" src={ENV.APP_URL + currentTrackData.value.imageURL} />
-                    : <div className="cover cover__empty" children={<MdHideImage />} />
-                }
+                <TrackImage imageURL={currentTrackData.value?.imageURL} />
 
                 <div>{currentTrackData.value?.title ?? "No track"}</div>
                 <div>{currentTrackData.value?.artists.map((artist) => artist.name).join(", ")}</div>
-                <div>{currentTime.value}</div>
             </div>
 
             <TrackWaveform
                 samples={waveformData.value}
                 currentTime={currentTime.value}
                 duration={currentTrackData.value?.duration || null}
-                onTimeChange={onTimeChange}
+                onTimeChangeStarted={() => {
+                    if (isPlaying.value) {
+                        stopTimer()
+                        audioElement.pause()
+                        isPlaying.set(false)
+                    }
+                }}
+                onTimeChange={(time) => {
+                    audioElement.currentTime = time
+                    currentTime.set(audioElement.currentTime)
+                }}
+                onTimeChangeEnded={() => {
+                    startTimer()
+                    audioElement.play()
+                    isPlaying.set(true)
+                }}
             />
 
             <div className="control-btns">
-                <MdShuffle size={36} />
-                <MdSkipPrevious size={50} />
-                <PlayStateButton size={50} onPointerDown={(e) => e.button == 0 && onPlayClick()} />
-                <MdSkipNext size={50} />
-                <MdRepeat size={36} />
+                <ShuffleRounded style={{height: "36px", width: "36px"}} />
+                <SkipPreviousRounded style={{height: "50px", width: "50px"}} />
+                <PlayStateButton style={{height: "50px", width: "50px"}} onPointerDown={(e) => e.button == 0 && onPlayClick()} />
+                <SkipNextRounded style={{height: "50px", width: "50px"}} />
+                <RepeatRounded style={{height: "36px", width: "36px"}} />
             </div>
         </div>
     )

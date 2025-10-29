@@ -1,7 +1,6 @@
-import { MdHideImage } from "react-icons/md"
 import "./UploadTrack.styles.scss"
+import HideImageRounded from "@mui/icons-material/HideImageRounded"
 import { UploadTrackProps } from "./UploadTrack.types"
-
 
 export function UploadTrack(props: UploadTrackProps) {
     return (
@@ -25,7 +24,7 @@ export function UploadTrack(props: UploadTrackProps) {
 
                         {!props.data.image &&
                             <div className="image image-empty">
-                                <MdHideImage size={38} />
+                                <HideImageRounded />
                             </div>
                         }
                     </div>

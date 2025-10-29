@@ -6,7 +6,7 @@
     "noEmit": true,
     "sourceMap": true,
     "module": "esnext",
-    "target": "es2022",
+    "target": "es6",
     "forceConsistentCasingInFileNames": true,
     "allowJs": true,
     "jsx": "react-jsx",

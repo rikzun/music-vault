@@ -1,3 +1,6 @@
+import { OverridableComponent } from "@mui/material/OverridableComponent"
+import { SvgIconTypeMap } from "@mui/material/SvgIcon"
+
 export interface SignResponse {
     token: string
 }
@@ -34,4 +37,8 @@ export interface TrackArsits {
 export interface Vector2 {
     x: number
     y: number
+}
+
+export type MdIcon = OverridableComponent<SvgIconTypeMap<{}, "svg">> & {
+    muiName: string
 }

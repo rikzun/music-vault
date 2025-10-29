@@ -1,76 +1,133 @@
+import "./TrackWaveform.scss"
+import { useState } from "@utils/hooks"
 import { useEffect, useRef } from "react"
 
 interface TrackWaveformProps {
     samples: number[]
+
     currentTime: numberN
     duration: numberN
+
+    onTimeChangeStarted: () => void
     onTimeChange: (newTime: number) => void
+    onTimeChangeEnded: () => void
+}
+
+function formatTime(value: numberN, roundFn: (x: number) => number) {
+    const totalSeconds = roundFn(value ?? 0)
+
+    const hours = Math.floor(totalSeconds / 3600)
+    const minutes = Math.floor((totalSeconds % 3600) / 60)
+    const seconds = totalSeconds % 60
+
+    if (hours === 0) {
+        return `${minutes}:${seconds.toString().padStart(2, "0")}`
+    } else {
+        return `${hours}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`
+    }
 }
 
 export function TrackWaveform(props: TrackWaveformProps) {
-    const canvasRef = useRef<HTMLCanvasElementN>(null)
-    const width = 500
-    const height = 150
-    const actualMaxHeight = height * .5
+    const handleMove = useState(false)
+    const canvasRef = useRef<HTMLCanvasElement>(null)
+    const width = 449
+    const height = 80
   
     useEffect(() => {
-        const canvas = canvasRef.current!
-        const ctx = canvas.getContext('2d')!
-
-        ctx.reset()
-        ctx.clearRect(0, 0, width, height)
-        ctx.translate(0.5, 0.5)
-        
         if (!props.samples || !props.duration) return
 
+        const canvas = canvasRef.current!
+        const ctx = canvas.getContext("2d")!
+    
+        ctx.reset()
+        ctx.clearRect(0, 0, width, height)
+        ctx.imageSmoothingEnabled = false
+        
         const trackPercent = (props.currentTime ?? 0) / props.duration
-
-        const centerY = height / 2
-        const barWidthWithSpace = Math.round(width / props.samples.length)
-        const barWidth = barWidthWithSpace - 2
-
-        // ctx.beginPath()
-        // ctx.fillStyle = "white"
-
+        const barWidthWithSpace = 3
+        const barWidth = 2
+    
         props.samples.forEach((value, index) => {
             const x = (index * barWidthWithSpace)
-            const y = centerY
-
-            const barHeight = (Math.abs(value) * (actualMaxHeight / 100))
-
+            const y = height - 3
+    
             const xPercent = x / width
-            if (xPercent <= trackPercent) {
-                ctx.fillStyle = "red"
-            } else {
-                ctx.fillStyle = "white"
-            }
-
+            const barHeight = Math.floor(Math.abs(value) * (y / 100))
+            const barProgress = Math.max(0, Math.min(1, (trackPercent - xPercent) / (barWidth / width)))
+    
+            ctx.fillStyle = "white"
             ctx.beginPath()
             ctx.rect(x, y, barWidth, -barHeight)
-            ctx.rect(x, y + 4, barWidth, (barHeight / 4))
             ctx.fill()
             ctx.closePath()
-        })
 
+            if (barProgress > 0) {
+                ctx.fillStyle = `rgba(255, 0, 0, ${barProgress})`
+                ctx.beginPath()
+                ctx.rect(x, y, 2, -barHeight)
+                ctx.fill()
+                ctx.closePath()
+            }
+        })
+    
         ctx.beginPath()
-        ctx.fillStyle = "white"
-        ctx.rect(0, centerY + 1, width, 2)
+        ctx.fillStyle = "#CCCCCC"
+        ctx.rect(0, height - 2, width, 2)
         ctx.fill()
         ctx.closePath()
     }, [props.samples, props.currentTime, props.duration])
+
+    const pointerMove = (clientX: number) => {
+        const rect = canvasRef.current!.getBoundingClientRect()
+        const point = clientX - rect.left
+        const percent = point / rect.width
+
+        props.onTimeChange(percent * (props.duration ?? 0))
+    }
+
+    useEffect(() => {
+        if (!handleMove.value) return
+
+        const pointerMoveListener = (e: PointerEvent) => pointerMove(e.clientX)
+        const touchMoveListener = (e: TouchEvent) => pointerMove(e.touches[0].clientX)
+        const upListener = () => {
+            handleMove.set(false)
+            props.onTimeChangeEnded()
+        }
+
+        addEventListener("pointermove", pointerMoveListener)
+        addEventListener("pointerup", upListener)
+
+        addEventListener("touchmove", touchMoveListener)
+        addEventListener("touchend", upListener)
+
+        return () => {
+            removeEventListener("pointermove", pointerMoveListener)
+            removeEventListener("pointerup", upListener)
+
+            removeEventListener("touchmove", touchMoveListener)
+            removeEventListener("touchend", upListener)
+        }
+    }, [handleMove])
   
     return (
-        <canvas
-            ref={canvasRef}
-            width={width}
-            height={height}
-            onPointerUp={(e) => {
-                const rect = (e.target as HTMLCanvasElement).getBoundingClientRect()
-                const point = e.pageX - rect.left
-                const percent = point / rect.width
+        <div className="waveform">
+            <canvas
+                ref={canvasRef}
+                width={width}
+                height={height}
+                onPointerDown={(e) => {
+                    if (e.pointerType == "mouse" && e.button != 0) return
+                    pointerMove(e.clientX)
 
-                props.onTimeChange(percent * (props.duration ?? 0))
-            }}
-        />
+                    handleMove.set(true)
+                    props.onTimeChangeStarted()
+                }}
+            />
+            <div className="bottom">
+                <span className="time">{formatTime(props.currentTime, Math.floor)}</span>
+                <span className="time">{formatTime(props.duration, Math.round)}</span>
+            </div>
+        </div>
     )
 }

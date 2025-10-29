@@ -1,3 +1,5 @@
+import "./Plane.style.scss"
+
 export interface PlaneProps {
     onPointerDown: () => void
     onTouchStart: () => void
@@ -6,7 +8,7 @@ export interface PlaneProps {
 export function Plane(props: PlaneProps) {
     return (
         <div
-            className="contextmenu-plane-component"
+            className="plane-component"
             onPointerDown={(e) => {
                 e.preventDefault()
                 e.stopPropagation()

@@ -1,5 +1,5 @@
-@use 'theme';
-@use 'standart';
+@use "theme";
+@use "standart";
 
 body {
     background-color: var(--background-color);
@@ -7,7 +7,7 @@ body {
     margin: 0;
     height: 100dvh;
     width: 100dvw;
-    font-family: 'Nunito';
+    font-family: "Nunito";
 
     > #root {
         display: flex;

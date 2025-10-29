@@ -17,6 +17,10 @@ func main() {
 		&domain.ClientEntity{},
 		&domain.AuthTokenEntity{},
 		&domain.TrackEntity{},
+		&domain.ArtistEntity{},
+		&domain.PlaylistEntity{},
+		&domain.PlaylistTracksEntity{},
+		&domain.ClientPlaylistsEntity{},
 	)
 
 	gin.SetMode(gin.ReleaseMode)

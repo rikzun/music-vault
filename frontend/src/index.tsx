@@ -2,6 +2,7 @@ import { createRoot } from "react-dom/client"
 import { App } from "./App"
 
 const container = document.getElementById("root")!
-const root = createRoot(container)
+;(window as any).ROOT = container
 
-root.render(<App />)
+createRoot(container)
+    .render(<App />)

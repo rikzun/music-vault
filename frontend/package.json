@@ -8,6 +8,10 @@
     "dev-build": "cross-env NODE_ENV=production NODE_OPTIONS='--experimental-transform-types' rspack build -o ../build/frontend"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^7.3.4",
+    "@mui/material": "^7.3.4",
     "axios": "^1.12.2",
     "comlink": "^4.4.2",
     "jotai": "^2.15.0",
@@ -15,8 +19,7 @@
     "overlayscrollbars": "^2.12.0",
     "overlayscrollbars-react": "^0.5.6",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "react-icons": "^5.5.0"
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
     "@rspack/cli": "^1.5.8",

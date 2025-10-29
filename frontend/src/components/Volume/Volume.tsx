@@ -2,7 +2,8 @@ import "./Volume.style.scss"
 import { VolumeAtoms } from "@atoms/volume"
 import { useState } from "@utils/hooks"
 import { useEffect, useRef } from "react"
-import { MdVolumeOff, MdVolumeUp } from "react-icons/md"
+import VolumeOffRounded from "@mui/icons-material/VolumeOffRounded"
+import VolumeUpRounded from "@mui/icons-material/VolumeUpRounded"
 import { clamp } from "@utils/std"
 import { ReactEvent } from "@utils/react"
 import { Button } from "@components/Button"
@@ -174,7 +175,7 @@ export function Volume() {
             <Button.Icon
                 aria-label="volume mute"
                 onClick={muteVolume}
-                icon={muted.value ? MdVolumeOff : MdVolumeUp}
+                icon={muted.value ? VolumeOffRounded : VolumeUpRounded}
             />
 
             <div

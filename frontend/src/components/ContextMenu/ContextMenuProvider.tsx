@@ -1,9 +1,10 @@
 import "./ContextMenu.styles.scss"
-import { DefaultContextMenuData, DefaultMenu } from "@components/ContextMenu/ContextMenuDefault"
+import { DefaultMenu } from "./ContextMenuDefault"
 import { useState } from "@utils/hooks"
 import { Fragment, PropsWithChildren, useLayoutEffect } from "react"
-import { Plane } from "@components/ContextMenu/ContextMenuPlane"
-import { TouchMenu } from "@components/ContextMenu/ContextMenuTouch"
+import { TouchMenu } from "./ContextMenuTouch"
+import { DefaultContextMenuData } from "./ContextMenu.types"
+import { Plane } from "@components/Plane"
 
 export function ContextMenuProvider(props: PropsWithChildren) {
     const defaultMenuData = useState<DefaultContextMenuData | null>(null)

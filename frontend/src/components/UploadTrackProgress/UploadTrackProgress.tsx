@@ -1,6 +1,6 @@
 import "./UploadTrackProgress.styles.scss"
 import { UploadTrackProgressProps } from "./UploadTrackProgress.types"
-import { MdInfoOutline } from "react-icons/md"
+import InfoOutlineRounded from "@mui/icons-material/InfoOutlineRounded"
 
 export function UploadTrackProgress(props: UploadTrackProgressProps) {
     const artists = props.data.artists.join(", ")
@@ -38,11 +38,10 @@ export function UploadTrackProgress(props: UploadTrackProgressProps) {
                 </div>
 
                 {props.data.status != null &&
-                    <MdInfoOutline
+                    <InfoOutlineRounded
                         className="info"
-                        color={infoColor}
-                        size={22}
-                        title={props.data.status}
+                        htmlColor={infoColor}
+                        titleAccess={props.data.status}
                     />
                 }
             </div>

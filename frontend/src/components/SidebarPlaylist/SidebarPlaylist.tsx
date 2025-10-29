@@ -1,9 +1,9 @@
-import { Button } from "@components/Button"
 import "./SidebarPlaylist.style.scss"
+import { Button } from "@components/Button"
 import { PlaylistAtoms } from "@atoms/playlist"
 import { Playlist } from "@components/Playlist"
 import { Scrollbar } from "@components/Scrollbar"
-import { MdMoreHoriz } from "react-icons/md"
+import MoreHorizRounded from "@mui/icons-material/MoreHorizRounded"
 import { Dropdown } from "@components/Dropdown"
 import { useRef } from "react"
 import { useState } from "@utils/hooks"
@@ -17,7 +17,7 @@ export function SidebarPlaylist() {
         <div className="section-content section-content__playlists">
             <div className="top">
                 <span>Playlists</span>
-                <Button.Icon icon={MdMoreHoriz} onClick={() => { dropdownOpen.invert() }} ref={ref} />
+                <Button.Icon icon={MoreHorizRounded} onClick={() => { dropdownOpen.invert() }} ref={ref} />
                 <Dropdown
                     open={dropdownOpen}
                     anchorEl={ref.current}

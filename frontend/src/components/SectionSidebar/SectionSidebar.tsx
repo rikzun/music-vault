@@ -3,7 +3,11 @@ import { UserPanel } from "@components/UserPanel"
 import { Button } from "@components/Button"
 import { useState } from "@utils/hooks"
 import { SidebarUpload } from "@components/SidebarUpload"
-import { MdQueueMusic, MdPeopleAlt, MdForum, MdSearch, MdDownload } from "react-icons/md"
+import QueueMusicRounded from "@mui/icons-material/QueueMusicRounded"
+import PeopleAltRounded from "@mui/icons-material/PeopleAltRounded"
+import ForumRounded from "@mui/icons-material/ForumRounded"
+import SearchRounded from "@mui/icons-material/SearchRounded"
+import DownloadRounded from "@mui/icons-material/DownloadRounded"
 import { SidebarPlaylist } from "@components/SidebarPlaylist"
 
 type MenuItems =
@@ -23,28 +27,28 @@ export function SectionSidebar() {
                     <div className="top">
                         <Button.Menu
                             aria-label="Playlists"
-                            icon={MdQueueMusic}
+                            icon={QueueMusicRounded}
                             isPressed={menu.value === "Playlists"}
                             onClick={() => menu.set("Playlists")}
                         />
 
                         <Button.Menu
                             aria-label="Friends"
-                            icon={MdPeopleAlt}
+                            icon={PeopleAltRounded}
                             isPressed={menu.value === "Friends"}
                             onClick={() => menu.set("Friends")}
                         />
 
                         <Button.Menu
                             aria-label="RoomChat"
-                            icon={MdForum}
+                            icon={ForumRounded}
                             isPressed={menu.value === "RoomChat"}
                             onClick={() => menu.set("RoomChat")}
                         />
 
                         <Button.Menu
                             aria-label="Search"
-                            icon={MdSearch}
+                            icon={SearchRounded}
                             isPressed={menu.value === "Search"}
                             onClick={() => menu.set("Search")}
                         />
@@ -53,7 +57,7 @@ export function SectionSidebar() {
                     <div className="bottom">
                         <Button.Menu
                             aria-label="Upload"
-                            icon={MdDownload}
+                            icon={DownloadRounded}
                             isPressed={menu.value === "Upload"}
                             onClick={() => menu.set("Upload")}
                         />

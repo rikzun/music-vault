@@ -114,10 +114,10 @@ function Send-Files {
         [string[]] $Files
     )
 
-    & scp -r $Files root@212.108.82.125:$Destination
+    & scp -r $Files root@185.239.141.222:$Destination
     if ($LASTEXITCODE -ne 0) {
-        & ssh root@212.108.82.125 "mkdir -p $Destination"
-        & scp -r $Files root@212.108.82.125:$Destination
+        & ssh root@185.239.141.222 "mkdir -p $Destination"
+        & scp -r $Files root@185.239.141.222:$Destination
     }
 }
 

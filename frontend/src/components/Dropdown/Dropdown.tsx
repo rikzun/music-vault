@@ -1,4 +1,4 @@
-import { Plane } from "@components/ContextMenu"
+import { Plane } from "@components/Plane"
 import "./Dropdown.styles.scss"
 import { StateHook, useState } from "@utils/hooks"
 import { ReactNode, useEffect, useRef } from "react"
@@ -57,7 +57,7 @@ export function Dropdown(props: DropdownProps) {
         if (!props.anchorEl) return
         if (!ref) return
         if (!props.open.value) {
-            props.anchorEl.style = ""
+            props.anchorEl.style.zIndex = ""
             pos.set(null)
             return
         }
@@ -100,7 +100,7 @@ export function Dropdown(props: DropdownProps) {
             finalY = document.body.clientHeight - dropdownRect.height - PADDING
         }
 
-        props.anchorEl.style = "z-index: 9998"
+        props.anchorEl.style.zIndex = "9998"
         pos.set({x: finalX, y: finalY})
     }, [props.anchorEl, props.open])
 
@@ -132,7 +132,7 @@ export function Dropdown(props: DropdownProps) {
     )
 
     return <>
-        {createPortal(rt, document.getElementById("root")!)}
-        {props.open.value && createPortal(plane, document.getElementById("root")!)}
+        {createPortal(rt, ROOT)}
+        {props.open.value && createPortal(plane, ROOT)}
     </>
 }

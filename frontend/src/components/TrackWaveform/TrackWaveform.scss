@@ -1,0 +1,10 @@
+.waveform {
+    display: flex;
+    flex-direction: column;
+
+    > .bottom {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+}

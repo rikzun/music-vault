@@ -214,7 +214,7 @@ func EntryTrackWaveform(ctx *custom.Context) {
 		return
 	}
 
-	targetSize := 100
+	targetSize := 150
 	data := make([]int8, targetSize)
 
 	// Calculate the global maximum absolute sample value for normalization.

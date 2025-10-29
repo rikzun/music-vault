@@ -1,15 +1,7 @@
+import { DefaultMenuProps } from "./ContextMenu.types"
 import { useState } from "@utils/hooks"
 import { useEffect, useRef } from "react"
 import { Vector2 } from "src/common/types"
-
-export interface DefaultContextMenuData {
-    xPos: number
-    yPos: number
-}
-
-export interface DefaultMenuProps {
-    data: DefaultContextMenuData
-}
 
 const PADDING = 16
 

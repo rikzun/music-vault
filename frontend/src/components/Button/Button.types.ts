@@ -1,15 +1,16 @@
 import { MouseEvent, Ref } from "react"
-import type { IconType } from "react-icons"
+import { MdIcon } from "src/common/types"
 
 interface ButtonBaseProps {
     "aria-label"?: string
+    "data-cm"?: string
     className?: string
     onClick: (e: MouseEvent<HTMLButtonElement>) => void
     ref?: Ref<HTMLButtonElement> | undefined
 }
 
 export interface ButtonMenuProps extends ButtonBaseProps {
-    icon: IconType
+    icon: MdIcon
     isPressed: boolean
 }
 
@@ -23,5 +24,5 @@ export interface ButtonTextProps extends ButtonBaseProps {
 }
 
 export interface ButtonIconProps extends ButtonBaseProps {
-    icon: IconType
+    icon: MdIcon
 }

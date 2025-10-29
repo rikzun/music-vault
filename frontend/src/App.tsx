@@ -6,7 +6,6 @@ import { SectionSidebar } from "@components/SectionSidebar"
 import { SectionPlayer } from "@components/SectionPlayer"
 import { SectionPlaylist } from "@components/SectionPlaylist"
 import { SettingsAtoms } from "src/atoms/settings"
-import { IconContext } from "react-icons"
 import { useEffect } from "react"
 import { ClientResponse } from "./common/types"
 import { ClientAtoms } from "@atoms/client"
@@ -56,11 +55,9 @@ export function App() {
 
     return (
         <ContextMenuProvider>
-            <IconContext.Provider value={{ size: "24" }}>
-                <SectionSidebar />
-                <SectionPlayer />
-                <SectionPlaylist />
-            </IconContext.Provider>
+            <SectionSidebar />
+            <SectionPlayer />
+            <SectionPlaylist />
         </ContextMenuProvider>
     )
 }

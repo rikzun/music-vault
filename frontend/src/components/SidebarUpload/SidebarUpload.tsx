@@ -1,7 +1,7 @@
 import "./SidebarUpload.style.scss"
 import { Button } from "@components/Button"
 import { useInput, useState } from "@utils/hooks"
-import { MdCloudDownload } from "react-icons/md"
+import CloudDownloadRounded from "@mui/icons-material/CloudDownloadRounded"
 import { TrackData } from "@components/SidebarUpload/SidebarUpload.types"
 import { DragAndDrop } from "@components/DragAndDrop"
 import { UploadTrack } from "@components/UploadTrack"
@@ -97,7 +97,7 @@ export function SidebarUpload() {
 
     return (
         <div className="section-content section-content__upload">
-            <div className="title">
+            <div className="top">
                 Upload
             </div>
 
@@ -110,7 +110,7 @@ export function SidebarUpload() {
                     >
                         {!tracks.value.length && (
                             <div className="info-section">
-                                <MdCloudDownload id={iconID} />
+                                <CloudDownloadRounded id={iconID} />
                                 
                                 <span>Drag & Drop</span>
                                 <span>or <Button.Text value="browse" onClick={input.click} /></span>
