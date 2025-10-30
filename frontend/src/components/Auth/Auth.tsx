@@ -5,6 +5,7 @@ import { useState } from "@utils/hooks"
 import { SettingsAtoms } from "src/atoms/settings"
 import slideAudioUrl from "@assets/slide.mp3?url"
 import { SignResponse } from "src/common/types"
+import { LocalStorage } from "@utils/localStorage"
 
 interface SignData {
     email: string
@@ -30,7 +31,7 @@ export function Auth() {
     const signInHandler = (data: SignData) => {
         axios.post<SignResponse>("auth/sign-in", data).then((res) => {
             console.log(res)
-            localStorage.setItem("token", res.data.token)
+            LocalStorage.setString("token", res.data.token)
             tokenAtom.set(res.data.token)
             axios.defaults.headers["Authorization"] = res.data.token
         }).catch((reason) => {
@@ -41,7 +42,7 @@ export function Auth() {
     const signUpHandler = (data: SignData) => {
         axios.post<SignResponse>("auth/sign-up", data).then((res) => {
             console.log(res)
-            localStorage.setItem("token", res.data.token)
+            LocalStorage.setString("token", res.data.token)
             tokenAtom.set(res.data.token)
             axios.defaults.headers["Authorization"] = res.data.token
         }).catch((reason) => {

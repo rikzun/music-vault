@@ -1,5 +1,5 @@
 export interface ExpandedInputProps {
-    defaultValue?: stringN
-    value?: stringN
+    defaultValue?: string | null
+    value?: string | null
     onChange: (content: string) => void
 }

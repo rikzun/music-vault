@@ -8,15 +8,15 @@ export interface TrackImage {
 export class TrackData {
     file: File
     image: TrackImage | null
-    title: stringN
+    title: string | null
     artists: string[]
-    album: stringN
-    codec: stringN
-    bitrate: numberN
+    album: string | null
+    codec: string | null
+    bitrate: number | null
     lossless: boolean
 
-    id: numberN = null
-    progress: numberN = null
+    id: number | null = null
+    progress: number | null = null
     status: TrackStatus | null = null
 
     constructor(file: File, data: IAudioMetadata, image: TrackImage | null = null) {

@@ -7,6 +7,7 @@ import VolumeUpRounded from "@mui/icons-material/VolumeUpRounded"
 import { clamp } from "@utils/std"
 import { ReactEvent } from "@utils/react"
 import { Button } from "@components/Button"
+import { LocalStorage } from "@utils/localStorage"
 
 const KNOB_SIZE = 12
 const KNOB_SIZE_HALF = KNOB_SIZE / 2
@@ -16,20 +17,20 @@ export function Volume() {
     const muted = VolumeAtoms.useMuted()
 
     const position = useState(Math.min(volume.value, 100))
-    const rangeRef = useRef<HTMLDivElementN>(null)
-    const inputRef = useRef<HTMLInputElementN>(null)
+    const rangeRef = useRef<HTMLDivElement>(null)
+    const inputRef = useRef<HTMLInputElement>(null)
     const handleMouseMove = useState(false)
 
     const muteVolume = () => {
         muted.invert((newValue) => {
-            localStorage.setItem("volume.muted", newValue.toString())
+            LocalStorage.setBoolean("volume.muted", newValue)
         })
     }
 
     const setVolume = (value: number) => {
         volume.set(value)
         inputRef.current!.value = Math.floor(value).toString()
-        localStorage.setItem("volume.value", value.toString())
+        LocalStorage.setNumber("volume.value", value)
     }
 
     const moveVolume = (posX: number, shiftKey?: boolean) => {

@@ -5,15 +5,15 @@ import { useEffect, useRef } from "react"
 interface TrackWaveformProps {
     samples: number[]
 
-    currentTime: numberN
-    duration: numberN
+    currentTime: number | null
+    duration: number | null
 
     onTimeChangeStarted: () => void
     onTimeChange: (newTime: number) => void
     onTimeChangeEnded: () => void
 }
 
-function formatTime(value: numberN, roundFn: (x: number) => number) {
+function formatTime(value: number | null, roundFn: (x: number) => number) {
     const totalSeconds = roundFn(value ?? 0)
 
     const hours = Math.floor(totalSeconds / 3600)

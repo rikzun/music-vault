@@ -10,25 +10,36 @@ import { useState } from "@utils/hooks"
 
 export function SidebarPlaylist() {
     const playlist = PlaylistAtoms.usePlaylistID()
-    const ref = useRef<HTMLButtonElementN>(null)
+    const ref = useRef<HTMLButtonElement>(null)
     const dropdownOpen = useState<boolean>(false)
 
     return (
         <div className="section-content section-content__playlists">
             <div className="top">
                 <span>Playlists</span>
-                <Button.Icon icon={MoreHorizRounded} onClick={() => { dropdownOpen.invert() }} ref={ref} />
-                <Dropdown
+                <Button.Icon
+                    icon={MoreHorizRounded}
+                    // onClick={() => { dropdownOpen.invert() }}
+                    onClick={() => {
+                        
+                    }}
+                    ref={ref}
+                    data-pmi={{type: "playlists"}}
+                />
+                {/* <Dropdown
                     open={dropdownOpen}
                     anchorEl={ref.current}
                     //anchorOrigin={{ horizontal: "right", vertical: "center" }}
                     //transformOrigin={{ horizontal: "left", vertical: "center" }}
-                />
+                /> */}
             </div>
 
             <Scrollbar>
                 <div className="content">
-                    <Playlist onClick={() => playlist.set(0)} />
+                    <Playlist
+                        data-pm={{type: "playlist"}}
+                        onClick={() => playlist.set(0)}
+                    />
                 </div>
             </Scrollbar>
         </div>

@@ -2,7 +2,7 @@ import "./TrackImage.style.scss"
 import HideImageRounded from "@mui/icons-material/HideImageRounded"
 
 interface TrackImageProps {
-    imageURL?: stringN
+    imageURL?: string | null
 }
 
 export function TrackImage(props: TrackImageProps) {

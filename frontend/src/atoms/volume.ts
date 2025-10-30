@@ -1,10 +1,11 @@
 import { useAtom } from "@utils/hooks"
+import { LocalStorage } from "@utils/localStorage"
 import { atom } from "jotai"
 
-const value = atom(Number.parseFloat(localStorage.getItem("volume.value") ?? "50"))
-const muted = atom(localStorage.getItem("volume.muted") === "true")
-
 export namespace VolumeAtoms {
+    export const value = atom(LocalStorage.getNumber("volume.value", 50))
     export const useVolume = () => useAtom(value)
+
+    export const muted = atom(LocalStorage.getBoolean("volume.muted") ?? false)
     export const useMuted = () => useAtom(muted)
 }

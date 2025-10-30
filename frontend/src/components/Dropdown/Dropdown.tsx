@@ -18,7 +18,7 @@ interface TransformOrigin {
 
 export interface DropdownProps {
     open: StateHook<boolean>
-    anchorEl?: HTMLElementN
+    anchorEl?: HTMLElement | null
     anchorOrigin?: AnchorOrigin
     transformOrigin?: TransformOrigin
 }
@@ -49,9 +49,10 @@ const CALCULATE_ANCHOR_Y = {
     bottom: (rect: DOMRect) => (rect.top + rect.height)
 }
 
+/** @deprecated */
 export function Dropdown(props: DropdownProps) {
     const pos = useState<Vector2 | null>(null)
-    const ref = useRef<HTMLDivElementN>(null)
+    const ref = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         if (!props.anchorEl) return

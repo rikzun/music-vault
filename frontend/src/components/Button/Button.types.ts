@@ -1,9 +1,11 @@
 import { MouseEvent, Ref } from "react"
+import { PopupMenuData, PopupMenuInitiator } from "src/common/popupMenu"
 import { MdIcon } from "src/common/types"
 
 interface ButtonBaseProps {
     "aria-label"?: string
-    "data-cm"?: string
+    "data-pm"?: PopupMenuData
+    "data-pmi"?: PopupMenuInitiator
     className?: string
     onClick: (e: MouseEvent<HTMLButtonElement>) => void
     ref?: Ref<HTMLButtonElement> | undefined

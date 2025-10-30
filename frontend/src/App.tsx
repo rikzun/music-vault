@@ -9,7 +9,8 @@ import { SettingsAtoms } from "src/atoms/settings"
 import { useEffect } from "react"
 import { ClientResponse } from "./common/types"
 import { ClientAtoms } from "@atoms/client"
-import { ContextMenuProvider } from "@components/ContextMenu"
+import { PopupMenuProvider } from "@components/PopupMenu"
+import { LocalStorage } from "@utils/localStorage"
 
 axios.defaults.baseURL = ENV.APP_URL + "api"
 
@@ -23,9 +24,9 @@ export function App() {
             if (err.response?.status !== 401) return Promise.reject(err)
             console.log("any method returned 401")
 
-            localStorage.removeItem("token")
-            localStorage.removeItem("client.id")
-            localStorage.removeItem("client.login")
+            LocalStorage.remove("token")
+            LocalStorage.remove("client.id")
+            LocalStorage.remove("client.login")
             token.set(null)
             client.set(null)
             
@@ -34,8 +35,8 @@ export function App() {
 
         if (axios.defaults.headers["Authorization"] != null) {
             axios.get<ClientResponse>("client/me").then((res) => {
-                localStorage.setItem("client.id", res.data.id.toString())
-                localStorage.setItem("client.login", res.data.login)
+                LocalStorage.setNumber("client.id", res.data.id)
+                LocalStorage.setString("client.login", res.data.login)
                 client.set(res.data)
             })
         }
@@ -54,10 +55,10 @@ export function App() {
     if (token.value == null) return <Auth />
 
     return (
-        <ContextMenuProvider>
+        <PopupMenuProvider>
             <SectionSidebar />
             <SectionPlayer />
             <SectionPlaylist />
-        </ContextMenuProvider>
+        </PopupMenuProvider>
     )
 }

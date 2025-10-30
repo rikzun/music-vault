@@ -42,9 +42,9 @@ export function SectionPlayer() {
     const volume = VolumeAtoms.useVolume()
     const muted = VolumeAtoms.useMuted()
     
-    const currentTrackData = useState<TrackN>(null)
+    const currentTrackData = useState<Track | null>(null)
     const isPlaying = useState<boolean>(false)
-    const currentTime = useState<numberN>(null)
+    const currentTime = useState<number | null>(null)
     const currentTimeTimer = useRef<NodeJS.Timeout>(null)
     const waveformData = useState<number[]>([])
 

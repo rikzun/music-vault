@@ -11,7 +11,8 @@ export namespace Button {
         return (
             <button
                 aria-label={props["aria-label"]}
-                data-cm={props["data-cm"]}
+                data-pm={JSON.stringify(props["data-pm"])}
+                data-pmi={JSON.stringify(props["data-pmi"])}
                 aria-pressed={props.isPressed}
                 className={className}
                 onPointerDown={(e) => e.button == 0 && props.onClick(e)}
@@ -32,7 +33,8 @@ export namespace Button {
         return (
             <button
                 aria-label={props["aria-label"]}
-                data-cm={props["data-cm"]}
+                data-pm={JSON.stringify(props["data-pm"])}
+                data-pmi={JSON.stringify(props["data-pmi"])}
                 className={className}
                 onPointerDown={(e) => e.button == 0 && props.onClick(e)}
                 onKeyDown={handleEnter}
@@ -48,7 +50,8 @@ export namespace Button {
         return (
             <button
                 aria-label={props["aria-label"]}
-                data-cm={props["data-cm"]}
+                data-pm={JSON.stringify(props["data-pm"])}
+                data-pmi={JSON.stringify(props["data-pmi"])}
                 className={className}
                 onPointerDown={(e) => e.button == 0 && props.onClick(e)}
                 onKeyDown={handleEnter}
@@ -64,7 +67,8 @@ export namespace Button {
         return (
             <button
                 aria-label={props["aria-label"]}
-                data-cm={props["data-cm"]}
+                data-pm={JSON.stringify(props["data-pm"])}
+                data-pmi={JSON.stringify(props["data-pmi"])}
                 className={className}
                 onPointerDown={(e) => e.button == 0 && props.onClick(e)}
                 onKeyDown={handleEnter}

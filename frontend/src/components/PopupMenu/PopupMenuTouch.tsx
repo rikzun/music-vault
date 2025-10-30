@@ -1,7 +1,7 @@
 export function TouchMenu() {
     return (
         <div
-            className="contextmenu-component contextmenu-component__touch"
+            className="popup-menu-component popup-menu-component__touch"
             onContextMenu={(e) => {
                 e.stopPropagation()
                 e.preventDefault()

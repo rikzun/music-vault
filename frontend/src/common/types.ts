@@ -8,7 +8,7 @@ export interface SignResponse {
 export interface ClientResponse {
     id: number
     login: string
-    avatarURL: stringN
+    avatarURL: string | null
 }
 
 export interface Track {
@@ -19,7 +19,7 @@ export interface Track {
     imageURL: string
 
     title: string
-    album: stringN
+    album: string | null
     codec: string
     bitrate: number
     lossless: boolean
