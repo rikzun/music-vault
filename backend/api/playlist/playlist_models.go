@@ -19,8 +19,8 @@ type TrackData struct {
 
 	Duration float64 `json:"duration"`
 
-	Artists        []TrackArtist `json:"artists"`
-	OriginPlaylist *PlaylistData `json:"originPlaylist"`
+	Artists        []TrackArtist       `json:"artists"`
+	OriginPlaylist *ClientPlaylistData `json:"originPlaylist"`
 }
 
 type TrackArtist struct {
@@ -32,14 +32,15 @@ type PlaylistMetaBody struct {
 	Title string `json:"title"`
 }
 
-type PlaylistData struct {
+type ClientPlaylistData struct {
 	ID       uint    `json:"id"`
+	Position uint    `json:"position"`
 	ImageURL *string `json:"imageURL"`
-	Title    string  `json:"Title"`
+	Title    string  `json:"title"`
 }
 
-type Playlists struct {
-	Data []PlaylistData `json:"data"`
+type ClientPlaylists struct {
+	Data []ClientPlaylistData `json:"data"`
 }
 
 type PlaylistAddBody struct {

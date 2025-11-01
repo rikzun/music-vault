@@ -10,9 +10,13 @@ export function DefaultMenu() {
     const defaultMenuData = PopupMenuAtoms.useDefaultPosition()
     const pos = useState<Vector2 | null>(null)
     const ref = useRef<HTMLDivElement>(null)
-
+    
     useEffect(() => {
-        if (!defaultMenuData.value) return
+        if (!defaultMenuData.value) {
+            pos.set(null)
+            return
+        }
+
         let finalX = defaultMenuData.value.x
         let finalY = defaultMenuData.value.y
 
@@ -28,11 +32,14 @@ export function DefaultMenu() {
             case "bottom": { finalY -= rect.height    ; break }
         }
 
-        if (finalX < 0) finalX = PADDING
-        if (finalX + rect.width > document.body.clientWidth) finalX = document.body.clientWidth - rect.width - PADDING
+        const availableWidth = document.body.clientWidth - PADDING
+        const availableHeight = document.body.clientHeight - PADDING
 
-        if (finalY < 0) finalY = PADDING
-        if (finalY + rect.height > document.body.clientHeight) finalY = document.body.clientHeight - rect.height - PADDING
+        if (finalX < PADDING) finalX = PADDING
+        if (finalX + rect.width > availableWidth) finalX = availableWidth - rect.width
+
+        if (finalY < PADDING) finalY = PADDING
+        if (finalY + rect.height > availableHeight) finalY = availableHeight - rect.height
 
         pos.set({x: finalX, y: finalY})
         ref.current!.focus()

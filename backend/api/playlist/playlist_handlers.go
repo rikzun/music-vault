@@ -129,10 +129,10 @@ func EntryGetList(ctx *custom.Context) {
 	clientID := ctx.ClientID()
 	playlists := services.Playlist.FindByClient(*clientID)
 
-	data := make([]PlaylistData, 0, len(playlists))
+	data := make([]ClientPlaylistData, 0, len(playlists))
 	for _, track := range playlists {
 
-		data = append(data, PlaylistData{
+		data = append(data, ClientPlaylistData{
 			ID:       track.ID,
 			ImageURL: track.ImagePath,
 			Title:    track.Title,
@@ -141,7 +141,7 @@ func EntryGetList(ctx *custom.Context) {
 
 	ctx.JSON(
 		http.StatusOK,
-		Playlists{data},
+		ClientPlaylists{data},
 	)
 }
 
@@ -165,9 +165,9 @@ func EntryGetTracks(ctx *custom.Context) {
 			})
 		}
 
-		var originPlaylist *PlaylistData
+		var originPlaylist *ClientPlaylistData
 		if playlistTrack.OriginPlaylistID != nil {
-			originPlaylist = &PlaylistData{
+			originPlaylist = &ClientPlaylistData{
 				ID:       playlistTrack.OriginPlaylist.ID,
 				ImageURL: playlistTrack.OriginPlaylist.ImagePath,
 				Title:    playlistTrack.OriginPlaylist.Title,

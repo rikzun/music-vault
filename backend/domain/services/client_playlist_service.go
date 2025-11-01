@@ -18,7 +18,7 @@ func (clientPlaylist) Create(playlistID uint, authorID uint) {
 		Model(&domain.ClientPlaylistsEntity{}).
 		Where("client_id = ?", authorID).
 		Select("COALESCE(MAX(position), 0)").
-		Scan(maxPosition)
+		Scan(&maxPosition)
 
 	clientPlaylist := domain.ClientPlaylistsEntity{
 		ClientID:   authorID,
@@ -59,7 +59,7 @@ func (q *ClientPlaylistQuery) Build(clientID uint) []*domain.ClientPlaylistsEnti
 	db := global.Database().Where("client_id = ?", clientID)
 
 	if q.withPlaylist {
-		db = db.Order(clause.OrderByColumn{Column: clause.Column{Name: "Position"}, Desc: true})
+		db = db.Order(clause.OrderByColumn{Column: clause.Column{Name: "position"}, Desc: true})
 	}
 	if q.withPlaylist {
 		db = db.Preload("Playlist")

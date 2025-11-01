@@ -12,16 +12,6 @@ export function PopupMenuProvider(props: PropsWithChildren) {
     const touchMenuData = useState<true | null>(null)
 
     useLayoutEffect(() => {
-        const onClickCM = (e: MouseEvent, target: HTMLElement) => {
-            const pmi = JSON.parse(target.dataset["pm"]!) as PopupMenuInitiator
-            defaultMenuData.set({type: pmi.type, x: e.pageX, y: e.pageY})
-        }
-
-        const onTouchCM = (e: TouchEvent, target: HTMLElement) => {
-            const pmi = JSON.parse(target.dataset["pm"]!) as PopupMenuInitiator
-            touchMenuData.set(true)
-        }
-
         const onClickPMI = (target: HTMLElement) => {
             const pmi = JSON.parse(target.dataset["pmi"]!) as PopupMenuInitiator
             const rect = target.getBoundingClientRect()
@@ -51,6 +41,16 @@ export function PopupMenuProvider(props: PropsWithChildren) {
                 x: xPos,
                 y: yPos
             })
+        }
+        
+        const onClickCM = (e: MouseEvent, target: HTMLElement) => {
+            const pmi = JSON.parse(target.dataset["pm"]!) as PopupMenuInitiator
+            defaultMenuData.set({type: pmi.type, x: e.pageX, y: e.pageY})
+        }
+
+        const onTouchCM = (e: TouchEvent, target: HTMLElement) => {
+            const pmi = JSON.parse(target.dataset["pm"]!) as PopupMenuInitiator
+            touchMenuData.set(true)
         }
 
         let pointerTarget: HTMLElement | null = null
@@ -85,7 +85,7 @@ export function PopupMenuProvider(props: PropsWithChildren) {
                 ?.closest("[data-pm]") as HTMLElement
 
             if (!target) return
-            onClickCM(e, target!)
+            onClickCM(e, target)
         }
 
         let touchStartTimeoutID: NodeJS.Timeout
