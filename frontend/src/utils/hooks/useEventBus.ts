@@ -1,15 +1,21 @@
 import { useEffect } from "react"
-import { EventBusType } from "src/common/eventBus"
+import { EventBusData } from "src/common/eventBus"
 import mitt from "mitt"
 
-const emitter = mitt()
+export namespace EventBus {
+    const emitter = mitt<EventBusData>()
 
-export function useEventBus(type: EventBusType, cb: () => void) {
-    useEffect(() => {
-        emitter.on(type, cb)
+    export function emit<T extends keyof EventBusData>(type: T, data: EventBusData[T]) {
+        emitter.emit(type, data)
+    }
 
-        return () => {
-            emitter.off(type, cb)
-        }
-    }, [cb])
+    export function useListener<T extends keyof EventBusData>(type: T, cb: (data: EventBusData[T]) => void) {
+        useEffect(() => {
+            emitter.on(type, cb)
+    
+            return () => {
+                emitter.off(type, cb)
+            }
+        }, [type, cb])
+    }
 }

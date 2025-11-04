@@ -1,13 +1,40 @@
-import { PopupMenuType } from "src/common/popupMenu"
+import { PopupMenuOptions } from "src/common/popupMenu"
 
-export const options: Record<PopupMenuType, string[]> = {
+export const options: PopupMenuOptions = {
     "playlists": [
-        "Create new",
-        "Switch type display",
-        "Switch position change mode",
-        "Sort by",
+        {
+            label: "Create new",
+            onClick: () => {
+                console.log("aaaaaa")
+            }
+        },
+        {
+            label: "Switch type display"
+        },
+        {
+            label: "Switch position change mode"
+        },
+        {
+            label: "Sort by",
+            children: [
+                {
+                    label: "Creation date"
+                },
+                {
+                    label: "Modification date"
+                },
+                {
+                    label: "Number of tracks"
+                },
+                {
+                    label: "Duration"
+                }
+            ]
+        }
     ],
     "playlist": [
-        "Delete"
+        {
+            label: "Delete"
+        }
     ]
 }

@@ -2,6 +2,14 @@ export type PopupMenuType =
     | "playlists"
     | "playlist"
 
+export interface PopupMenuItem {
+    label: string
+    onClick?: (data?: Record<string, string>) => void
+    children?: PopupMenuItem[]
+}
+
+export type PopupMenuOptions = Record<PopupMenuType, PopupMenuItem[]>
+
 export type HorizontalPosition =
     | "left"
     | "center"
@@ -14,7 +22,7 @@ export type VerticalPosition =
 
 export interface PopupMenuData {
     type: PopupMenuType
-    data?: {[key: string]: string}
+    data?: Record<string, string>
 }
 
 export interface PopupMenuInitiator extends PopupMenuData {

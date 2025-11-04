@@ -3,6 +3,7 @@ import { options } from "@components/PopupMenu/PopupMenu.service"
 import { useState } from "@utils/hooks"
 import { useEffect, useRef } from "react"
 import { Vector2 } from "src/common/types"
+import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight"
 
 const PADDING = 16
 
@@ -21,20 +22,15 @@ export function DefaultMenu() {
         let finalY = defaultMenuData.value.y
 
         const rect = ref.current?.getBoundingClientRect()!
-
-        switch(defaultMenuData.value.transformH) {
-            case "center": { finalX -= rect.width / 2; break }
-            case "right": { finalX -= rect.width     ; break }
-        }
-
-        switch(defaultMenuData.value.transformV) {
-            case "center": { finalY -= rect.height / 2; break }
-            case "bottom": { finalY -= rect.height    ; break }
-        }
-
         const availableWidth = document.body.clientWidth - PADDING
         const availableHeight = document.body.clientHeight - PADDING
 
+        if (defaultMenuData.value.transformH == "center") finalX -= rect.width / 2
+        if (defaultMenuData.value.transformH == "right") finalX -= rect.width
+
+        if (defaultMenuData.value.transformV == "center") finalY -= rect.height / 2
+        if (defaultMenuData.value.transformV == "bottom") finalY -= rect.height
+        
         if (finalX < PADDING) finalX = PADDING
         if (finalX + rect.width > availableWidth) finalX = availableWidth - rect.width
 
@@ -58,13 +54,28 @@ export function DefaultMenu() {
             onContextMenu={(e) => { e.stopPropagation(); e.preventDefault() }}
             onTouchStart={(e) => e.stopPropagation()}
             onTouchEnd={(e) => e.stopPropagation()}
-        >
-            {options[defaultMenuData.value?.type].map((value, index) => (
-                <button className="option" key={value + "_" + index}>
-                    <div className="count">{index + 1}</div>
-                    <div className="text">{value}</div>
-                </button>
-            ))}
-        </div>
+            children={
+                options[defaultMenuData.value.type].map((option, index) => {
+                    const onClick = () => {
+                        option.onClick?.(defaultMenuData.value?.data)
+                        defaultMenuData.set(null)
+                    }
+
+                    return (
+                        <button className="option" key={option.label} onClick={onClick}>
+                            <div className="count">{index + 1}</div>
+    
+                            <div className="text">
+                                {option.label}
+                            </div>
+
+                            {Boolean(option.children?.length) &&
+                                <KeyboardArrowRight className="arrow" />
+                            }
+                        </button>
+                    )
+                })
+            }
+        />
     )
 }

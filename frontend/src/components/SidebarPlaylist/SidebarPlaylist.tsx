@@ -4,7 +4,6 @@ import { PlaylistAtoms } from "@atoms/playlist"
 import { Playlist } from "@components/Playlist"
 import { Scrollbar } from "@components/Scrollbar"
 import MoreHorizRounded from "@mui/icons-material/MoreHorizRounded"
-import { Dropdown } from "@components/Dropdown"
 import { useRef } from "react"
 import { useState } from "@utils/hooks"
 
@@ -19,7 +18,6 @@ export function SidebarPlaylist() {
                 <span>Playlists</span>
                 <Button.Icon
                     icon={MoreHorizRounded}
-                    // onClick={() => { dropdownOpen.invert() }}
                     onClick={() => {
                         
                     }}
