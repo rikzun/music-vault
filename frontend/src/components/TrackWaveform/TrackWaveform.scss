@@ -2,6 +2,10 @@
     display: flex;
     flex-direction: column;
 
+    > canvas {
+        cursor: pointer;
+    }
+
     > .bottom {
         width: 100%;
         display: flex;

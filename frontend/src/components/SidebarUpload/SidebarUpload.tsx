@@ -111,7 +111,7 @@ export function SidebarUpload() {
                         {!tracks.value.length && (
                             <div className="info-section">
                                 <CloudDownloadRounded id={iconID} />
-                                
+
                                 <span>Drag & Drop</span>
                                 <span>or <Button.Text value="browse" onClick={input.click} /></span>
                             </div>
@@ -134,11 +134,13 @@ export function SidebarUpload() {
             </Scrollbar>
 
             {(tracks.value.length > 0 && !isUploading.value) && (
-                <Button.Small
-                    value="Upload"
-                    onClick={onUpload}
-                    fullWidth
-                />
+                <div className="bottom">
+                    <Button.Small
+                        value="Upload"
+                        onClick={onUpload}
+                        fullWidth
+                    />
+                </div>
             )}
         </div>
     )

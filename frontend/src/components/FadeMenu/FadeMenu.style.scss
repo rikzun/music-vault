@@ -1,0 +1,9 @@
+.fade-menu {
+    position: relative;
+    transition: opacity 0.5s linear;
+    height: 100%;
+
+    > [data-overlayscrollbars] {
+        height: 100%;
+    }
+}

@@ -3,6 +3,7 @@ import HideImageRounded from "@mui/icons-material/HideImageRounded"
 
 interface TrackImageProps {
     imageURL?: string | null
+    onPlayStateChanged: () => void
 }
 
 export function TrackImage(props: TrackImageProps) {
@@ -17,6 +18,7 @@ export function TrackImage(props: TrackImageProps) {
         <div
             className={className}
             children={child}
+            onPointerUp={(e) => e.button == 0 && props.onPlayStateChanged()}
         />
     )
 }

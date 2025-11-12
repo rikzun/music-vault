@@ -31,7 +31,7 @@
         > .section-content {
             display: flex;
             flex-direction: column;
-            width: calc(100% - 72px);
+            width: 100%;
 
             > .top {
                 display: flex;
@@ -45,22 +45,36 @@
                     border-radius: 7px;
 
                     &:hover {
-                        cursor: pointer;
                         background-color: var(--background-b-color);
                     }
                 }
             }
 
-            > .scrollbar {
+            .fade-menu {
+                height: calc(100% - 56px);
+            }
+
+            .scrollbar-host {
                 height: 100%;
-                padding-left: 1rem;
-                padding-right: 1rem;
-                padding-bottom: 1rem;
 
                 > div[data-overlayscrollbars-contents] {
                     display: flex;
                     flex-direction: column;
+                    position: unset;
                 }
+            }
+
+            .content {
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+
+            > .bottom {
+                margin: 16px;
             }
         }
     }

@@ -1,12 +1,11 @@
+import { EventBus } from "@utils/hooks"
 import { PopupMenuOptions } from "src/common/popupMenu"
 
 export const options: PopupMenuOptions = {
     "playlists": [
         {
             label: "Create new",
-            onClick: () => {
-                console.log("aaaaaa")
-            }
+            onClick: () => EventBus.emit("playlistCreation")
         },
         {
             label: "Switch type display"
@@ -30,11 +29,6 @@ export const options: PopupMenuOptions = {
                     label: "Duration"
                 }
             ]
-        }
-    ],
-    "playlist": [
-        {
-            label: "Delete"
         }
     ]
 }

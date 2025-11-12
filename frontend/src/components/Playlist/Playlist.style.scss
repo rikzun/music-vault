@@ -5,6 +5,7 @@
     background-color: var(--background-b-color);
     padding: unset;
     overflow: hidden;
+    flex-shrink: 0;
 
     > .cover {
         height: 36px;

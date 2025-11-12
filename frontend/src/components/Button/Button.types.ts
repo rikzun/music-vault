@@ -7,7 +7,7 @@ interface ButtonBaseProps {
     "data-pm"?: PopupMenuData
     "data-pmi"?: PopupMenuInitiator
     className?: string
-    onClick: (e: MouseEvent<HTMLButtonElement>) => void
+    onClick?: ((e: MouseEvent<HTMLButtonElement>) => void) | null
     ref?: Ref<HTMLButtonElement> | undefined
 }
 
@@ -27,4 +27,5 @@ export interface ButtonTextProps extends ButtonBaseProps {
 
 export interface ButtonIconProps extends ButtonBaseProps {
     icon: MdIcon
+    exPadding?: number
 }

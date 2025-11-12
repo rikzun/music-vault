@@ -1,12 +1,11 @@
 import "./SectionPlayer.style.scss"
-import { useState } from "@utils/hooks"
+import { useResizeObserver, useState } from "@utils/hooks"
 import { useEffect, useRef } from "react"
 import { PlayerAtoms } from "@atoms/player"
 import { VolumeAtoms } from "@atoms/volume"
 import { TrackWaveform } from "@components/TrackWaveform"
 import { Track } from "src/common/types"
 import axios from "axios"
-import HideImageRounded from "@mui/icons-material/HideImageRounded"
 import ShuffleRounded from "@mui/icons-material/ShuffleRounded"
 import SkipPreviousRounded from "@mui/icons-material/SkipPreviousRounded"
 import PlayArrowRounded from "@mui/icons-material/PlayArrowRounded"
@@ -17,7 +16,6 @@ import { TrackImage } from "@components/TrackImage"
 
 const audioContext = new AudioContext()
 const audioElement = new Audio()
-;(window as any).kekw = audioElement
 
 const gainNode = audioContext.createGain()
 const track = audioContext.createMediaElementSource(audioElement)
@@ -132,12 +130,28 @@ export function SectionPlayer() {
         onPlayClick()
     }
 
+    // rewrite that shit
+    const ref = useResizeObserver((entries) => {
+        const target = document.getElementsByClassName("waveform")[0].children[0] as HTMLCanvasElement
+        const width = entries[0].contentRect.width
+
+        if (width >= 449) {
+            target.removeAttribute("style")
+            return
+        }
+        
+        target.style.width = width + "px"
+    })
+
     const PlayStateButton = isPlaying.value ? PauseRounded : PlayArrowRounded
 
     return (
-        <div className="section-player">
+        <div className="section-player" ref={ref}>
             <div className="track-data">
-                <TrackImage imageURL={currentTrackData.value?.imageURL} />
+                <TrackImage
+                    imageURL={currentTrackData.value?.imageURL}
+                    onPlayStateChanged={onPlayClick}
+                />
 
                 <div>{currentTrackData.value?.title ?? "No track"}</div>
                 <div>{currentTrackData.value?.artists.map((artist) => artist.name).join(", ")}</div>

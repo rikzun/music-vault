@@ -5,7 +5,7 @@ import mitt from "mitt"
 export namespace EventBus {
     const emitter = mitt<EventBusData>()
 
-    export function emit<T extends keyof EventBusData>(type: T, data: EventBusData[T]) {
+    export function emit<T extends keyof EventBusData>(type: T, data?: EventBusData[T]) {
         emitter.emit(type, data)
     }
 

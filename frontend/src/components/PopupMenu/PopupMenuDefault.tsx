@@ -38,7 +38,6 @@ export function DefaultMenu() {
         if (finalY + rect.height > availableHeight) finalY = availableHeight - rect.height
 
         pos.set({x: finalX, y: finalY})
-        ref.current!.focus()
     }, [defaultMenuData.value])
 
     if (!defaultMenuData.value?.type) return null

@@ -15,7 +15,7 @@ export namespace Button {
                 data-pmi={JSON.stringify(props["data-pmi"])}
                 aria-pressed={props.isPressed}
                 className={className}
-                onPointerDown={(e) => e.button == 0 && props.onClick(e)}
+                onPointerDown={props.onClick ? ((e) => e.button == 0 && props.onClick!(e)) : undefined}
                 onKeyDown={handleEnter}
             >
                 <div className="content">
@@ -36,7 +36,7 @@ export namespace Button {
                 data-pm={JSON.stringify(props["data-pm"])}
                 data-pmi={JSON.stringify(props["data-pmi"])}
                 className={className}
-                onPointerDown={(e) => e.button == 0 && props.onClick(e)}
+                onPointerDown={props.onClick ? ((e) => e.button == 0 && props.onClick!(e)) : undefined}
                 onKeyDown={handleEnter}
                 children={props.value}
             />
@@ -53,7 +53,7 @@ export namespace Button {
                 data-pm={JSON.stringify(props["data-pm"])}
                 data-pmi={JSON.stringify(props["data-pmi"])}
                 className={className}
-                onPointerDown={(e) => e.button == 0 && props.onClick(e)}
+                onPointerDown={props.onClick ? ((e) => e.button == 0 && props.onClick!(e)) : undefined}
                 onKeyDown={handleEnter}
                 children={props.value}
             />
@@ -63,6 +63,7 @@ export namespace Button {
     export function Icon(props: ButtonIconProps) {
         let className = "button-component button-icon"
         if (props.className) className += " " + props.className
+        if (props.exPadding != null) className += " button-icon__padding"
 
         return (
             <button
@@ -70,7 +71,7 @@ export namespace Button {
                 data-pm={JSON.stringify(props["data-pm"])}
                 data-pmi={JSON.stringify(props["data-pmi"])}
                 className={className}
-                onPointerDown={(e) => e.button == 0 && props.onClick(e)}
+                onPointerDown={props.onClick ? ((e) => e.button == 0 && props.onClick!(e)) : undefined}
                 onKeyDown={handleEnter}
                 children={<props.icon />}
                 ref={props.ref}

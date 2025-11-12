@@ -1,13 +1,8 @@
 .section-content__upload {
     .content {
-        height: 100%;
-
-        .dnd-component__active {
-            outline: 1px;
-        }
-
         .dnd-component {
             &__active {
+                outline: 1px;
                 justify-content: unset;
             }
 
@@ -23,11 +18,5 @@
                 }
             }
         }
-    }
-
-    > .button-component {
-        margin: 1rem;
-        width: auto;
-        flex-shrink: 0;
     }
 }

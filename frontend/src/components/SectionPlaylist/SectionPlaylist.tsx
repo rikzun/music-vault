@@ -1,14 +1,12 @@
-import { useEffect } from "react"
 import "./SectionPlaylist.style.scss"
 import axios from "axios"
-import { PlaylistAtoms } from "@atoms/playlist"
+import { useEffect } from "react"
 import { Track } from "src/common/types"
 import { UploadedPlaylistResponse } from "./SectionPlaylist.types"
 import { PlayerAtoms } from "@atoms/player"
 import { PlaylistTrack } from "@components/PlaylistTrack"
 
 export function SectionPlaylist() {
-    const playlist = PlaylistAtoms.usePlaylistID()
     const currentTrack = PlayerAtoms.useCurrentTrack()
     const trackList = PlayerAtoms.useTracklist()
 
@@ -21,7 +19,7 @@ export function SectionPlaylist() {
             })
 
             trackList.set(trackMap)
-        }).catch((res) => {})
+        })
     }, [])
 
     return (

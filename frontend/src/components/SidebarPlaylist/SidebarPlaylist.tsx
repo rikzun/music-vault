@@ -1,45 +1,51 @@
-import "./SidebarPlaylist.style.scss"
 import { Button } from "@components/Button"
 import { PlaylistAtoms } from "@atoms/playlist"
 import { Playlist } from "@components/Playlist"
 import { Scrollbar } from "@components/Scrollbar"
 import MoreHorizRounded from "@mui/icons-material/MoreHorizRounded"
-import { useRef } from "react"
-import { useState } from "@utils/hooks"
+import { EventBus, useState } from "@utils/hooks"
+import { FadeMenu } from "@components/FadeMenu"
+
+type Menu = "playlistList" | "playlistCreation"
 
 export function SidebarPlaylist() {
+    const menu = useState<Menu>("playlistList")
+    const playlistCreationMode = useState(false)
     const playlist = PlaylistAtoms.usePlaylistID()
-    const ref = useRef<HTMLButtonElement>(null)
-    const dropdownOpen = useState<boolean>(false)
+
+    EventBus.useListener("playlistCreation", () => {
+        playlistCreationMode.invert((newValue) => {
+            menu.set("playlistCreation")
+        })
+    })
 
     return (
         <div className="section-content section-content__playlists">
             <div className="top">
                 <span>Playlists</span>
+
                 <Button.Icon
                     icon={MoreHorizRounded}
-                    onClick={() => {
-                        
-                    }}
-                    ref={ref}
+                    exPadding={16}
                     data-pmi={{type: "playlists"}}
                 />
-                {/* <Dropdown
-                    open={dropdownOpen}
-                    anchorEl={ref.current}
-                    //anchorOrigin={{ horizontal: "right", vertical: "center" }}
-                    //transformOrigin={{ horizontal: "left", vertical: "center" }}
-                /> */}
             </div>
 
-            <Scrollbar>
-                <div className="content">
-                    <Playlist
-                        data-pm={{type: "playlist"}}
-                        onClick={() => playlist.set(0)}
-                    />
-                </div>
-            </Scrollbar>
+            <FadeMenu type="playlistList" active={menu.value}>
+                <Scrollbar>
+                    <div className="content">
+                        <Playlist onClick={() => playlist.set(0)} />
+                    </div>
+                </Scrollbar>
+            </FadeMenu>
+
+            <FadeMenu type="playlistCreation" active={menu.value}>
+                <Scrollbar>
+                    <div className="content">
+                        
+                    </div>
+                </Scrollbar>
+            </FadeMenu>
         </div>
     )
 }
