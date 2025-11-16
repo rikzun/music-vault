@@ -34,7 +34,6 @@
 
     &.button-small {
         display: block;
-        width: 32px;
         height: 32px;
         border-radius: 11px;
         color: var(--button-text-color);
@@ -43,6 +42,24 @@
         font-family: inherit;
         text-transform: uppercase;
         background-color: var(--button-white);
+
+        &__full-width {
+            width: 100%;
+        }
+    }
+
+    &.button-tiny {
+        display: block;
+        height: 24px;
+        border-radius: 7px;
+        color: var(--button-text-color);
+        font-size: 15px;
+        font-weight: 700;
+        font-family: inherit;
+        text-transform: uppercase;
+        background-color: var(--button-white);
+        padding-inline: 8px;
+        padding-block: 2px;
 
         &__full-width {
             width: 100%;

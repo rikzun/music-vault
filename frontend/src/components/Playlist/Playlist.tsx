@@ -5,7 +5,8 @@ import { PopupMenuData } from "src/common/popupMenu"
 
 interface PlaylistProps {
     "data-pm"?: PopupMenuData
-    onClick?: () => void
+    onClick: () => void
+    title: string
 }
 
 export function Playlist(props: PlaylistProps) {
@@ -13,7 +14,7 @@ export function Playlist(props: PlaylistProps) {
         <button
             className="playlist-component"
             data-pm={JSON.stringify(props["data-pm"])}
-            onPointerDown={(e) => e.button == 0 && props.onClick?.()}
+            onPointerDown={(e) => e.button == 0 && props.onClick()}
             onKeyDown={handleEnter}
         >
             <div className="cover cover__icon">
@@ -21,7 +22,7 @@ export function Playlist(props: PlaylistProps) {
             </div>
 
             <div className="title">
-                Uploaded
+                {props.title}
             </div>
         </button>
     )

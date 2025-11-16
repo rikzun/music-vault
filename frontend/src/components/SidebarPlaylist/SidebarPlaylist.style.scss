@@ -1,0 +1,7 @@
+.section-content__playlists {
+    .content {
+        > button:not(:last-child) {
+            margin-bottom: 8px;
+        }
+    }
+}

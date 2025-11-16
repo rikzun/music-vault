@@ -1,4 +1,4 @@
-import { MouseEvent, Ref } from "react"
+import { CSSProperties, MouseEvent, Ref } from "react"
 import { PopupMenuData, PopupMenuInitiator } from "src/common/popupMenu"
 import { MdIcon } from "src/common/types"
 
@@ -9,6 +9,7 @@ interface ButtonBaseProps {
     className?: string
     onClick?: ((e: MouseEvent<HTMLButtonElement>) => void) | null
     ref?: Ref<HTMLButtonElement> | undefined
+    color?: string
 }
 
 export interface ButtonMenuProps extends ButtonBaseProps {
@@ -20,6 +21,8 @@ export interface ButtonSmallProps extends ButtonBaseProps {
     value: string
     fullWidth?: boolean
 }
+
+export interface ButtonTinyProps extends ButtonSmallProps {}
 
 export interface ButtonTextProps extends ButtonBaseProps {
     value: string
