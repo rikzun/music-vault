@@ -4,7 +4,7 @@ import { FormEvent } from "react"
 import { useState } from "@utils/hooks"
 import { SettingsAtoms } from "src/atoms/settings"
 import slideAudioUrl from "@assets/slide.mp3?url"
-import { SignResponse } from "src/common/types"
+import { SignResponse } from "src/types/types"
 import { LocalStorage } from "@utils/localStorage"
 
 interface SignData {

@@ -1,7 +1,7 @@
 import "./Playlist.style.scss"
 import ArchiveRounded from "@mui/icons-material/ArchiveRounded"
 import { handleEnter } from "@utils/events"
-import { PopupMenuData } from "src/common/popupMenu"
+import { PopupMenuData } from "src/types/popupMenu"
 
 interface PlaylistProps {
     "data-pm"?: PopupMenuData

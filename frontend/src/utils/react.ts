@@ -31,3 +31,7 @@ export namespace ReactEvent {
     export type Animation   <T = Element>                 = AnimationEvent<T>
     export type Transition  <T = Element>                 = TransitionEvent<T>
 }
+
+export function attachName(component: React.ComponentType<any>, name: string) {
+    component.displayName = name
+}

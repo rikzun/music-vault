@@ -3,7 +3,7 @@ import "./Dropdown.styles.scss"
 import { StateHook, useState } from "@utils/hooks"
 import { ReactNode, useEffect, useRef } from "react"
 import { createPortal } from "react-dom"
-import { Vector2 } from "src/common/types"
+import { Vector2 } from "src/types/types"
 
 type VerticalAnchor = "top" | "center" | "bottom"
 type HorizontalAnchor = "left" | "center" | "right"

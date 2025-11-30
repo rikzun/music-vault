@@ -1,6 +1,6 @@
 import { CSSProperties, MouseEvent, Ref } from "react"
-import { PopupMenuData, PopupMenuInitiator } from "src/common/popupMenu"
-import { MdIcon } from "src/common/types"
+import { PopupMenuData, PopupMenuInitiator } from "src/types/popupMenu"
+import { MdIcon } from "src/types/types"
 
 interface ButtonBaseProps {
     "aria-label"?: string

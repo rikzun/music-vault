@@ -1,7 +1,7 @@
 import "./SectionPlaylist.style.scss"
 import axios from "axios"
 import { useEffect } from "react"
-import { Track } from "src/common/types"
+import { Track } from "src/types/types"
 import { UploadedPlaylistResponse } from "./SectionPlaylist.types"
 import { PlayerAtoms } from "@atoms/player"
 import { PlaylistTrack } from "@components/PlaylistTrack"

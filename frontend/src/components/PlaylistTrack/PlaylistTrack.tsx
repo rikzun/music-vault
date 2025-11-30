@@ -1,5 +1,5 @@
 import "./PlaylistTrack.style.scss"
-import { Track } from "src/common/types"
+import { Track } from "src/types/types"
 import { ReactNode } from "react"
 import { handleEnter } from "@utils/events"
 

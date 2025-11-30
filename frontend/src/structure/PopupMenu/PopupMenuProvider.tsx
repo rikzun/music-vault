@@ -5,7 +5,7 @@ import { Fragment, PropsWithChildren, useLayoutEffect } from "react"
 import { TouchMenu } from "./PopupMenuTouch"
 import { Plane } from "@components/Plane"
 import { PopupMenuAtoms } from "@atoms/popupMenu"
-import { PopupMenuInitiator } from "src/common/popupMenu"
+import { PopupMenuInitiator } from "src/types/popupMenu"
 
 export function PopupMenuProvider(props: PropsWithChildren) {
     const defaultMenuData = PopupMenuAtoms.useDefaultPosition()

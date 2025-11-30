@@ -1,6 +1,6 @@
 import { useAtom } from "@utils/hooks"
 import { atom } from "jotai"
-import { Track } from "src/common/types"
+import { Track } from "src/types/types"
 
 export namespace PlayerAtoms {
     export const currentTrack = atom<number | null>(null)

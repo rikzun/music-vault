@@ -1,7 +1,7 @@
 import { useAtom } from "@utils/hooks"
 import { LocalStorage } from "@utils/localStorage"
 import { atom } from "jotai"
-import { ClientResponse } from "src/common/types"
+import { ClientResponse } from "src/types/types"
 
 export namespace ClientAtoms {
     export const client = atom<ClientResponse | null>((() => {

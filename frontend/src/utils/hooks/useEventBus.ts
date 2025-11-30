@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { EventBusData } from "src/common/eventBus"
+import { EventBusData } from "src/types/eventBus"
 import mitt from "mitt"
 
 export namespace EventBus {

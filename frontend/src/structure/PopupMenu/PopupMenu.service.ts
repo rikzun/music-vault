@@ -1,5 +1,5 @@
 import { EventBus } from "@utils/hooks"
-import { PopupMenuOptions } from "src/common/popupMenu"
+import { PopupMenuOptions } from "src/types/popupMenu"
 
 export const options: PopupMenuOptions = {
     "playlists": [

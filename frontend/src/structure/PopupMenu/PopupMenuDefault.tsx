@@ -1,8 +1,8 @@
 import { PopupMenuAtoms } from "@atoms/popupMenu"
-import { options } from "@components/PopupMenu/PopupMenu.service"
+import { options } from "src/structure/PopupMenu/PopupMenu.service"
 import { useState } from "@utils/hooks"
 import { useEffect, useRef } from "react"
-import { Vector2 } from "src/common/types"
+import { Vector2 } from "src/types/types"
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight"
 
 const PADDING = 16

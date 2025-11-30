@@ -1,4 +1,4 @@
-import { Track } from "src/common/types";
+import { Track } from "src/types/types";
 
 export interface UploadedPlaylistResponse {
     data: Track[]

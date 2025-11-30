@@ -1,7 +1,7 @@
 import { useAtom } from "@utils/hooks"
 import { atom } from "jotai"
-import { PopupMenuInitiator, PopupMenuType } from "src/common/popupMenu"
-import { Vector2 } from "src/common/types"
+import { PopupMenuInitiator, PopupMenuType } from "src/types/popupMenu"
+import { Vector2 } from "src/types/types"
 
 type PopupMenuData = Omit<Omit<PopupMenuInitiator, "anchorH">, "anchorV"> & Vector2
 

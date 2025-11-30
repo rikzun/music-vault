@@ -2,41 +2,44 @@ import "./App.style.scss"
 import "overlayscrollbars/overlayscrollbars.css"
 import axios, { AxiosError } from "axios"
 import { Auth } from "@components/Auth"
-import { SectionSidebar } from "@components/SectionSidebar"
-import { SectionPlayer } from "@components/SectionPlayer"
-import { SectionPlaylist } from "@components/SectionPlaylist"
+import { SectionSidebar } from "src/structure/SectionSidebar"
+import { SectionPlayer } from "src/structure/SectionPlayer"
+import { SectionPlaylist } from "src/structure/SectionPlaylist"
 import { SettingsAtoms } from "src/atoms/settings"
 import { useEffect } from "react"
-import { ClientResponse } from "./common/types"
+import { ClientResponse } from "./types/types"
 import { ClientAtoms } from "@atoms/client"
-import { PopupMenuProvider } from "@components/PopupMenu"
+import { PopupMenuProvider } from "src/structure/PopupMenu"
 import { LocalStorage } from "@utils/localStorage"
 
-axios.defaults.baseURL = ENV.APP_URL + "api"
 
 export function App() {
     const token = SettingsAtoms.useToken()
     const client = ClientAtoms.useClient()
-    axios.defaults.headers["Authorization"] = token.value
 
     useEffect(() => {
-        axios.interceptors.response.use((res) => res, (err: AxiosError) => {
-            if (err.response?.status !== 401) return Promise.reject(err)
-            console.log("any method returned 401")
+        axios.defaults.baseURL = ENV.APP_URL + "api"
 
-            LocalStorage.remove("token")
-            LocalStorage.remove("client.id")
-            LocalStorage.remove("client.login")
-            token.set(null)
-            client.set(null)
+        axios.interceptors.response.use((res) => res, (err: AxiosError) => {
+            if (err.response?.status == 401) {
+                LocalStorage.remove("token")
+                LocalStorage.remove("client.id")
+                LocalStorage.remove("client.login")
+
+                token.set(null)
+                client.set(null)
+            }
             
             return Promise.reject(err)
         })
 
-        if (axios.defaults.headers["Authorization"] != null) {
+        if (token.value) {
+            axios.defaults.headers["Authorization"] = token.value
+
             axios.get<ClientResponse>("client/me").then((res) => {
                 LocalStorage.setNumber("client.id", res.data.id)
                 LocalStorage.setString("client.login", res.data.login)
+                
                 client.set(res.data)
             })
         }
