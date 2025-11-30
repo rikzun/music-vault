@@ -45,7 +45,7 @@ export function PopupMenuProvider(props: PropsWithChildren) {
         
         const onClickCM = (e: MouseEvent, target: HTMLElement) => {
             const pmi = JSON.parse(target.dataset["pm"]!) as PopupMenuInitiator
-            defaultMenuData.set({type: pmi.type, x: e.pageX, y: e.pageY})
+            defaultMenuData.set({type: pmi.type, x: e.pageX, y: e.pageY, data: pmi.data})
         }
 
         const onTouchCM = (e: TouchEvent, target: HTMLElement) => {

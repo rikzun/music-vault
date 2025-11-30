@@ -55,6 +55,7 @@ export function SidebarPlaylist() {
                             {playlists.value.map((p) => (
                                 <Playlist
                                     title={p.title}
+                                    data-pm={{ type: "addPlaylistToBuffer", data: { id: String(p.id) } }}
                                     onClick={() => {
                                         currentPlaylist.set(p.id)
                                         // axios.post(`playlist/${p.id}/add-track`, {

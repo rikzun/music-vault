@@ -30,5 +30,12 @@ export const options: PopupMenuOptions = {
                 }
             ]
         }
+    ],
+    "addPlaylistToBuffer": [
+        {
+            label: "Add to buffer",
+            // TODO we need to do something about this (haha)
+            onClick: (data) => data ? EventBus.emit("playlistAddToBuffer", { id: Number(data.id) }) : null
+        }
     ]
 }

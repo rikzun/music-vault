@@ -12,14 +12,14 @@ import { ClientAtoms } from "@atoms/client"
 import { PopupMenuProvider } from "src/structure/PopupMenu"
 import { LocalStorage } from "@utils/localStorage"
 
+axios.defaults.baseURL = ENV.APP_URL + "api"
 
 export function App() {
     const token = SettingsAtoms.useToken()
     const client = ClientAtoms.useClient()
+    axios.defaults.headers["Authorization"] = token.value
 
     useEffect(() => {
-        axios.defaults.baseURL = ENV.APP_URL + "api"
-
         axios.interceptors.response.use((res) => res, (err: AxiosError) => {
             if (err.response?.status == 401) {
                 LocalStorage.remove("token")
@@ -34,8 +34,6 @@ export function App() {
         })
 
         if (token.value) {
-            axios.defaults.headers["Authorization"] = token.value
-
             axios.get<ClientResponse>("client/me").then((res) => {
                 LocalStorage.setNumber("client.id", res.data.id)
                 LocalStorage.setString("client.login", res.data.login)

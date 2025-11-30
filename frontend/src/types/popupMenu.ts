@@ -1,5 +1,6 @@
 export type PopupMenuType =
     | "playlists"
+    | "addPlaylistToBuffer"
 
 export interface PopupMenuItem {
     label: string

@@ -6,6 +6,7 @@ export namespace EventBus {
     const emitter = mitt<EventBusData>()
 
     export function emit<T extends keyof EventBusData>(type: T, data?: EventBusData[T]) {
+        //@ts-ignore
         emitter.emit(type, data)
     }
 
