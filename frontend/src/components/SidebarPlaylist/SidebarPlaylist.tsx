@@ -8,25 +8,18 @@ import { EventBus, useState } from "@utils/hooks"
 import { FadeMenu, FadeMenuContainer } from "@components/FadeMenu"
 import { PlaylistCreation } from "@components/PlaylistCreation"
 import { useEffect } from "react"
+import { GetListPlaylistResponse } from "./SidebarPlaylist.types"
 import axios from "axios"
-import { GetListPlaylistResponse, PlaylistShortData } from "./SidebarPlaylist.types"
-import { PlayerAtoms } from "@atoms/player"
 
 type Menu = "playlistList" | "playlistCreation"
 
 export function SidebarPlaylist() {
     const menu = useState<Menu>("playlistList")
     const currentPlaylist = PlaylistAtoms.useCurrentPlaylistID()
-    const playlists = useState<PlaylistShortData[]>([])
-    const trackList = PlayerAtoms.useTracklist()
+    const playlists = PlaylistAtoms.usePlaylists()
 
-    EventBus.useListener("playlistCreation", () => {
-        menu.set("playlistCreation")
-    })
-
-    EventBus.useListener("playlistCreationCancel", () => {
-        menu.set("playlistList")
-    })
+    EventBus.useListener("playlistCreation", () => menu.set("playlistCreation"))
+    EventBus.useListener("playlistCreationCancel", () => menu.set("playlistList"))
 
     useEffect(() => {
         axios.get<GetListPlaylistResponse>("playlist/get-list").then((res) => {

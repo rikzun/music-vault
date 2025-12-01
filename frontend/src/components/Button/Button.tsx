@@ -1,3 +1,4 @@
+import { CSSProperties } from "@mui/material"
 import "./Button.style.scss"
 import { ButtonIconProps, ButtonMenuProps, ButtonSmallProps, ButtonTextProps, ButtonTinyProps } from "./Button.types"
 import { handleEnter } from "@utils/events"
@@ -19,7 +20,7 @@ export namespace Button {
                 onKeyDown={handleEnter}
                 style={props.color ? { color: props.color } : undefined}
             >
-                <div className="content">
+                <div className="button-content">
                     <props.icon htmlColor="var(--background-color)" />
                 </div>
             </button>
@@ -85,8 +86,7 @@ export namespace Button {
     export function Icon(props: ButtonIconProps) {
         let className = "button-component button-icon"
         if (props.className) className += " " + props.className
-        if (props.exPadding != null) className += " button-icon__padding"
-
+        
         return (
             <button
                 aria-label={props["aria-label"]}

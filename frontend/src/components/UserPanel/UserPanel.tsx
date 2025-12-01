@@ -1,23 +1,17 @@
 import "./UserPanel.style.scss"
 import HideImageRounded from "@mui/icons-material/HideImageRounded"
 import SettingsRounded from "@mui/icons-material/SettingsRounded"
-import ClearRounded from "@mui/icons-material/ClearRounded"
 import { Volume } from "@components/Volume"
 import { ClientAtoms } from "@atoms/client"
 import { Button } from "@components/Button"
-import { BufferAtoms } from "@atoms/buffer"
+import { PlaylistBuffer } from "@components/PlaylistBuffer"
 
 export function UserPanel() {
     const client = ClientAtoms.useClient()
-    const bufferedPlaylist = BufferAtoms.usePlaylistID()
 
     return (
         <div className="user-panel">
-            {bufferedPlaylist.value !== null && <div className="buffer">
-                TEST
-                <Button.Icon onClick={() => bufferedPlaylist.set(null)} icon={ClearRounded} />
-                <div className="background" />
-            </div>}
+            <PlaylistBuffer />
 
             <Volume />
 

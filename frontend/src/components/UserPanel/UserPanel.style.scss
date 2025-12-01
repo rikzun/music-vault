@@ -8,23 +8,10 @@
         border-top-left-radius: 11px;
     }
 
-    > .buffer {
-        position: relative;
-        height: 48px;
-        
+    > .playlist-buffer-component {
         > .background {
-            position: absolute;
-            left: 0;
-            top: 0;
-
-            height: calc(100% + 11px);
-            width: 100%;
-            z-index: -1;
-
             border-top-right-radius: 11px;
             border-top-left-radius: 11px;
-            overflow: hidden;
-            background-color: red;
         }
     }
 
