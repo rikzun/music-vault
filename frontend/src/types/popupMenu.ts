@@ -1,14 +1,8 @@
+import { PrimitiveType } from "src/types/types"
+
 export type PopupMenuType =
     | "playlists"
     | "addPlaylistToBuffer"
-
-export interface PopupMenuItem {
-    label: string
-    onClick?: (data?: Record<string, string>) => void
-    children?: PopupMenuItem[]
-}
-
-export type PopupMenuOptions = Record<PopupMenuType, PopupMenuItem[]>
 
 export type HorizontalPosition =
     | "left"
@@ -22,7 +16,7 @@ export type VerticalPosition =
 
 export interface PopupMenuData {
     type: PopupMenuType
-    data?: Record<string, string>
+    data?: Record<string, PrimitiveType>
 }
 
 export interface PopupMenuInitiator extends PopupMenuData {

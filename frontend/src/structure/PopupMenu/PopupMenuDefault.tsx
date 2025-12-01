@@ -41,6 +41,7 @@ export function DefaultMenu() {
     }, [defaultMenuData.value])
 
     if (!defaultMenuData.value?.type) return null
+    
     return (
         <div
             className="popup-menu-component popup-menu-component__default"

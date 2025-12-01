@@ -1,4 +1,4 @@
-import { CSSProperties, MouseEvent, Ref } from "react"
+import { MouseEvent, Ref } from "react"
 import { PopupMenuData, PopupMenuInitiator } from "src/types/popupMenu"
 import { MdIcon } from "src/types/types"
 

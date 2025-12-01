@@ -42,3 +42,6 @@ export interface Vector2 {
 export type MdIcon = OverridableComponent<SvgIconTypeMap<{}, "svg">> & {
     muiName: string
 }
+
+export type PrimitiveType = string | number | boolean
+export type PrimitiveTypeNullable = PrimitiveType | undefined | null

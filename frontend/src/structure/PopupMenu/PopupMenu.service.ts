@@ -1,5 +1,15 @@
 import { EventBus } from "@utils/hooks"
-import { PopupMenuOptions } from "src/types/popupMenu"
+import { PopupMenuType } from "src/types/popupMenu"
+import { getDefaultStore } from "jotai"
+import { BufferAtoms } from "@atoms/buffer"
+
+export interface PopupMenuItem {
+    label: string
+    onClick?: (data?: any) => void
+    children?: PopupMenuItem[]
+}
+
+export type PopupMenuOptions = Record<PopupMenuType, PopupMenuItem[]>
 
 export const options: PopupMenuOptions = {
     "playlists": [
@@ -34,8 +44,9 @@ export const options: PopupMenuOptions = {
     "addPlaylistToBuffer": [
         {
             label: "Add to buffer",
-            // TODO we need to do something about this (haha)
-            onClick: (data) => data ? EventBus.emit("playlistAddToBuffer", { id: Number(data.id) }) : null
+            onClick: (data: { id: number }) => {
+                getDefaultStore().set(BufferAtoms.playlistID, data.id)
+            }
         }
     ]
 }

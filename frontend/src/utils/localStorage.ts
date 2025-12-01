@@ -1,10 +1,4 @@
-export type LocalStorageKey =
-    | "client.id"
-    | "client.login"
-    | "playlistID"
-    | "token"
-    | "volume.value"
-    | "volume.muted"
+import { LocalStorageKey } from "../types/localStorageKey"
 
 export class LocalStorage {
     static getString(key: LocalStorageKey): string | null
