@@ -4,23 +4,30 @@
     border-radius: 11px;
     padding: 8px;
 
-    .field {
-        margin-bottom: 8px;
-
-        > .title {
-            text-transform: uppercase;
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            color: var(--text-caption-color);
+    > .column {
+        &:first-child {
+            width: 100%;
+            margin-right: 4px;
         }
 
-        > input {
-            background-color: var(--background-color);
-            border-radius: 7px;
-            border: 1px solid var(--background-main-color);
-            height: 30px;
-            color: var(--text-white);
+        > .field {
+            margin-bottom: 8px;
+    
+            > .title {
+                text-transform: uppercase;
+                font-size: 10px;
+                font-weight: 700;
+                letter-spacing: 1px;
+                color: var(--text-caption-color);
+            }
+    
+            > input {
+                background-color: var(--background-color);
+                border-radius: 7px;
+                border: 1px solid var(--background-main-color);
+                height: 30px;
+                color: var(--text-white);
+            }
         }
     }
 

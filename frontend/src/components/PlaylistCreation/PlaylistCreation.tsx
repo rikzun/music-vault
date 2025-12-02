@@ -1,28 +1,34 @@
-import { ImageLoader } from "@components/ImageLoader"
 import "./PlaylistCreation.style.scss"
 import { EventBus, useState } from "@utils/hooks"
-import { Button } from "@components/Button";
-import { useEffect } from "react";
-import axios from "axios";
+import { Button } from "@components/Button"
+import axios from "axios"
+import { Input } from "@components/Input"
+import { concatArrayBuffers } from "@utils/std"
 
 export function PlaylistCreation() {
-    const title = useState<string>("");
+    const title = useState("")
+    const image = useState<File | null>(null)
+    const imageURL = useState<string | null>(null)
 
-    const onCreate = () => {
-        const data = JSON.stringify({
-            title: title.value,
-        })
+    const onCreate = async () => {
+        const json = JSON.stringify({ title: title.value })
 
-        const buffer = new TextEncoder()
-            .encode(data)
-            .buffer as ArrayBuffer
+        const metaBuffer = new TextEncoder()
+            .encode(json).buffer
+        
+        const imageBuffer = await image.value
+            ?.arrayBuffer()
+        
+        const data = imageBuffer
+            ? concatArrayBuffers(metaBuffer, imageBuffer)
+            : metaBuffer
 
-        axios.post("/playlist/create", buffer, {
+        axios.post("/playlist/create", data, {
             headers: {
                 "Content-Type": "application/octet-stream",
-                "X-Meta-Size": buffer.byteLength,
+                "X-Meta-Size": metaBuffer.byteLength,
             }
-        }).then((res) => {
+        }).then(() => {
             EventBus.emit("playlistCreationCancel")
         })
     }
@@ -44,6 +50,7 @@ export function PlaylistCreation() {
                         value="SAVE"
                         fullWidth
                     />
+
                     <Button.Tiny
                         color="var(--error-color)"
                         onClick={() => EventBus.emit("playlistCreationCancel")}
@@ -53,7 +60,13 @@ export function PlaylistCreation() {
             </div>
 
             <div className="column">
-                <ImageLoader imageURL="" />
+                <Input.Image
+                    imageURL={imageURL.value}
+                    onChange={(file) => {
+                        image.set(file)
+                        imageURL.set(URL.createObjectURL(file))
+                    }}
+                />
             </div>
         </div>
     )

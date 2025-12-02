@@ -1,6 +1,6 @@
 import { ReactEvent } from "@utils/react"
 
-export function handleEnter(e: ReactEvent.Keyboard<HTMLButtonElement>) {
+export function handleEnter<T extends Element>(e: ReactEvent.Keyboard<T>) {
     if (e.key !== "Enter") return
     e.preventDefault()
 

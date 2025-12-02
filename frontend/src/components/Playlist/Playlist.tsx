@@ -1,24 +1,31 @@
 import "./Playlist.style.scss"
 import ArchiveRounded from "@mui/icons-material/ArchiveRounded"
-import { handleEnter } from "@utils/events"
+import { useTrueClick } from "@utils/hooks/useTrueClick"
 import { PopupMenuData } from "src/types/popupMenu"
 
 interface PlaylistProps {
-    "data-pm"?: PopupMenuData
-    onClick: () => void
     title: string
+    imageURL?: string | null
+    onClick: () => void
+    "data-pm"?: PopupMenuData
 }
 
 export function Playlist(props: PlaylistProps) {
-    return (
+    const trueClick = useTrueClick(props.onClick)
+
+    const style = props.imageURL
+        ? { "--background-url": `url(${ENV.APP_URL + props.imageURL})` }
+        : undefined
+
+    return (    
         <button
             className="playlist-component"
             data-pm={JSON.stringify(props["data-pm"])}
-            onPointerDown={(e) => e.button == 0 && props.onClick()}
-            onKeyDown={handleEnter}
+            style={style}
+            {...trueClick}
         >
             <div className="cover cover__icon">
-                <ArchiveRounded />
+                {!Boolean(props.imageURL) && <ArchiveRounded />}
             </div>
 
             <div className="title">
