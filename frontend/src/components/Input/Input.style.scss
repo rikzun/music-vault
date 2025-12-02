@@ -28,6 +28,10 @@
 
         &__empty {
             border: 1px dashed white;
+
+            > .cover {
+                border: unset !important;
+            }
         }
 
         > .cover {
