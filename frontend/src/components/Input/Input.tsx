@@ -1,14 +1,18 @@
-import { ExpandedInputProps } from "@components/Input/Input.types"
 import "./Input.style.scss"
+import { InputExpandedProps, InputImageProps } from "@components/Input/Input.types"
+import { useInput } from "@utils/hooks"
+import { useTrueClick } from "@utils/hooks/useTrueClick"
+import SearchRounded from "@mui/icons-material/SearchRounded"
+import HideImageRounded from "@mui/icons-material/HideImageRounded"
 
 export namespace Input {
-    export function Expanded(props: ExpandedInputProps) {
+    export function Expanded(props: InputExpandedProps) {
         return (
             <textarea
                 spellCheck={false}
                 value={props.value || undefined}
                 defaultValue={props.defaultValue || undefined}
-                className="input-component input-component__expanded"
+                className="input-component input-component-expanded"
                 onChange={(e) => {
                     props.onChange?.(e.target.value)
                     
@@ -17,6 +21,27 @@ export namespace Input {
                     e.target.style.height = height + "px"
                 }}
             />
+        )
+    }
+
+    export function Image(props: InputImageProps) {
+        const input = useInput({ handler: props.onChange })
+        const trueClick = useTrueClick(input.click)
+
+        let className = "input-component input-component-image"
+        if (!props.imageURL) className += " input-component-image__empty"
+
+        return (
+            <button className={className} {...trueClick}>
+                <div className="cover">
+                    <SearchRounded />
+                </div>
+
+                {props.imageURL
+                    ? <img src={props.imageURL} />
+                    : <HideImageRounded />
+                }
+            </button>
         )
     }
 }
