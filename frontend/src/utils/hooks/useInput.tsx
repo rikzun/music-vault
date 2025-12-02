@@ -1,8 +1,13 @@
-export interface InputHookProps {
+export type InputHookProps = {
     handler: (files: File[]) => void
     /** allowed file extensions withot dot */
     extensions?: string[]
-    multiple?: boolean
+    multiple: true
+} | {
+    handler: (file: File) => void
+    /** allowed file extensions withot dot */
+    extensions?: string[]
+    multiple?: false
 }
 
 export interface InputHook {
@@ -25,7 +30,12 @@ export function useInput(props: InputHookProps): InputHook {
         input.onchange = (e) => {
             const target = (e.target as HTMLInputElement)
             const files = Array.from(target.files ?? [])
-            props.handler(files)
+
+            if (props.multiple) {
+                (props.handler as (files: File[]) => void)(files)
+            } else {
+                (props.handler as (file: File) => void)(files[0])
+            }
         }
 
         input.click()
