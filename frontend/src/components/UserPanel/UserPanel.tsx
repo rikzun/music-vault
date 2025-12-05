@@ -1,13 +1,34 @@
 import "./UserPanel.style.scss"
 import HideImageRounded from "@mui/icons-material/HideImageRounded"
 import SettingsRounded from "@mui/icons-material/SettingsRounded"
+import FolderRounded from "@mui/icons-material/FolderRounded"
+import CreateNewFolderRounded from "@mui/icons-material/CreateNewFolderRounded"
 import { Volume } from "@components/Volume"
 import { ClientAtoms } from "@atoms/client"
 import { Button } from "@components/Button"
 import { PlaylistBuffer } from "@components/PlaylistBuffer"
+import { FS } from "@utils/fs"
+import { useEffect } from "react"
+import { useState } from "@utils/hooks"
 
 export function UserPanel() {
     const client = ClientAtoms.useClient()
+    const isSupportedFS = useState(FS.isSupported())
+    const isStoredInFS = useState(true)
+
+    useEffect(() => {
+        if (!FS.isSupported()) return
+
+        FS.isStored().then((v) => {
+            isStoredInFS.set(v)
+        })
+    }, [])
+
+    const onOpenDialog = () => {
+        FS.openDialog().then((isSelected) => {
+            isStoredInFS.set(isSelected)
+        })
+    }
 
     return (
         <div className="user-panel">
@@ -27,9 +48,16 @@ export function UserPanel() {
                     </div>
                 </div>
 
-                <div className="settings-button">
+                <div className="buttons">
+                    {isSupportedFS.value &&
+                        <Button.Icon
+                            onClick={onOpenDialog}
+                            icon={isStoredInFS.value ? FolderRounded : CreateNewFolderRounded}
+                            color={isStoredInFS.value ? undefined : "#ff5d5a"}
+                        />
+                    }
+                    
                     <Button.Icon
-                        onClick={console.log}
                         icon={SettingsRounded}
                     />
                 </div>

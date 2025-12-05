@@ -18,7 +18,7 @@ export function PlaylistBuffer() {
     return (
         <div className="playlist-buffer-component">
             <div className="background">
-                {playlist.imageURL && <img src={playlist.imageURL} />}
+                {playlist.imageURL && <img src={ENV.APP_URL + playlist.imageURL} />}
             </div>
 
             <div className="block">

@@ -47,6 +47,21 @@
             }
         }
 
+        > .buttons {
+            display: flex;
+            
+            > .button-component {
+                margin-right: 9px;
+
+                height: 42px;
+                width: 42px;
+                
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+        }
+
         > .settings-button {
             padding-right: 18px;
         }

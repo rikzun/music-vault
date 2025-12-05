@@ -5,11 +5,10 @@ import { Playlist } from "@components/Playlist"
 import { Scrollbar } from "@components/Scrollbar"
 import MoreHorizRounded from "@mui/icons-material/MoreHorizRounded"
 import { EventBus, useState } from "@utils/hooks"
-import { FadeMenu, FadeMenuContainer } from "@components/FadeMenu"
-import { PlaylistCreation } from "@components/PlaylistCreation"
 import { useEffect } from "react"
 import { GetListPlaylistResponse } from "./SidebarPlaylist.types"
 import axios from "axios"
+import { FS } from "@utils/fs"
 
 type Menu = "playlistList" | "playlistCreation"
 
@@ -23,6 +22,19 @@ export function SidebarPlaylist() {
 
     useEffect(() => {
         axios.get<GetListPlaylistResponse>("playlist/get-list").then((res) => {
+            // res.data.data.forEach((v) => {
+            //     if (!v.imageURL) return
+
+            //     axios.create()
+            //         .get<ArrayBuffer>(ENV.APP_URL + v.imageURL, {
+            //             headers: { "Content-Type": "application/octet-stream" },
+            //             responseType: "arraybuffer"
+            //         })
+            //         .then((res) => {
+            //             FS.createFile(v.id + ".png", res.data)
+            //         })
+            // })
+
             playlists.set(res.data.data)
         })
     }, [])
@@ -39,7 +51,23 @@ export function SidebarPlaylist() {
                 />
             </div>
 
-            <FadeMenuContainer active={menu.value}>
+            <Scrollbar>
+                <div className="content">
+                    <Playlist title="Uploaded" onClick={() => currentPlaylist.set(0)} />
+                    
+                    {playlists.value.map((p) => (
+                        <Playlist
+                            key={p.id}
+                            title={p.title}
+                            imageURL={p.imageURL}
+                            onClick={() => currentPlaylist.set(p.id)}
+                            data-pm={{ type: "addPlaylistToBuffer", data: { id: p.id } }}
+                        />
+                    ))}
+                </div>
+            </Scrollbar>
+
+            {/* <FadeMenuContainer active={menu.value}>
                 <FadeMenu type="playlistList">
                     <Scrollbar>
                         <div className="content">
@@ -65,7 +93,7 @@ export function SidebarPlaylist() {
                         </div>
                     </Scrollbar>
                 </FadeMenu>
-            </FadeMenuContainer>
+            </FadeMenuContainer> */}
         </div>
     )
 }
