@@ -6,10 +6,27 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="icon" type="image/x-icon" href="favicon.ico">
         <link rel="manifest" href="manifest.json" />
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+        <link rel="preload" href="/Nunito-VariableFont_wght.ttf" as="font" type="font/ttf" crossorigin>
+        <link rel="preload" href="/Nunito-Italic-VariableFont_wght.ttf" as="font" type="font/ttf" crossorigin>
         <title>Music Vault</title>
+
+        <style>
+            @font-face {
+                font-family: "Nunito";
+                src: url("/Nunito-VariableFont_wght.ttf") format("truetype");
+                font-weight: 200 900;
+                font-style: normal;
+                font-display: swap;
+            }
+            
+            @font-face {
+                font-family: "Nunito";
+                src: url("/Nunito-Italic-VariableFont_wght.ttf") format("truetype");
+                font-weight: 200 900;
+                font-style: italic;
+                font-display: swap;
+            }
+        </style>
     </head>
     <body>
         <div id="root"></div>
