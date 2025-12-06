@@ -2,6 +2,10 @@ import "./PlaylistTrack.style.scss"
 import { Track } from "src/types/types"
 import { ReactNode } from "react"
 import { handleEnter } from "@utils/events"
+import { Button } from "@components/Button"
+import AddRounded from "@mui/icons-material/AddRounded"
+import MoreVertRounded from "@mui/icons-material/MoreVertRounded"
+import { useTrueClick } from "@utils/hooks/useTrueClick"
 
 interface PlaylistTrackProps {
     data: Track
@@ -9,8 +13,10 @@ interface PlaylistTrackProps {
 }
 
 export function PlaylistTrack(props: PlaylistTrackProps) {
+    const trueClick = useTrueClick(props.onClick)
+
     return (
-        <button className="track-component" onPointerDown={(e) => e.button == 0 && props.onClick?.()} onKeyDown={handleEnter}>
+        <div tabIndex={0} className="track-component" {...trueClick}>
             {props.data.imageURL
                 ? <img className="cover" src={ENV.APP_URL + props.data.imageURL} />
                 : <div className="cover cover__empty" />
@@ -45,7 +51,19 @@ export function PlaylistTrack(props: PlaylistTrackProps) {
                 </div>
             </div>
 
+            <div className="controls">
+                <Button.Icon
+                    icon={AddRounded}
+                    onClick={() => console.log("aaa")}
+                />
+
+                <Button.Icon
+                    icon={MoreVertRounded}
+                    onClick={() => console.log("aaa")}
+                />
+            </div>
+
             <img className="background" src={ENV.APP_URL + props.data.imageURL} />
-        </button>
+        </div>
     )
 }

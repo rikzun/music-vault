@@ -4,19 +4,19 @@ export namespace WorkerLib {
     const supported = isWebsocketSupported()
     
     export function isWebsocketSupported() {
-        if (typeof Worker === "undefined") return false
+        return typeof Worker !== "undefined"
 
-        try {
-            const blob = new Blob([""], { type: "application/javascript" })
-            const url = URL.createObjectURL(blob)
-            const worker = new Worker(url)
+        // try {
+        //     const blob = new Blob([""], { type: "application/javascript" })
+        //     const url = URL.createObjectURL(blob)
+        //     const worker = new Worker(url)
             
-            worker.terminate()
-            URL.revokeObjectURL(url)
-            return true
-        } catch (e: unknown) {
-            return false
-        }
+        //     worker.terminate()
+        //     URL.revokeObjectURL(url)
+        //     return true
+        // } catch (e: unknown) {
+        //     return false
+        // }
     }
 
     export abstract class RPC {

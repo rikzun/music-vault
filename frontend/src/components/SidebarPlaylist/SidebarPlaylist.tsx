@@ -9,6 +9,8 @@ import { useEffect } from "react"
 import { GetListPlaylistResponse } from "./SidebarPlaylist.types"
 import axios from "axios"
 import { FS } from "@utils/fs"
+import { FadeMenu, FadeMenuContainer } from "@components/FadeMenu"
+import { PlaylistCreation } from "@components/PlaylistCreation"
 
 type Menu = "playlistList" | "playlistCreation"
 
@@ -37,7 +39,7 @@ export function SidebarPlaylist() {
 
             playlists.set(res.data.data)
         })
-    }, [])
+    }, [menu.value])
 
     return (
         <div className="section-content section-content__playlists">
@@ -51,7 +53,7 @@ export function SidebarPlaylist() {
                 />
             </div>
 
-            <Scrollbar>
+            {/* <Scrollbar>
                 <div className="content">
                     <Playlist title="Uploaded" onClick={() => currentPlaylist.set(0)} />
                     
@@ -65,9 +67,9 @@ export function SidebarPlaylist() {
                         />
                     ))}
                 </div>
-            </Scrollbar>
+            </Scrollbar> */}
 
-            {/* <FadeMenuContainer active={menu.value}>
+            <FadeMenuContainer active={menu.value}>
                 <FadeMenu type="playlistList">
                     <Scrollbar>
                         <div className="content">
@@ -93,7 +95,7 @@ export function SidebarPlaylist() {
                         </div>
                     </Scrollbar>
                 </FadeMenu>
-            </FadeMenuContainer> */}
+            </FadeMenuContainer>
         </div>
     )
 }

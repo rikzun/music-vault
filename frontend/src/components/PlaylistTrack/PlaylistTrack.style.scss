@@ -9,6 +9,7 @@
     overflow: hidden;
 
     background-color: var(--background-color);
+    cursor: pointer;
 
     > .cover {
         height: 48px;
@@ -34,6 +35,19 @@
             > .separator {
                 font-size: 10px;
                 margin-inline: 4px;
+            }
+        }
+    }
+
+    > .controls {
+        display: flex;
+        justify-content: end;
+        flex-grow: 1;
+
+        > button {
+            // TODO fix
+            &:hover {
+                background-color: var(--background-b-color);
             }
         }
     }
