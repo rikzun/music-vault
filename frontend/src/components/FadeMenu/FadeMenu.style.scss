@@ -1,9 +1,16 @@
-.fade-menu {
+.fade-menu-container {
     position: relative;
-    transition: opacity 0.5s linear;
-    height: 100%;
 
-    > [data-overlayscrollbars] {
+    > .fade-menu {
+        z-index: 12;
+
+        position: absolute;
+        transition: opacity 0.5s linear;
         height: 100%;
+        width: 100%;
+
+        > [data-overlayscrollbars] {
+            height: 100%;
+        }
     }
 }
