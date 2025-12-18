@@ -1,14 +1,13 @@
 import "./SidebarPlaylist.style.scss"
+import axios from "axios"
+import MoreHorizRounded from "@mui/icons-material/MoreHorizRounded"
 import { Button } from "@components/Button"
 import { PlaylistAtoms } from "@atoms/playlist"
 import { Playlist } from "@components/Playlist"
 import { Scrollbar } from "@components/Scrollbar"
-import MoreHorizRounded from "@mui/icons-material/MoreHorizRounded"
 import { EventBus, useState } from "@utils/hooks"
 import { useEffect } from "react"
 import { GetListPlaylistResponse } from "./SidebarPlaylist.types"
-import axios from "axios"
-import { FS } from "@utils/fs"
 import { FadeMenu, FadeMenuContainer } from "@components/FadeMenu"
 import { PlaylistCreation } from "@components/PlaylistCreation"
 
@@ -48,26 +47,9 @@ export function SidebarPlaylist() {
 
                 <Button.Icon
                     icon={MoreHorizRounded}
-                    exPadding={16}
                     data-pmi={{type: "playlists"}}
                 />
             </div>
-
-            {/* <Scrollbar>
-                <div className="content">
-                    <Playlist title="Uploaded" onClick={() => currentPlaylist.set(0)} />
-                    
-                    {playlists.value.map((p) => (
-                        <Playlist
-                            key={p.id}
-                            title={p.title}
-                            imageURL={p.imageURL}
-                            onClick={() => currentPlaylist.set(p.id)}
-                            data-pm={{ type: "addPlaylistToBuffer", data: { id: p.id } }}
-                        />
-                    ))}
-                </div>
-            </Scrollbar> */}
 
             <FadeMenuContainer active={menu.value}>
                 <FadeMenu type="playlistList">
