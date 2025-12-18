@@ -6,12 +6,12 @@ import { BufferAtoms } from "@atoms/buffer"
 export interface PopupMenuItem {
     label: string
     onClick?: (data?: any) => void
-    children?: PopupMenuItem[]
+    children?: Omit<PopupMenuItem, "children">[]
 }
 
 export type PopupMenuOptions = Record<PopupMenuType, PopupMenuItem[]>
 
-export const options: PopupMenuOptions = {
+export const popupMenuOptions: PopupMenuOptions = {
     "playlists": [
         {
             label: "Create new",
@@ -27,7 +27,7 @@ export const options: PopupMenuOptions = {
             label: "Sort by",
             children: [
                 {
-                    label: "Creation date"
+                    label: "Creation date",
                 },
                 {
                     label: "Modification date"

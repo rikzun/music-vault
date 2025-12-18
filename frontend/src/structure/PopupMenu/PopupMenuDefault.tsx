@@ -1,16 +1,38 @@
 import { PopupMenuAtoms } from "@atoms/popupMenu"
-import { options } from "src/structure/PopupMenu/PopupMenu.service"
+import { popupMenuOptions } from "src/structure/PopupMenu/PopupMenu.service"
 import { useState } from "@utils/hooks"
 import { useEffect, useRef } from "react"
 import { Vector2 } from "src/types/types"
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight"
 
 const PADDING = 16
+const numbers = ["1", "2", "3", "4", "5", "6", "8", "9", "0"]
 
 export function DefaultMenu() {
     const defaultMenuData = PopupMenuAtoms.useDefaultPosition()
     const pos = useState<Vector2 | null>(null)
     const ref = useRef<HTMLDivElement>(null)
+
+    const options = defaultMenuData.value?.type
+        ? popupMenuOptions[defaultMenuData.value.type]
+        : []
+    
+    const onKeyDown = (e: KeyboardEvent) => {
+        if (document.activeElement instanceof HTMLElement) {
+            document.activeElement.blur()
+        }
+
+        if (numbers.includes(e.key)) {
+            let index = Number(e.key) - 1
+            if (e.key == "0") index = 9
+
+            const option = options[index]
+            if (!option) return
+
+            option.onClick?.(defaultMenuData.value?.data)
+            defaultMenuData.set(null)
+        }
+    }
     
     useEffect(() => {
         if (!defaultMenuData.value) {
@@ -38,6 +60,9 @@ export function DefaultMenu() {
         if (finalY + rect.height > availableHeight) finalY = availableHeight - rect.height
 
         pos.set({x: finalX, y: finalY})
+
+        addEventListener("keydown", onKeyDown, { passive: false })
+        return () => removeEventListener("keydown", onKeyDown)
     }, [defaultMenuData.value])
 
     if (!defaultMenuData.value?.type) return null
@@ -55,15 +80,19 @@ export function DefaultMenu() {
             onTouchStart={(e) => e.stopPropagation()}
             onTouchEnd={(e) => e.stopPropagation()}
             children={
-                options[defaultMenuData.value.type].map((option, index) => {
+                options.map((option, index) => {
                     const onClick = () => {
                         option.onClick?.(defaultMenuData.value?.data)
                         defaultMenuData.set(null)
                     }
 
+                    let count: number | null = index + 1
+                    if (index == 9) count = 0
+                    if (index > 9) count = null
+
                     return (
                         <button className="option" key={option.label} onClick={onClick}>
-                            <div className="count">{index + 1}</div>
+                            <div className="count">{count}</div>
     
                             <div className="text">
                                 {option.label}
