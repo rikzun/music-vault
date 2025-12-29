@@ -9,7 +9,7 @@
 
     border-top-right-radius: 11px;
     border-bottom-right-radius: 11px;
-    
+    padding: 8px;
     background-color: var(--background-third-color);
 
     @media (max-width: 1072px) {
@@ -21,10 +21,13 @@
         border-radius: unset;
     }
 
-    > .container {
+    > .playlist-info-component {
+        margin-bottom: 8px;
+    }
+
+    > .tracks {
         display: flex;
         flex-direction: column;
-        padding: 8px;
 
         > .track-component:not(:last-child) {
             margin-bottom: 8px;

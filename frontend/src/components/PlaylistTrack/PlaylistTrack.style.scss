@@ -45,10 +45,9 @@
         flex-grow: 1;
 
         > button {
-            // TODO fix
-            &:hover {
-                background-color: var(--background-b-color);
-            }
+            width: 48px;
+            margin-block: 4px;
+            margin-right: 4px;
         }
     }
 

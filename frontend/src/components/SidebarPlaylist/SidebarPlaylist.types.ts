@@ -7,4 +7,5 @@ export interface PlaylistShortData {
 	position: number
 	imageURL: string | null
 	title: string
+	trackIdList: number[]
 }

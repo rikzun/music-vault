@@ -40,15 +40,6 @@
                 font-size: 16px;
                 text-transform: uppercase;
                 padding: 1rem;
-
-                > .button-component {
-                    border-radius: 7px;
-
-                    // TODO fix
-                    &:hover {
-                        background-color: var(--background-b-color);
-                    }
-                }
             }
 
             .fade-menu-container     {

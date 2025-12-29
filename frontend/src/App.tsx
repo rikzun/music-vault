@@ -11,8 +11,23 @@ import { ClientResponse } from "./types/types"
 import { ClientAtoms } from "@atoms/client"
 import { PopupMenuProvider } from "src/structure/PopupMenu"
 import { LocalStorage } from "@utils/localStorage"
+import { Accumulator } from "@utils/accumulator"
 
 axios.defaults.baseURL = ENV.APP_URL + "api"
+
+export const bufferAddTrack = new Accumulator<number, number>({
+    delayMs: 700,
+    action(items, playlistID) {
+        axios.post(`playlist/${playlistID}/add-track`, { data: items })
+    }
+})
+
+export const bufferRemoveTrack = new Accumulator<number, number>({
+    delayMs: 700,
+    action(items, playlistID) {
+        console.log("remove", items)
+    }
+})
 
 export function App() {
     const token = SettingsAtoms.useToken()

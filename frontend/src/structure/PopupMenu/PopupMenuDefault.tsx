@@ -23,8 +23,9 @@ export function DefaultMenu() {
         }
 
         if (numbers.includes(e.key)) {
-            let index = Number(e.key) - 1
-            if (e.key == "0") index = 9
+            const index = e.key !== "0"
+                ? Number(e.key) - 1
+                : 9
 
             const option = options[index]
             if (!option) return

@@ -48,23 +48,15 @@ func (playlist) FindByClient(clientID uint) []*domain.PlaylistEntity {
 }
 
 func (playlist) GetTracksIDByID(playlistID uint) []uint {
-	var records []*domain.PlaylistTracksEntity
+	var records []uint
 
 	global.Database().
 		Model(&domain.PlaylistTracksEntity{}).
+		Select("track_id").
 		Where("playlist_id = ?", playlistID).
-		Find(&records)
+		Pluck("track_id", &records)
 
-	if len(records) == 0 {
-		return []uint{}
-	}
-
-	data := make([]uint, 0, len(records))
-	for _, record := range records {
-		data = append(data, record.TrackID)
-	}
-
-	return data
+	return records
 }
 
 func (playlist) GetPlaylistsTracksByID(playlistID uint) []*domain.PlaylistTracksEntity {

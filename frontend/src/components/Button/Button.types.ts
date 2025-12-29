@@ -30,5 +30,4 @@ export interface ButtonTextProps extends ButtonBaseProps {
 
 export interface ButtonIconProps extends ButtonBaseProps {
     icon: MdIcon
-    exPadding?: number
 }

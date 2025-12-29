@@ -130,12 +130,14 @@ func EntryGetList(ctx *custom.Context) {
 	playlists := services.Playlist.FindByClient(*clientID)
 
 	data := make([]ClientPlaylistData, 0, len(playlists))
-	for _, track := range playlists {
+	for _, playlist := range playlists {
+		tracksID := services.Playlist.GetTracksIDByID(playlist.ID)
 
 		data = append(data, ClientPlaylistData{
-			ID:       track.ID,
-			ImageURL: track.ImagePath,
-			Title:    track.Title,
+			ID:          playlist.ID,
+			ImageURL:    playlist.ImagePath,
+			Title:       playlist.Title,
+			TrackIdList: tracksID,
 		})
 	}
 

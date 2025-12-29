@@ -33,10 +33,11 @@ type PlaylistMetaBody struct {
 }
 
 type ClientPlaylistData struct {
-	ID       uint    `json:"id"`
-	Position uint    `json:"position"`
-	ImageURL *string `json:"imageURL"`
-	Title    string  `json:"title"`
+	ID          uint    `json:"id"`
+	Position    uint    `json:"position"`
+	ImageURL    *string `json:"imageURL"`
+	Title       string  `json:"title"`
+	TrackIdList []uint  `json:"trackIdList"`
 }
 
 type ClientPlaylists struct {

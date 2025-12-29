@@ -1,0 +1,35 @@
+.playlist-info-component {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    height: 32px;
+    border-radius: 7px;
+    background-color: var(--background-color);
+
+    > .info {
+        display: flex;
+        align-items: center;
+        margin-left: 12px;
+
+        > .title {
+            font-size: 16px;
+            margin-right: 12px;
+        }
+
+        > .count, .duration {
+            font-size: 14px;
+        }
+
+        > .divider {
+            font-size: 10px;
+            padding-inline: 4px;
+        }
+    }
+
+    > .button-component {
+        margin-block: 2px;
+        margin-inline: 2px;
+        width: 50px;
+    }
+}

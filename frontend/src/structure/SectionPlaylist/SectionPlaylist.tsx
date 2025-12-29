@@ -6,14 +6,19 @@ import { UploadedPlaylistResponse } from "./SectionPlaylist.types"
 import { PlayerAtoms } from "@atoms/player"
 import { PlaylistTrack } from "@components/PlaylistTrack"
 import { PlaylistAtoms } from "@atoms/playlist"
+import { PlaylistInfo } from "@components/PlaylistInfo"
 
 export function SectionPlaylist() {
-    const currentTrack = PlayerAtoms.useCurrentTrack()
+    const currentPlaylistID = PlaylistAtoms.useCurrentPlaylistID()
     const trackList = PlayerAtoms.useTracklist()
-    const currentPlaylist = PlaylistAtoms.useCurrentPlaylistID()
+    const currentTrack = PlayerAtoms.useCurrentTrack()
 
     useEffect(() => {
-        const url = currentPlaylist.value === 0 ? "/playlist/uploaded" : `/playlist/${currentPlaylist.value}/get-tracks`
+        trackList.set(new Map())
+
+        const url = currentPlaylistID.value === 0
+            ? "/playlist/uploaded"
+            : `/playlist/${currentPlaylistID.value}/get-tracks`
 
         axios.get<UploadedPlaylistResponse>(url).then((res) => {
             const trackMap = new Map<number, Track>()
@@ -24,11 +29,13 @@ export function SectionPlaylist() {
 
             trackList.set(trackMap)
         })
-    }, [currentPlaylist.value])
+    }, [currentPlaylistID.value])
 
     return (
         <div className="section-playlist">
-            <div className="container">
+            <PlaylistInfo />
+
+            <div className="tracks">
                 {Array.from(trackList.value.values()).map((track) => (
                     <PlaylistTrack
                         key={track.id}
