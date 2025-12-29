@@ -12,7 +12,7 @@ export interface TrueClickHook<T extends Element> {
     onKeyUp: (e: ReactEvent.Keyboard<T>) => void
 }
 
-export function useTrueClick<T extends Element>(handler?: TrueClickHandler<T>): TrueClickHook<T> {
+export function useTrueClick<T extends Element>(handler?: TrueClickHandler<T> | null): TrueClickHook<T> {
     const isPointerDown = useRef(false)
 
     const onPointerDown = (e: ReactEvent.Pointer<T>) => {
