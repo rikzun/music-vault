@@ -25,7 +25,7 @@ export class LocalStorage {
         const value = localStorage.getItem(key)
         if (value == null) return (defaultValue ?? null)
         
-        return Boolean(value)
+        return value === "true"
     }
 
     static getJSON<T>(key: LocalStorageKey): T | null
