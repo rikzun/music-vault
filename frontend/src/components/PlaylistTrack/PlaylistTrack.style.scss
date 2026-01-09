@@ -22,19 +22,26 @@
         justify-content: center;
         align-items: flex-start;
         margin-inline: 8px;
+        min-width: 0;
+
+        > .title {
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            width: 100%;
+        }
 
         > .artists {
             display: flex;
             justify-content: flex-start;
             align-items: center;
+            width: 100%;
 
             > .artist {
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
                 font-size: 14px;
-            }
-
-            > .separator {
-                font-size: 10px;
-                margin-inline: 4px;
             }
         }
     }

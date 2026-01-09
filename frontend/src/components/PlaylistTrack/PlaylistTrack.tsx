@@ -9,6 +9,7 @@ import { useTrueClick } from "@utils/hooks/useTrueClick"
 import { BufferAtoms } from "@atoms/buffer"
 import { PlaylistAtoms } from "@atoms/playlist"
 import { bufferAddTrack, bufferRemoveTrack } from "src/App"
+import { Divider } from "@components/Divider"
 
 interface PlaylistTrackProps {
     data: Track
@@ -46,15 +47,9 @@ export function PlaylistTrack(props: PlaylistTrackProps) {
                 
                 <div className="artists">
                     {props.data.artists.reduce((acc, v, index) => {
-                        if (index > 0) {
-                            acc.push(
-                                <span
-                                    key={"separator-" + index}
-                                    className="separator"
-                                    children="•"
-                                />
-                            )
-                        }
+                        if (index > 0) acc.push(
+                            <Divider key={"separator-" + index} />
+                        )
 
                         acc.push(
                             <span

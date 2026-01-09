@@ -59,6 +59,36 @@ func (playlist) GetTracksIDByID(playlistID uint) []uint {
 	return records
 }
 
+func (playlist) GetTracksByPlaylistID(playlistID uint) ([]uint, float64) {
+	var trackIDs []uint
+	var totalDuration float64
+
+	rows, err := global.Database().
+		Table("playlist_tracks").
+		Select("playlist_tracks.track_id, tracks.duration").
+		Joins("JOIN tracks ON tracks.id = playlist_tracks.track_id").
+		Where("playlist_tracks.playlist_id = ?", playlistID).
+		Rows()
+
+	if err != nil {
+		return []uint{}, 0
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var id uint
+		var duration float64
+		if err := rows.Scan(&id, &duration); err != nil {
+			continue
+		}
+
+		trackIDs = append(trackIDs, id)
+		totalDuration += duration
+	}
+
+	return trackIDs, totalDuration
+}
+
 func (playlist) GetPlaylistsTracksByID(playlistID uint) []*domain.PlaylistTracksEntity {
 	var records []*domain.PlaylistTracksEntity
 

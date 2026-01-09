@@ -1,4 +1,7 @@
 .section-playlist {
+    display: flex;
+    flex-direction: column;
+
     height: calc(100% - 16px);
     width: 35%;
     min-width: 340px;
@@ -9,7 +12,6 @@
 
     border-top-right-radius: 11px;
     border-bottom-right-radius: 11px;
-    padding: 8px;
     background-color: var(--background-third-color);
 
     @media (max-width: 1072px) {
@@ -22,12 +24,14 @@
     }
 
     > .playlist-info-component {
-        margin-bottom: 8px;
+        margin: 10px;
     }
 
-    > .tracks {
+    .tracks {
         display: flex;
         flex-direction: column;
+        margin-inline: 10px;
+        margin-bottom: 10px;
 
         > .track-component:not(:last-child) {
             margin-bottom: 8px;

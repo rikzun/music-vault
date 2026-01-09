@@ -7,6 +7,7 @@ import { PlayerAtoms } from "@atoms/player"
 import { PlaylistTrack } from "@components/PlaylistTrack"
 import { PlaylistAtoms } from "@atoms/playlist"
 import { PlaylistInfo } from "@components/PlaylistInfo"
+import { Scrollbar } from "@components/Scrollbar"
 
 export function SectionPlaylist() {
     const currentPlaylistID = PlaylistAtoms.useCurrentPlaylistID()
@@ -35,15 +36,17 @@ export function SectionPlaylist() {
         <div className="section-playlist">
             <PlaylistInfo />
 
-            <div className="tracks">
-                {Array.from(trackList.value.values()).map((track) => (
-                    <PlaylistTrack
-                        key={track.id}
-                        data={track}
-                        onClick={() => currentTrack.set(track.id)}
-                    />
-                ))}
-            </div>
+            <Scrollbar>
+                <div className="tracks">
+                    {Array.from(trackList.value.values()).map((track) => (
+                        <PlaylistTrack
+                            key={track.id}
+                            data={track}
+                            onClick={() => currentTrack.set(track.id)}
+                        />
+                    ))}
+                </div>
+            </Scrollbar>
         </div>
     )
 }

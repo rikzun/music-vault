@@ -3,6 +3,7 @@
     background-color: var(--background-b-color);
     border-radius: 11px;
     overflow: hidden;
+    flex-shrink: 0;
 
     &:not(:last-child) {
         margin-bottom: 10px;

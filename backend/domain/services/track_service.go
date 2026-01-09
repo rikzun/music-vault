@@ -85,3 +85,32 @@ func (track) FindByClient(clientID uint) []*domain.TrackEntity {
 
 	return records
 }
+
+func (track) FindStatsByClient(clientID uint) ([]uint, float64) {
+	var trackIDs []uint
+	var totalDuration float64
+
+	rows, err := global.Database().
+		Table("tracks").
+		Select("id, duration").
+		Where("uploader_id = ?", clientID).
+		Rows()
+
+	if err != nil {
+		return []uint{}, 0
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var id uint
+		var duration float64
+		if err := rows.Scan(&id, &duration); err != nil {
+			continue
+		}
+
+		trackIDs = append(trackIDs, id)
+		totalDuration += duration
+	}
+
+	return trackIDs, totalDuration
+}

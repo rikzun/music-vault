@@ -57,15 +57,19 @@ export function SidebarPlaylist() {
                         <div className="content">
                             <Playlist title="Uploaded" onClick={() => currentPlaylist.set(0)} />
                             
-                            {playlists.value.map((p) => (
-                                <Playlist
-                                    key={p.id}
-                                    title={p.title}
-                                    imageURL={p.imageURL}
-                                    onClick={() => currentPlaylist.set(p.id)}
-                                    data-pm={{ type: "addPlaylistToBuffer", data: { id: p.id } }}
-                                />
-                            ))}
+                            {playlists.value.map((p) => {
+                                if (p.id == 0) return null
+
+                                return (
+                                    <Playlist
+                                        key={p.id}
+                                        title={p.title}
+                                        imageURL={p.imageURL}
+                                        onClick={() => currentPlaylist.set(p.id)}
+                                        data-pm={{ type: "addPlaylistToBuffer", data: { id: p.id } }}
+                                    />
+                                )
+                            })}
                         </div>
                     </Scrollbar>
                 </FadeMenu>

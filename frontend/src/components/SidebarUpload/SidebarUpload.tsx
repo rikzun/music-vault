@@ -64,6 +64,7 @@ export function SidebarUpload() {
                 const trackBuffer = e.target!.result as ArrayBuffer
 
                 const data = concatArrayBuffers(metaBuffer, imageBuffer, trackBuffer)
+
                 axios.post("/track/upload", data, {
                     headers: {
                         "Content-Type": "application/octet-stream",
@@ -90,10 +91,8 @@ export function SidebarUpload() {
         })
     }
 
-    const input = useInput({
-        handler: fileHandler,
-        multiple: true
-    })
+    const fileInput = useInput({ handler: fileHandler, multiple: true })
+    const folderInput = useInput({ handler: fileHandler, webkitdirectory: true })
 
     return (
         <div className="section-content section-content__upload">
@@ -113,7 +112,8 @@ export function SidebarUpload() {
                                 <CloudDownloadRounded id={iconID} />
 
                                 <span>Drag & Drop</span>
-                                <span>or <Button.Text value="browse" onClick={input.click} /></span>
+                                <span>or <Button.Text value="browse files" onClick={fileInput.click} /></span>
+                                <span>or <Button.Text value="browse folder" onClick={folderInput.click} /></span>
                             </div>
                         )}
 

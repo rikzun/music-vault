@@ -38,6 +38,7 @@ type ClientPlaylistData struct {
 	ImageURL    *string `json:"imageURL"`
 	Title       string  `json:"title"`
 	TrackIdList []uint  `json:"trackIdList"`
+	Duration    float64 `json:"duration"`
 }
 
 type ClientPlaylists struct {

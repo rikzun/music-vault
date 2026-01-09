@@ -3,9 +3,11 @@
     flex-direction: row;
     justify-content: space-between;
 
-    height: 32px;
+    height: 36px;
     border-radius: 7px;
     background-color: var(--background-color);
+
+    flex-shrink: 0;
 
     > .info {
         display: flex;
@@ -20,16 +22,11 @@
         > .count, .duration {
             font-size: 14px;
         }
-
-        > .divider {
-            font-size: 10px;
-            padding-inline: 4px;
-        }
     }
 
     > .button-component {
-        margin-block: 2px;
-        margin-inline: 2px;
-        width: 50px;
+        margin-block: 4px;
+        margin-inline: 4px;
+        width: 48px;
     }
 }
