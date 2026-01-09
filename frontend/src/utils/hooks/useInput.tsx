@@ -3,11 +3,19 @@ export type InputHookProps = {
     /** allowed file extensions withot dot */
     extensions?: string[]
     multiple: true
+    webkitdirectory?: false
 } | {
     handler: (file: File) => void
     /** allowed file extensions withot dot */
     extensions?: string[]
     multiple?: false
+    webkitdirectory?: false
+} | {
+    handler: (files: File[]) => void
+    /** allowed file extensions withot dot */
+    extensions?: string[]
+    multiple?: undefined
+    webkitdirectory?: true
 }
 
 export interface InputHook {
@@ -25,13 +33,14 @@ export function useInput(props: InputHookProps): InputHook {
                 .join(",")
         }
 
+        if (props.webkitdirectory) input.webkitdirectory = true
         if (props.multiple) input.multiple = true
 
         input.onchange = (e) => {
             const target = (e.target as HTMLInputElement)
             const files = Array.from(target.files ?? [])
 
-            if (props.multiple) {
+            if (props.multiple || props.webkitdirectory) {
                 (props.handler as (files: File[]) => void)(files)
             } else {
                 (props.handler as (file: File) => void)(files[0])
