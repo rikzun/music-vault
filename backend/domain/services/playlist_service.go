@@ -60,8 +60,8 @@ func (playlist) GetTracksIDByID(playlistID uint) []uint {
 }
 
 func (playlist) GetTracksByPlaylistID(playlistID uint) ([]uint, float64) {
-	var trackIDs []uint
-	var totalDuration float64
+	trackIDs := []uint{}
+	totalDuration := 0.0
 
 	rows, err := global.Database().
 		Table("playlist_tracks").
@@ -71,7 +71,7 @@ func (playlist) GetTracksByPlaylistID(playlistID uint) ([]uint, float64) {
 		Rows()
 
 	if err != nil {
-		return []uint{}, 0
+		return trackIDs, totalDuration
 	}
 	defer rows.Close()
 
