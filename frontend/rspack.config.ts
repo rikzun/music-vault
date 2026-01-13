@@ -158,6 +158,10 @@ const config: Configuration = {
             type: "persistent",
             buildDependencies: [__filename, PATH_TS_CONFIG]
         }
+    },
+    performance: {
+        maxEntrypointSize: 512000 * 2,
+        maxAssetSize: 512000
     }
 }
 
