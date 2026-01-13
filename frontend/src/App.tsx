@@ -1,17 +1,19 @@
 import "./App.style.scss"
 import "overlayscrollbars/overlayscrollbars.css"
 import axios, { AxiosError } from "axios"
-import { Auth } from "@components/Auth"
-import { SectionSidebar } from "src/structure/SectionSidebar"
-import { SectionPlayer } from "src/structure/SectionPlayer"
-import { SectionPlaylist } from "src/structure/SectionPlaylist"
+import { Auth } from "@components/common/Auth"
+import { SectionSidebar } from "@components/structure/SectionSidebar"
+import { SectionPlayer } from "@components/structure/SectionPlayer"
+import { SectionPlaylist } from "@components/structure/SectionPlaylist"
 import { SettingsAtoms } from "src/atoms/settings"
 import { useEffect } from "react"
 import { ClientResponse } from "./types/types"
 import { ClientAtoms } from "@atoms/client"
-import { PopupMenuProvider } from "src/structure/PopupMenu"
+import { PopupMenuProvider } from "@components/structure/PopupMenu"
 import { LocalStorage } from "@utils/localStorage"
 import { Accumulator } from "@utils/accumulator"
+import { MenuAtoms } from "@atoms/menu"
+import { getDefaultStore } from "jotai"
 
 axios.defaults.baseURL = ENV.APP_URL + "api"
 
@@ -37,9 +39,7 @@ export function App() {
     useEffect(() => {
         axios.interceptors.response.use((res) => res, (err: AxiosError) => {
             if (err.response?.status == 401) {
-                LocalStorage.remove("token")
-                LocalStorage.remove("client.id")
-                LocalStorage.remove("client.login")
+                LocalStorage.remove("token", "client.id", "client.login")
 
                 token.set(null)
                 client.set(null)
@@ -61,6 +61,8 @@ export function App() {
         document.addEventListener("dragover", (e) => {
             e.preventDefault()
             e.dataTransfer!.dropEffect = "none"
+
+            getDefaultStore().set(MenuAtoms.sidebarMenu, "Upload")
         })
         
         document.addEventListener("drop", (e) => {

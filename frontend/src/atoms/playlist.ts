@@ -1,4 +1,4 @@
-import { PlaylistShortData } from "@components/SidebarPlaylist/SidebarPlaylist.types"
+import { PlaylistShortData } from "@components/sidebar/SidebarPlaylist/SidebarPlaylist.types"
 import { useAtom } from "@utils/hooks"
 import { LocalStorage } from "@utils/localStorage"
 import { atom } from "jotai"

@@ -77,7 +77,7 @@ export class LocalStorage {
         }
     }
 
-    static remove(key: LocalStorageKey) {
-        localStorage.removeItem(key)
+    static remove(...keys: LocalStorageKey[]) {
+        keys.forEach((key) => localStorage.removeItem(key))
     }
 }

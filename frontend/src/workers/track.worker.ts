@@ -1,4 +1,4 @@
-import { TrackData, TrackImage } from "@components/SidebarUpload/SidebarUpload.types"
+import { TrackData, TrackImage } from "@components/sidebar/SidebarUpload/SidebarUpload.types"
 import { type IAudioMetadata, parseBlob } from "music-metadata"
 import * as Comlink from "comlink"
 import { WorkerLib } from "@workers/lib"
