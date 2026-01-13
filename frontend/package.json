@@ -14,7 +14,7 @@
     "@mui/material": "^7.3.7",
     "axios": "^1.13.2",
     "comlink": "^4.4.2",
-    "jotai": "^2.16.1",
+    "jotai": "^2.16.2",
     "mitt": "^3.0.1",
     "music-metadata": "^11.10.5",
     "overlayscrollbars": "^2.13.0",
@@ -23,11 +23,11 @@
     "react-dom": "^19.2.3"
   },
   "devDependencies": {
-    "@rspack/cli": "^1.7.1",
-    "@rspack/core": "^1.7.1",
+    "@rspack/cli": "^1.7.2",
+    "@rspack/core": "^1.7.2",
     "@rspack/plugin-react-refresh": "^1.6.0",
     "@svgr/webpack": "^8.1.0",
-    "@types/react": "^19.2.7",
+    "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
     "@types/wicg-file-system-access": "^2023.10.7",
     "cross-env": "^10.1.0",
