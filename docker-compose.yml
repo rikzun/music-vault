@@ -2,7 +2,7 @@ name: music-vault
 
 services:
   frontend:
-    image: nginx:1.29.3-alpine3.22
+    image: nginx:1.29.4-alpine3.23
     security_opt:
       - no-new-privileges:true
     volumes:
@@ -18,7 +18,7 @@ services:
       - traefik.http.routers.frontend.tls.certresolver=letsencrypt
   
   backend:
-    image: ragedunicorn/ffmpeg:7.1.1-alpine3.22.1-3
+    image: ragedunicorn/ffmpeg:7.1.1-alpine3.22.2-1
     security_opt:
       - no-new-privileges:true
     user: root
@@ -43,7 +43,7 @@ services:
         condition: service_healthy
   
   database:
-    image: postgres:17.5-alpine3.22
+    image: postgres:17.7-alpine3.23
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
@@ -66,7 +66,7 @@ services:
       retries: 10
 
   traefik:
-    image: traefik:3.6.2
+    image: traefik:3.6.6
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
