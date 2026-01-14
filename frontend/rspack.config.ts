@@ -136,7 +136,12 @@ const config: Configuration = {
     },
     plugins: [
         new TsCheckerRspackPlugin(),
-        new HtmlRspackPlugin({ template: PATH_PUBLIC_ENTRY }),
+        new HtmlRspackPlugin({
+            template: PATH_PUBLIC_ENTRY,
+            meta: {
+                "og:image": { property: "og:image", content: APP_URL + "icons/192.png"}
+            }
+        }),
         new CopyRspackPlugin({
             patterns: fs.readdirSync(PATH_PUBLIC_FOLDER, { withFileTypes: true }).map((file) => {
                 const location = path.join(file.parentPath, file.name)
