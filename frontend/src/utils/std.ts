@@ -34,3 +34,11 @@ export function isMobile(): boolean {
 
     return mobileRegex.test(navigator.userAgent)
 }
+
+export function trimAndNullIfEmpty(data: string | null | undefined): string | null {
+    if (!data) return null
+    const value = data.trim()
+
+    if (!value) return null
+    return value
+}

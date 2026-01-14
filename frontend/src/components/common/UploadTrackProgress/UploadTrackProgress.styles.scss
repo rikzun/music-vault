@@ -1,58 +1,57 @@
 .upload-track-progress-component {  
     position: relative;
-    background-color: var(--background-b-color);
-    border-radius: 11px;
-    overflow: hidden;
+    height: 48px;
+    background-color: var(--background-color);
     flex-shrink: 0;
 
-    &:not(:last-child) {
-        margin-bottom: 10px;
-    }
-
     > .container {
-        position: relative;
-        display: flex;
-        justify-content: space-between;
-        flex-direction: row;
-        width: 100%;
-        height: 100%;
         z-index: 1;
+        position: relative;
+        height: 100%;
 
-        > .track-info {
-            padding-block: 4px;
-            padding-left: 10px;
-            width: 100%;
-            overflow: hidden;
-    
-            > .artists {
-                font-size: 14px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+
+        > .left {
+            padding-left: 8px;
+            height: fit-content;
+            min-width: 0;
+
+            > .title {
+                font-size: 16px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
-    
-            > .artists, > .title {
+
+            > .artists {
                 white-space: nowrap;
                 text-overflow: ellipsis;
                 overflow: hidden;
+
+                > .artist {
+                    font-size: 14px;
+                }
             }
         }
-    
-        > .info {
-            height: 100%;
-            padding-left: 10px;
-            box-sizing: content-box;
-            flex-shrink: 0;
-        }
 
-        > *:last-child {
-            padding-right: 10px;
+        > .right {
+            display: flex;
+            padding-inline: 12px;
+            height: fit-content;
         }
     }
 
-    > .progress {
+    > .background {
+        z-index: 0;
         position: absolute;
         top: 0;
         left: 0;
+        opacity: .2;
         height: 100%;
-        background-color: var(--background-a-color);
-        transition: width 0.2s ease;
+        width: 100%;
+        object-fit: cover;
     }
 }

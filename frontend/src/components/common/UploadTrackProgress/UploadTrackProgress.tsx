@@ -1,55 +1,58 @@
 import "./UploadTrackProgress.styles.scss"
+import { Divider } from "@components/common/Divider"
 import { UploadTrackProgressProps } from "./UploadTrackProgress.types"
-import InfoOutlineRounded from "@mui/icons-material/InfoOutlineRounded"
+import { ReactNode } from "react"
+import { CircleProgress } from "@components/common/CircleProgress"
+import CheckRounded from "@mui/icons-material/CheckRounded"
 
 export function UploadTrackProgress(props: UploadTrackProgressProps) {
-    const artists = props.data.artists.join(", ")
+    const imageObjectURL = props.data.meta?.image?.objectURL ?? null
 
-    let progress = props.data.progress
-    let infoColor: string | undefined
-    
-    switch (props.data.status) {
-        case "unknown_error": {
-            progress = 0
-            infoColor = "#EF5350"
-            break
-        }
-    }
-
-    if (progress === 100) {
-        progress = 0
-    }
+    const title = props.data.meta!.title!
+    const artists = props.data.meta!.artists
 
     return (
         <div className="upload-track-progress-component">
             <div className="container">
-                <div className="track-info">
-                    <div
-                        className="artists"
-                        title={artists}
-                        children={artists}
-                    />
+                <div className="left">
+                    <div className="title" title={title} children={title} />
 
-                    <div
-                        className="title"
-                        title={props.data.title!}
-                        children={props.data.title}
-                    />
+                    <div className="artists">
+                        {artists.reduce((acc, artist, index) => {
+                            if (index > 0) acc.push(
+                                <Divider key={"separator-" + index} />
+                            )
+
+                            acc.push(
+                                <span
+                                    key={"artist-" + artist}
+                                    className="artist"
+                                    title={artist}
+                                    children={artist}
+                                />
+                            )
+
+                            return acc
+                        }, [] as ReactNode[])}
+                    </div>
                 </div>
 
-                {props.data.status != null &&
-                    <InfoOutlineRounded
-                        className="info"
-                        htmlColor={infoColor}
-                        titleAccess={props.data.status}
-                    />
+                {props.data.progress !== 0 &&
+                    <div className="right">
+                        {props.data.progress === 100
+                            ? <CheckRounded />
+                            : <CircleProgress value={props.data.progress} size={28} />
+                        }
+                    </div>
                 }
             </div>
-            
-            <div
-                className="progress"
-                style={{width: progress + "%"}}
-            />
+
+            {imageObjectURL &&
+                <img
+                    className="background"
+                    src={imageObjectURL}
+                />
+            }
         </div>
     )
 }

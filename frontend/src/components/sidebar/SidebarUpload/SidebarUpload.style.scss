@@ -16,6 +16,10 @@
                     width: 50px;
                 }
             }
+
+            > .upload-track-progress-component:not(:last-child) {
+                margin-bottom: 8px;
+            }
         }
     }
 }

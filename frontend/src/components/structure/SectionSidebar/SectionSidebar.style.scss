@@ -31,7 +31,7 @@
         > .section-content {
             display: flex;
             flex-direction: column;
-            width: 100%;
+            width: calc(100% - 72px);
 
             > .top {
                 display: flex;

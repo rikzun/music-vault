@@ -2,16 +2,18 @@ import "./SidebarUpload.style.scss"
 import { Button } from "@components/common/Button"
 import { useInput, useState } from "@utils/hooks"
 import CloudDownloadRounded from "@mui/icons-material/CloudDownloadRounded"
-import { TrackData } from "@components/sidebar/SidebarUpload/SidebarUpload.types"
+import { IUploadTrack } from "./SidebarUpload.types"
 import { DragAndDrop } from "@components/common/DragAndDrop"
 import { UploadTrack } from "@components/common/UploadTrack"
 import { Workers } from "@workers"
 import axios from "axios"
-import { concatArrayBuffers } from "@utils/std"
 import { Scrollbar } from "@components/common/Scrollbar"
 import { UploadTrackProgress } from "@components/common/UploadTrackProgress"
+import { useMemo } from "react"
+import { UploadAtoms } from "@atoms/upload"
 
 const trackWorker = Workers.Track()
+let isCanvasSupported: boolean | null = null
 
 const iconID = "cloud-download-icon"
 const keyFrames = [
@@ -24,31 +26,52 @@ const keyFrames = [
     { transform: "translateX(0)" }
 ]
 
+let lastTrackID = 0
+
 export function SidebarUpload() {
     const isUploading = useState<boolean>(false)
-    const tracks = useState<TrackData[]>([])
+    const tracks = UploadAtoms.useSidebarMenu()
 
     const fileHandler = async (files: File[]) => {
         if (!files.length) return
 
-        const isCanvasSupported = await trackWorker.rpc.checkCanvasSupport()
-        const rpc = isCanvasSupported ? trackWorker.rpc : trackWorker.default
-        const meta = await rpc.parseMeta(files)
+        const data = files.map((file) => {
+            return {
+                key: ++lastTrackID,
+                notAnAudio: false,
+                progress: 0,
 
-        if (!meta.length) {
-            document
-                .getElementById(iconID)!
-                .animate(keyFrames, { duration: 500 })
+                file: file,
+                meta: null
+            } as IUploadTrack
+        })
 
-            return
+        tracks.set((state) => {
+            return [...state, ...data]
+        })
+
+        console.log(trackWorker)
+
+        if (isCanvasSupported == null) {
+            isCanvasSupported = await trackWorker.rpc.checkCanvasSupport()
         }
 
-        tracks.set((v) => {
-            const data = meta.map((data) => {
-                return Object.setPrototypeOf(data, TrackData.prototype)
-            })
+        const rpc = isCanvasSupported
+            ? trackWorker.rpc
+            : trackWorker.default
 
-            return [...v, ...data]
+        data.forEach(async(v) => {
+            const meta = await rpc.parseMeta(v.file)
+
+            tracks.set((state) => {
+                const index = state.findIndex((vv) => vv.key === v.key)
+                if (index === -1) return state
+
+                if (meta == null) state[index].notAnAudio = true //TODO
+                else state[index].meta = meta
+
+                return [...state]
+            })
         })
     }
 
@@ -59,17 +82,33 @@ export function SidebarUpload() {
             const reader = new FileReader()
 
             reader.onload = async(e) => {
-                const metaBuffer = track.extractMetadata()
-                const imageBuffer = track.extractImage()
-                const trackBuffer = e.target!.result as ArrayBuffer
+                const metaJSON = JSON.stringify({
+                    title: track.meta!.title,
+                    artists: track.meta!.artists,
+                    album: track.meta!.album,
+                    codec: track.meta!.codec,
+                    bitrate: track.meta!.bitrate,
+                    lossless: track.meta!.lossless
+                })
 
-                const data = concatArrayBuffers(metaBuffer, imageBuffer, trackBuffer)
+                const meta = new Blob([metaJSON], {
+                    type: "application/octet-stream"
+                })
 
-                axios.post("/track/upload", data, {
+                const image = track.meta!.image?.blob || null
+
+                const data = [meta, image, e.target!.result]
+                    .filter(Boolean) as BlobPart[]
+
+                const blob = new Blob(data, {
+                    type: "application/octet-stream"
+                })
+
+                axios.post("/track/upload", blob, {
                     headers: {
                         "Content-Type": "application/octet-stream",
-                        "X-Meta-Size": metaBuffer.byteLength,
-                        "X-Image-Size": imageBuffer.byteLength
+                        "X-Meta-Size": meta.size,
+                        "X-Image-Size": image?.size ?? 0
                     },
                     onUploadProgress: (e) => {
                         const progress = Math.round((e.progress ?? 0) * 100)
@@ -80,10 +119,10 @@ export function SidebarUpload() {
                         })
                     }
                 }).catch((res) => {
-                    tracks.set((v) => {
-                        v[index].status = "unknown_error"
-                        return [...v]
-                    })
+                    // tracks.set((v) => {
+                    //     v[index].status = "unknown_error"
+                    //     return [...v]
+                    // })
                 })
             }
 
@@ -94,37 +133,75 @@ export function SidebarUpload() {
     const fileInput = useInput({ handler: fileHandler, multiple: true })
     const folderInput = useInput({ handler: fileHandler, webkitdirectory: true })
 
+    const stats = useMemo(() => {
+        const totalTracks = tracks.value.filter((v) => !v.notAnAudio)
+        const processedTracks = totalTracks.filter((v) => v.meta != null)
+
+        const missingInfo = processedTracks.filter((v) => {
+            return !v.meta!.title
+                || v.meta!.artists.length === 0
+        })
+
+        return {
+            totalTracks: totalTracks.length,
+            processedTracks: processedTracks.length,
+            missingInfo: missingInfo.length,
+            isTracksEmpty: totalTracks.length === 0
+        }
+    }, [tracks.value])
+
+    const uploadedCount = tracks.value
+        .filter((v) => !v.notAnAudio)
+        .filter((v) => v.meta != null)
+        .filter((v) => v.progress === 100)
+        .length
+
+    const showUploadButton = !stats.isTracksEmpty && !isUploading.value
+
     return (
         <div className="section-content section-content__upload">
             <div className="top">
-                Upload
+                <div className="left">
+                    Upload
+                </div>
+
+                {!stats.isTracksEmpty &&
+                    <div className="right">
+                        {isUploading.value
+                            ? `${uploadedCount} / ${stats.totalTracks} | 0`
+                            : `${stats.processedTracks} / ${stats.totalTracks} | ${stats.missingInfo}`
+                        }
+                    </div>
+                }
             </div>
 
             <Scrollbar>
                 <div className="content">
                     <DragAndDrop
                         aria-label="file upload zone"
-                        className={tracks.value.length ? "dnd-component__active" : undefined}
+                        className={!stats.isTracksEmpty ? "dnd-component__active" : undefined}
                         onChange={fileHandler}
                     >
-                        {!tracks.value.length && (
+                        {stats.isTracksEmpty && (
                             <div className="info-section">
                                 <CloudDownloadRounded id={iconID} />
 
                                 <span>Drag & Drop</span>
-                                <span>or <Button.Text value="browse files" onClick={fileInput.click} /></span>
+                                <span>or <Button.Text value="browse files"  onClick={fileInput.click}   /></span>
                                 <span>or <Button.Text value="browse folder" onClick={folderInput.click} /></span>
                             </div>
                         )}
 
                         {tracks.value.map((track) => {
-                            const Component = track.progress == null
+                            if (track.notAnAudio || track.meta == null) return null
+
+                            const Component = track.progress == 0
                                 ? UploadTrack
                                 : UploadTrackProgress
 
                             return (
                                 <Component
-                                    key={track.key()}
+                                    key={track.key}
                                     data={track}
                                 />
                             )
@@ -133,7 +210,7 @@ export function SidebarUpload() {
                 </div>
             </Scrollbar>
 
-            {(tracks.value.length > 0 && !isUploading.value) && (
+            {showUploadButton && (
                 <div className="bottom">
                     <Button.Small
                         value="Upload"

@@ -9,20 +9,20 @@ export function UploadTrack(props: UploadTrackProps) {
                 <div className="column">
                     <div className="field">
                         <div className="title">title</div>
-                        <div className="value">{props.data.title}</div>
+                        <div className="value">{props.data.meta!.title}</div>
                     </div>
                 </div>
 
                 <div className="column">
                     <div className="field field-image">
-                        {props.data.image &&
+                        {props.data.meta!.image &&
                             <img
                                 className="image"
-                                src={props.data.image?.objectURL}
+                                src={props.data.meta!.image?.objectURL}
                             />
                         }
 
-                        {!props.data.image &&
+                        {!props.data.meta!.image &&
                             <div className="image image-empty">
                                 <HideImageRounded />
                             </div>
@@ -33,10 +33,10 @@ export function UploadTrack(props: UploadTrackProps) {
 
             <div className="field">
                 <div className="title">artist</div>
-                <div className="value">{props.data.artists[0]}</div>
+                <div className="value">{props.data.meta!.artists[0]}</div>
             </div>
 
-            {props.data.artists.map((artist, index) => {
+            {props.data.meta!.artists.map((artist, index) => {
                 if (index == 0) return null
                 
                 return (
@@ -47,10 +47,10 @@ export function UploadTrack(props: UploadTrackProps) {
                 )
             })}
 
-            {props.data.album && (
+            {props.data.meta!.album && (
                 <div className="field">
                     <div className="title">album</div>
-                    <div className="value">{props.data.album}</div>
+                    <div className="value">{props.data.meta!.album}</div>
                 </div>
             )}
 
@@ -58,15 +58,15 @@ export function UploadTrack(props: UploadTrackProps) {
             <div className="column-field">
                 <div className="column">
                     <div className="field">
-                        <div className="title">codec{props.data.lossless ? " (lossless)" : " (lossy)"}</div>
-                        <div className="value">{props.data.codec}</div>
+                        <div className="title">codec{props.data.meta!.lossless ? " (lossless)" : " (lossy)"}</div>
+                        <div className="value">{props.data.meta!.codec}</div>
                     </div>
                 </div>
 
                 <div className="column">
                     <div className="field field-bitrate">
                         <div className="title">bitrate</div>
-                        <div className="value">{formatBitrate(props.data.bitrate)}</div>
+                        <div className="value">{formatBitrate(props.data.meta!.bitrate)}</div>
                     </div>
                 </div>
             </div>
