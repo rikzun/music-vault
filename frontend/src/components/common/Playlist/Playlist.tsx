@@ -10,27 +10,46 @@ interface PlaylistProps {
     "data-pm"?: PopupMenuData
 }
 
-export function Playlist(props: PlaylistProps) {
-    const trueClick = useTrueClick(props.onClick)
+type PlaylistUploadedProps = Omit<Omit<PlaylistProps, "title">, "imageURL">
 
-    const style = props.imageURL
-        ? { "--background-url": `url(${ENV.APP_URL + props.imageURL})` }
-        : undefined
+export const Playlist = Object.assign(
+    (props: PlaylistProps) => {
+        const trueClick = useTrueClick(props.onClick)
 
-    return (    
-        <button
-            className="playlist-component"
-            data-pm={JSON.stringify(props["data-pm"])}
-            style={style}
-            {...trueClick}
-        >
-            <div className="cover cover__icon">
-                {!Boolean(props.imageURL) && <ArchiveRounded />}
-            </div>
+        const style = props.imageURL
+            ? { "--background-url": `url(${ENV.APP_URL + props.imageURL})` }
+            : undefined
 
-            <div className="title">
-                {props.title}
-            </div>
-        </button>
-    )
-}
+        return (    
+            <button
+                className="playlist-component"
+                data-pm={JSON.stringify(props["data-pm"])}
+                style={style}
+                {...trueClick}
+            >
+                <div className="cover cover__icon" />
+                <div className="title" children={props.title} />
+            </button>
+        )
+    }, {
+        Uploaded: (props: PlaylistUploadedProps) => {
+            const trueClick = useTrueClick(props.onClick)
+
+            return (    
+                <button
+                    className="playlist-component"
+                    data-pm={JSON.stringify(props["data-pm"])}
+                    {...trueClick}
+                >
+                    <div className="cover cover__icon">
+                        <ArchiveRounded />
+                    </div>
+
+                    <div className="title">
+                        Uploaded
+                    </div>
+                </button>
+            )
+        }
+    }
+)
