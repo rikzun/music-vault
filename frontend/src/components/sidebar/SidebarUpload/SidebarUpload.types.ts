@@ -3,10 +3,13 @@ export interface TrackImage {
     objectURL: string
 }
 
+export type UploadTrackError =
+    | "unknown_error"
+
 export interface IUploadTrack {
     key: number
-    notAnAudio: boolean
-    progress: number
+    progress: number | null
+    errorStatus: UploadTrackError | null
     
     file: File
     meta: IUploadTrackMeta | null

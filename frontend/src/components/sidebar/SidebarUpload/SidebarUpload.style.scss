@@ -16,10 +16,18 @@
                     width: 50px;
                 }
             }
+        }
 
-            > .upload-track-progress-component:not(:last-child) {
-                margin-bottom: 8px;
-            }
+        > .upload-track-progress-component:not(:last-child) {
+            margin-bottom: 8px;
+        }
+    }
+
+    > .bottom {
+        display: flex;
+
+        > *:last-child {
+            margin-left: 8px;
         }
     }
 }

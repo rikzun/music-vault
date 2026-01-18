@@ -1,4 +1,5 @@
 import "./SidebarUpload.style.scss"
+import axios from "axios"
 import { Button } from "@components/common/Button"
 import { useInput, useState } from "@utils/hooks"
 import CloudDownloadRounded from "@mui/icons-material/CloudDownloadRounded"
@@ -6,25 +7,16 @@ import { IUploadTrack } from "./SidebarUpload.types"
 import { DragAndDrop } from "@components/common/DragAndDrop"
 import { UploadTrack } from "@components/common/UploadTrack"
 import { Workers } from "@workers"
-import axios from "axios"
 import { Scrollbar } from "@components/common/Scrollbar"
 import { UploadTrackProgress } from "@components/common/UploadTrackProgress"
-import { useMemo } from "react"
 import { UploadAtoms } from "@atoms/upload"
 
 const trackWorker = Workers.Track()
 let isCanvasSupported: boolean | null = null
 
-const iconID = "cloud-download-icon"
-const keyFrames = [
-    { fill: "var(--error-color)" },
-    { transform: "translateX(0)" },
-    { transform: "translateX(-5px)" },
-    { transform: "translateX(5px)" },
-    { transform: "translateX(-5px)" },
-    { transform: "translateX(5px)" },
-    { transform: "translateX(0)" }
-]
+trackWorker.rpc.checkCanvasSupport().then((value) => {
+    isCanvasSupported = value
+})
 
 let lastTrackID = 0
 
@@ -38,8 +30,8 @@ export function SidebarUpload() {
         const data = files.map((file) => {
             return {
                 key: ++lastTrackID,
-                notAnAudio: false,
-                progress: 0,
+                progress: null,
+                errorStatus: null,
 
                 file: file,
                 meta: null
@@ -52,27 +44,23 @@ export function SidebarUpload() {
 
         console.log(trackWorker)
 
-        if (isCanvasSupported == null) {
-            isCanvasSupported = await trackWorker.rpc.checkCanvasSupport()
-        }
-
         const rpc = isCanvasSupported
             ? trackWorker.rpc
             : trackWorker.default
-
-        data.forEach(async(v) => {
-            const meta = await rpc.parseMeta(v.file)
+        
+        for (const track of data) {
+            const meta = await rpc.parseMeta(track.file)
 
             tracks.set((state) => {
-                const index = state.findIndex((vv) => vv.key === v.key)
+                const index = state.findIndex((vv) => vv.key === track.key)
                 if (index === -1) return state
 
-                if (meta == null) state[index].notAnAudio = true //TODO
+                if (meta == null) state.splice(index, 1)
                 else state[index].meta = meta
 
                 return [...state]
             })
-        })
+        }
     }
 
     const onUpload = () => {
@@ -104,6 +92,11 @@ export function SidebarUpload() {
                     type: "application/octet-stream"
                 })
 
+                tracks.set((state) => {
+                    state[index].progress = 0
+                    return [...state]
+                })
+
                 axios.post("/track/upload", blob, {
                     headers: {
                         "Content-Type": "application/octet-stream",
@@ -113,16 +106,16 @@ export function SidebarUpload() {
                     onUploadProgress: (e) => {
                         const progress = Math.round((e.progress ?? 0) * 100)
 
-                        tracks.set((v) => {
-                            v[index].progress = progress
-                            return [...v]
+                        tracks.set((state) => {
+                            state[index].progress = progress
+                            return [...state]
                         })
                     }
-                }).catch((res) => {
-                    // tracks.set((v) => {
-                    //     v[index].status = "unknown_error"
-                    //     return [...v]
-                    // })
+                }).catch(() => {
+                    tracks.set((state) => {
+                        state[index].errorStatus = "unknown_error"
+                        return [...state]
+                    })
                 })
             }
 
@@ -130,33 +123,32 @@ export function SidebarUpload() {
         })
     }
 
+    const onCancel = () => {
+        isUploading.set(false)
+
+        tracks.set((state) => {
+            state.forEach((track) => {
+                const objectURL = track.meta?.image?.objectURL
+                if (objectURL) URL.revokeObjectURL(objectURL)
+            })
+
+            return []
+        })
+    }
+
     const fileInput = useInput({ handler: fileHandler, multiple: true })
     const folderInput = useInput({ handler: fileHandler, webkitdirectory: true })
 
-    const stats = useMemo(() => {
-        const totalTracks = tracks.value.filter((v) => !v.notAnAudio)
-        const processedTracks = totalTracks.filter((v) => v.meta != null)
+    const totalTracks = tracks.value.length
 
-        const missingInfo = processedTracks.filter((v) => {
-            return !v.meta!.title
-                || v.meta!.artists.length === 0
-        })
+    const processedTracks = tracks.value.filter((v) => v.meta != null).length
+    const missingInfoTracks = tracks.value.filter((v) => v.meta && (!v.meta!.title || v.meta!.artists.length === 0)).length
 
-        return {
-            totalTracks: totalTracks.length,
-            processedTracks: processedTracks.length,
-            missingInfo: missingInfo.length,
-            isTracksEmpty: totalTracks.length === 0
-        }
-    }, [tracks.value])
+    const uploadedTracks = tracks.value.filter((v) => v.progress === 100).length
+    const failedTracks = tracks.value.filter((v) => v.progress != null && v.errorStatus != null).length
 
-    const uploadedCount = tracks.value
-        .filter((v) => !v.notAnAudio)
-        .filter((v) => v.meta != null)
-        .filter((v) => v.progress === 100)
-        .length
-
-    const showUploadButton = !stats.isTracksEmpty && !isUploading.value
+    const showUploadButton = totalTracks !== 0 && !isUploading.value
+    const showDoneButton = isUploading.value && uploadedTracks + failedTracks === totalTracks
 
     return (
         <div className="section-content section-content__upload">
@@ -165,11 +157,11 @@ export function SidebarUpload() {
                     Upload
                 </div>
 
-                {!stats.isTracksEmpty &&
+                {totalTracks !== 0 &&
                     <div className="right">
                         {isUploading.value
-                            ? `${uploadedCount} / ${stats.totalTracks} | 0`
-                            : `${stats.processedTracks} / ${stats.totalTracks} | ${stats.missingInfo}`
+                            ? `${uploadedTracks} / ${totalTracks} | ${failedTracks}`
+                            : `${processedTracks} / ${totalTracks} | ${missingInfoTracks}`
                         }
                     </div>
                 }
@@ -177,36 +169,46 @@ export function SidebarUpload() {
 
             <Scrollbar>
                 <div className="content">
-                    <DragAndDrop
-                        aria-label="file upload zone"
-                        className={!stats.isTracksEmpty ? "dnd-component__active" : undefined}
-                        onChange={fileHandler}
-                    >
-                        {stats.isTracksEmpty && (
-                            <div className="info-section">
-                                <CloudDownloadRounded id={iconID} />
+                    {isUploading.value && tracks.value.map((track) => {
+                        if (track.meta == null) return null
 
-                                <span>Drag & Drop</span>
-                                <span>or <Button.Text value="browse files"  onClick={fileInput.click}   /></span>
-                                <span>or <Button.Text value="browse folder" onClick={folderInput.click} /></span>
-                            </div>
-                        )}
+                        return (
+                            <UploadTrackProgress
+                                key={track.key}
+                                data={track}
+                            />
+                        )
+                    })}
 
-                        {tracks.value.map((track) => {
-                            if (track.notAnAudio || track.meta == null) return null
+                    {!isUploading.value && (
+                        <DragAndDrop
+                            aria-label="file upload zone"
+                            className={totalTracks !== 0 ? "dnd-component__active" : undefined}
+                            onChange={fileHandler}
+                            disabled={isUploading.value}
+                        >
+                            {totalTracks === 0 && (
+                                <div className="info-section">
+                                    <CloudDownloadRounded />
 
-                            const Component = track.progress == 0
-                                ? UploadTrack
-                                : UploadTrackProgress
+                                    <span>Drag & Drop</span>
+                                    <span>or <Button.Text value="browse files"  onClick={fileInput.click}   /></span>
+                                    <span>or <Button.Text value="browse folder" onClick={folderInput.click} /></span>
+                                </div>
+                            )}
 
-                            return (
-                                <Component
-                                    key={track.key}
-                                    data={track}
-                                />
-                            )
-                        })}
-                    </DragAndDrop>
+                            {tracks.value.map((track) => {
+                                if (track.meta == null) return null
+
+                                return (
+                                    <UploadTrack
+                                        key={track.key}
+                                        data={track}
+                                    />
+                                )
+                            })}
+                        </DragAndDrop>
+                    )}
                 </div>
             </Scrollbar>
 
@@ -215,6 +217,22 @@ export function SidebarUpload() {
                     <Button.Small
                         value="Upload"
                         onClick={onUpload}
+                        fullWidth
+                    />
+
+                    <Button.Small
+                        value="Cancel"
+                        onClick={onCancel}
+                        color="var(--error-color)"
+                    />
+                </div>
+            )}
+
+            {showDoneButton && (
+                <div className="bottom">
+                    <Button.Small
+                        value="Done"
+                        onClick={onCancel}
                         fullWidth
                     />
                 </div>
