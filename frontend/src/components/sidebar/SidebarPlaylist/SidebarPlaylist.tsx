@@ -55,7 +55,7 @@ export function SidebarPlaylist() {
                 <FadeMenu type="playlistList">
                     <Scrollbar>
                         <div className="content">
-                            <Playlist title="Uploaded" onClick={() => currentPlaylist.set(0)} />
+                            <Playlist.Uploaded onClick={() => currentPlaylist.set(0)} />
                             
                             {playlists.value.map((p) => {
                                 if (p.id == 0) return null
