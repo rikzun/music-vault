@@ -1,21 +1,33 @@
 import "./DragAndDrop.style.scss"
 import type { DragAndDropProps } from "./DragAndDrop.types"
-import { useState } from "@utils/hooks"
+import { useResizeObserver, useState } from "@utils/hooks"
 import { useRef } from "react"
 
 export function DragAndDrop(props: DragAndDropProps) {
     const timeout = useRef<NodeJS.Timeout>(null)
     const hovered = useState(false)
+    const planeSize = useState(0)
 
     let className = "dnd-component"
     if (props.className) className += " " + props.className
-    if (hovered.value) className += " dnd-component__hovered"
+    if (props.disabled) className += " dnd-component__disabled"
+    else if (hovered.value) className += " dnd-component__hovered"
+
+    // TODO: try to fix
+    const ref = useResizeObserver((entries) => {
+        const target = entries[0].target
+        planeSize.set(target.scrollHeight)
+    })
 
     return (
         <div
+            ref={ref}
+            style={{ "--plane-size": planeSize.value + "px" }}
             className={className}
             aria-label={props["aria-label"]}
             onDragOver={(e) => {
+                if (props.disabled) return
+
                 e.preventDefault()
                 e.stopPropagation()
                 e.dataTransfer.dropEffect = "copy"
@@ -24,6 +36,8 @@ export function DragAndDrop(props: DragAndDropProps) {
                 hovered.set(true)
             }}
             onDragLeave={(e) => {
+                if (props.disabled) return
+
                 e.preventDefault()
 
                 clearTimeout(timeout.current ?? undefined)
@@ -32,6 +46,8 @@ export function DragAndDrop(props: DragAndDropProps) {
                 }, 10)
             }}
             onDrop={async(e) => {
+                if (props.disabled) return
+
                 e.preventDefault()
                 clearTimeout(timeout.current ?? undefined)
 
