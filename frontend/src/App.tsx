@@ -37,16 +37,17 @@ export function App() {
     axios.defaults.headers["Authorization"] = token.value
 
     useEffect(() => {
-        axios.interceptors.response.use((res) => res, (err: AxiosError) => {
-            if (err.response?.status == 401) {
-                LocalStorage.remove("token", "client.id", "client.login")
+        const interceptorID = axios.interceptors.response
+            .use((res) => res, (err: AxiosError) => {
+                if (err.response?.status == 401) {
+                    LocalStorage.remove("token", "client.id", "client.login")
 
-                token.set(null)
-                client.set(null)
-            }
-            
-            return Promise.reject(err)
-        })
+                    token.set(null)
+                    client.set(null)
+                }
+                
+                return Promise.reject(err)
+            })
 
         if (token.value) {
             axios.get<ClientResponse>("client/me").then((res) => {
@@ -57,17 +58,27 @@ export function App() {
             })
         }
 
-        //prevent page from loading file
-        document.addEventListener("dragover", (e) => {
+        const dragOverListener = (e: DragEvent) => {
             e.preventDefault()
             e.dataTransfer!.dropEffect = "none"
 
             getDefaultStore().set(MenuAtoms.sidebarMenu, "Upload")
-        })
-        
-        document.addEventListener("drop", (e) => {
+        }
+
+        const dragListener = (e: DragEvent) => {
             e.preventDefault()
-        })
+        }
+
+        //prevent page from loading file
+        document.addEventListener("dragover", dragOverListener)
+        document.addEventListener("drop", dragListener)
+
+        return () => {
+            axios.interceptors.response.eject(interceptorID)
+
+            document.removeEventListener("dragover", dragOverListener)
+            document.removeEventListener("drop", dragListener)
+        }
     }, [])
 
     if (token.value == null) return <Auth />
