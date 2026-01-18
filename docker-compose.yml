@@ -75,7 +75,8 @@ services:
     command:
       - --entrypoints.web.address=:80
       - --entrypoints.websecure.address=:443
-      - --entryPoints.websecure.http.tls=true
+      - --entrypoints.websecure.http.tls=true
+      - --entrypoints.websecure.transport.respondingtimeouts.readtimeout=300
       - --entrypoints.web.http.redirections.entrypoint.to=websecure
       - --entrypoints.web.http.redirections.entrypoint.scheme=https
       - --entrypoints.web.http.redirections.entrypoint.permanent=true
