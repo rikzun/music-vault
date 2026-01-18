@@ -35,74 +35,76 @@ export function PlaylistTrack(props: PlaylistTrackProps) {
 
     return (
         <div className="track-component" tabIndex={0} {...trueClick}>
-            {props.data.imageURL
-                ? <img className="cover" src={ENV.APP_URL + props.data.imageURL} />
-                : <div className="cover cover__empty" />
-            }
-
-            <div className="info">
-                <div className="title">
-                    {props.data.title}
-                </div>
-                
-                <div className="artists">
-                    {props.data.artists.reduce((acc, v, index) => {
-                        if (index > 0) acc.push(
-                            <Divider key={"separator-" + index} />
-                        )
-
-                        acc.push(
-                            <span
-                                key={"artist-" + v.name}
-                                className="artist"
-                                children={v.name}
-                            />
-                        )
-
-                        return acc
-                    }, [] as ReactNode[])}
-                </div>
-            </div>
-
-            <div className="controls">
-                {showBufferIcon &&
-                    <Button.Icon
-                        icon={bufferAddAction ? AddRounded : RemoveRounded}
-                        onClick={(e) => {
-                            e.stopPropagation()
-
-                            playlists.set((v) => {
-                                const trackIdList = v[bufferPlaylistIndex].trackIdList
-
-                                if (bufferAddAction) {
-                                    trackIdList.push(props.data.id)
-
-                                    bufferAddTrack.add(props.data.id)
-                                    bufferRemoveTrack.remove(props.data.id)
-                                } else {
-                                    const index = trackIdList
-                                        .findIndex((v) => v === props.data.id)
-
-                                    if (index != -1) {
-                                        trackIdList.splice(index, 1)
-
-                                        bufferRemoveTrack.add(props.data.id)
-                                        bufferAddTrack.remove(props.data.id)
-                                    }
-                                }
-
-                                return [...v]
-                            })
-                        }}
-                    />
+            <div className="container">
+                {props.data.imageURL
+                    ? <img className="cover" src={ENV.APP_URL + props.data.imageURL} />
+                    : <div className="cover cover__empty" />
                 }
 
-                <Button.Icon
-                    icon={MoreVertRounded}
-                    onClick={(e) => {
-                        e.stopPropagation()
-                    }}
-                />
+                <div className="info">
+                    <div className="title">
+                        {props.data.title}
+                    </div>
+                    
+                    <div className="artists">
+                        {props.data.artists.reduce((acc, v, index) => {
+                            if (index > 0) acc.push(
+                                <Divider key={"separator-" + index} />
+                            )
+
+                            acc.push(
+                                <span
+                                    key={"artist-" + v.name}
+                                    className="artist"
+                                    children={v.name}
+                                />
+                            )
+
+                            return acc
+                        }, [] as ReactNode[])}
+                    </div>
+                </div>
+
+                <div className="controls">
+                    {showBufferIcon &&
+                        <Button.Icon
+                            icon={bufferAddAction ? AddRounded : RemoveRounded}
+                            onClick={(e) => {
+                                e.stopPropagation()
+
+                                playlists.set((v) => {
+                                    const trackIdList = v[bufferPlaylistIndex].trackIdList
+
+                                    if (bufferAddAction) {
+                                        trackIdList.push(props.data.id)
+
+                                        bufferAddTrack.add(props.data.id)
+                                        bufferRemoveTrack.remove(props.data.id)
+                                    } else {
+                                        const index = trackIdList
+                                            .findIndex((v) => v === props.data.id)
+
+                                        if (index != -1) {
+                                            trackIdList.splice(index, 1)
+
+                                            bufferRemoveTrack.add(props.data.id)
+                                            bufferAddTrack.remove(props.data.id)
+                                        }
+                                    }
+
+                                    return [...v]
+                                })
+                            }}
+                        />
+                    }
+
+                    <Button.Icon
+                        icon={MoreVertRounded}
+                        onClick={(e) => {
+                            e.stopPropagation()
+                        }}
+                    />
+                </div>
             </div>
 
             <img

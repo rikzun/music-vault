@@ -1,64 +1,68 @@
 .track-component {
-    padding: unset;
-
-    display: flex;
-    flex-direction: row;
     position: relative;
-
-    border-radius: 7px;
     overflow: hidden;
-
+    border-radius: 7px;
     background-color: var(--background-color);
     cursor: pointer;
 
-    > .cover {
-        height: 48px;
-        width: 48px;
-    }
-
-    > .info {
+    > .container {
+        z-index: 1;
+        position: relative;
         display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: flex-start;
-        margin-inline: 8px;
-        min-width: 0;
+        flex-direction: row;
 
-        > .title {
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            width: 100%;
+
+        > .cover {
+            height: 48px;
+            width: 48px;
         }
-
-        > .artists {
+    
+        > .info {
             display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            width: 100%;
-
-            > .artist {
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            margin-inline: 8px;
+            min-width: 0;
+    
+            > .title {
                 white-space: nowrap;
                 text-overflow: ellipsis;
                 overflow: hidden;
-                font-size: 14px;
+                width: 100%;
+            }
+    
+            > .artists {
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+                width: 100%;
+    
+                > .artist {
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    font-size: 14px;
+                }
+            }
+        }
+    
+        > .controls {
+            display: flex;
+            justify-content: end;
+            flex-grow: 1;
+    
+            > button {
+                width: 48px;
+                margin-block: 4px;
+                margin-right: 4px;
             }
         }
     }
 
-    > .controls {
-        display: flex;
-        justify-content: end;
-        flex-grow: 1;
-
-        > button {
-            width: 48px;
-            margin-block: 4px;
-            margin-right: 4px;
-        }
-    }
 
     > .background {
+        z-index: 0;
         position: absolute;
         top: 0;
         left: 0;
