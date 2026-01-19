@@ -14,6 +14,8 @@ import { LocalStorage } from "@utils/localStorage"
 import { Accumulator } from "@utils/accumulator"
 import { MenuAtoms } from "@atoms/menu"
 import { getDefaultStore } from "jotai"
+import { isMobile } from "@utils/std"
+import { VolumeAtoms } from "@atoms/volume"
 
 axios.defaults.baseURL = ENV.APP_URL + "api"
 
@@ -31,12 +33,16 @@ export const bufferRemoveTrack = new Accumulator<number, number>({
     }
 })
 
+export const mobile = isMobile()
+
 export function App() {
     const token = SettingsAtoms.useToken()
     const client = ClientAtoms.useClient()
     axios.defaults.headers["Authorization"] = token.value
 
     useEffect(() => {
+        const defaultStore = getDefaultStore()
+
         const interceptorID = axios.interceptors.response
             .use((res) => res, (err: AxiosError) => {
                 if (err.response?.status == 401) {
@@ -62,7 +68,7 @@ export function App() {
             e.preventDefault()
             e.dataTransfer!.dropEffect = "none"
 
-            getDefaultStore().set(MenuAtoms.sidebarMenu, "Upload")
+            defaultStore.set(MenuAtoms.sidebarMenu, "Upload")
         }
 
         const dragListener = (e: DragEvent) => {
@@ -72,6 +78,11 @@ export function App() {
         //prevent page from loading file
         document.addEventListener("dragover", dragOverListener)
         document.addEventListener("drop", dragListener)
+
+        if (mobile) {
+            defaultStore.set(VolumeAtoms.value, 100)
+            defaultStore.set(VolumeAtoms.muted, false)
+        }
 
         return () => {
             axios.interceptors.response.eject(interceptorID)
