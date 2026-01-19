@@ -10,6 +10,7 @@ import { Workers } from "@workers"
 import { Scrollbar } from "@components/common/Scrollbar"
 import { UploadTrackProgress } from "@components/common/UploadTrackProgress"
 import { UploadAtoms } from "@atoms/upload"
+import { AsyncPool } from "@utils/asyncPool"
 
 const trackWorker = Workers.Track()
 let isCanvasSupported: boolean | null = null
@@ -19,6 +20,8 @@ trackWorker.rpc.checkCanvasSupport().then((value) => {
 })
 
 let lastTrackID = 0
+
+const asyncPool = new AsyncPool(10)
 
 export function SidebarUpload() {
     const isUploading = useState<boolean>(false)
@@ -97,24 +100,26 @@ export function SidebarUpload() {
                     return [...state]
                 })
 
-                axios.post("/track/upload", blob, {
-                    headers: {
-                        "Content-Type": "application/octet-stream",
-                        "X-Meta-Size": meta.size,
-                        "X-Image-Size": image?.size ?? 0
-                    },
-                    onUploadProgress: (e) => {
-                        const progress = Math.round((e.progress ?? 0) * 100)
-
+                asyncPool.add(() => {
+                    return axios.post("/track/upload", blob, {
+                        headers: {
+                            "Content-Type": "application/octet-stream",
+                            "X-Meta-Size": meta.size,
+                            "X-Image-Size": image?.size ?? 0
+                        },
+                        onUploadProgress: (e) => {
+                            const progress = Math.round((e.progress ?? 0) * 100)
+    
+                            tracks.set((state) => {
+                                state[index].progress = progress
+                                return [...state]
+                            })
+                        }
+                    }).catch(() => {
                         tracks.set((state) => {
-                            state[index].progress = progress
+                            state[index].errorStatus = "unknown_error"
                             return [...state]
                         })
-                    }
-                }).catch(() => {
-                    tracks.set((state) => {
-                        state[index].errorStatus = "unknown_error"
-                        return [...state]
                     })
                 })
             }
@@ -148,7 +153,7 @@ export function SidebarUpload() {
     const failedTracks = tracks.value.filter((v) => v.progress != null && v.errorStatus != null).length
 
     const showUploadButton = totalTracks !== 0 && !isUploading.value
-    const showDoneButton = isUploading.value && uploadedTracks + failedTracks === totalTracks
+    const disableDoneButton = !isUploading.value && uploadedTracks + failedTracks !== totalTracks
 
     return (
         <div className="section-content section-content__upload">
@@ -228,11 +233,12 @@ export function SidebarUpload() {
                 </div>
             )}
 
-            {showDoneButton && (
+            {isUploading.value && (
                 <div className="bottom">
                     <Button.Small
                         value="Done"
                         onClick={onCancel}
+                        disabled={disableDoneButton}
                         fullWidth
                     />
                 </div>
