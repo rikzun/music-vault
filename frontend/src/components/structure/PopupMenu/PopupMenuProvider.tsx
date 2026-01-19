@@ -5,7 +5,7 @@ import { Fragment, PropsWithChildren, useLayoutEffect } from "react"
 import { TouchMenu } from "./PopupMenuTouch"
 import { Plane } from "@components/common/Plane"
 import { PopupMenuAtoms } from "@atoms/popupMenu"
-import { PopupMenuInitiator } from "src/types/popupMenu"
+import { PopupMenuData, PopupMenuInitiator } from "src/types/popupMenu"
 
 export function PopupMenuProvider(props: PropsWithChildren) {
     const defaultMenuData = PopupMenuAtoms.useDefaultPosition()
@@ -39,17 +39,25 @@ export function PopupMenuProvider(props: PropsWithChildren) {
                 transformH: pmi.transformH,
                 transformV: pmi.transformV,
                 x: xPos,
-                y: yPos
+                y: yPos,
+                data: pmi.data
             })
         }
         
         const onClickCM = (e: MouseEvent, target: HTMLElement) => {
-            const pmi = JSON.parse(target.dataset["pm"]!) as PopupMenuInitiator
-            defaultMenuData.set({type: pmi.type, x: e.pageX, y: e.pageY, data: pmi.data})
+            const pm = JSON.parse(target.dataset["pm"]!) as PopupMenuData
+
+            defaultMenuData.set({
+                type: pm.type,
+                x: e.pageX,
+                y: e.pageY,
+                data: pm.data
+            })
         }
 
         const onTouchCM = (e: TouchEvent, target: HTMLElement) => {
-            const pmi = JSON.parse(target.dataset["pm"]!) as PopupMenuInitiator
+            const pm = JSON.parse(target.dataset["pm"]!) as PopupMenuData
+            
             touchMenuData.set(true)
         }
 
