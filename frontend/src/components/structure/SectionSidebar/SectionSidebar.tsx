@@ -1,5 +1,5 @@
 import "./SectionSidebar.style.scss"
-import { UserPanel } from "@components/common/UserPanel"
+import { Dock } from "@components/common/Dock"
 import { Button } from "@components/common/Button"
 import { SidebarUpload } from "@components/sidebar/SidebarUpload"
 import QueueMusicRounded from "@mui/icons-material/QueueMusicRounded"
@@ -61,7 +61,7 @@ export function SectionSidebar() {
                 {menu.value === "Upload" && <SidebarUpload />}
             </div>
 
-            <UserPanel />
+            <Dock />
         </div>
     )
 }

@@ -1,4 +1,4 @@
-import "./UserPanel.style.scss"
+import "./Dock.style.scss"
 import HideImageRounded from "@mui/icons-material/HideImageRounded"
 import SettingsRounded from "@mui/icons-material/SettingsRounded"
 import FolderRounded from "@mui/icons-material/FolderRounded"
@@ -10,14 +10,16 @@ import { PlaylistBuffer } from "@components/common/PlaylistBuffer"
 import { FS } from "@utils/fs"
 import { useEffect } from "react"
 import { useState } from "@utils/hooks"
+import { mobile } from "src/App"
 
-export function UserPanel() {
+const isSupportedFS = FS.isSupported()
+
+export function Dock() {
     const client = ClientAtoms.useClient()
-    const isSupportedFS = useState(FS.isSupported())
     const isStoredInFS = useState(true)
 
     useEffect(() => {
-        if (!FS.isSupported()) return
+        if (!isSupportedFS) return
 
         FS.isStored().then((v) => {
             isStoredInFS.set(v)
@@ -31,13 +33,13 @@ export function UserPanel() {
     }
 
     return (
-        <div className="user-panel">
+        <div className="dock">
             <PlaylistBuffer />
 
-            <Volume />
+            {!mobile && <Volume />}
 
-            <div className="main">
-                <div className="info">
+            <div className="client-section">
+                <div className="left">
                     {client.value?.avatarURL
                         ? <img className="avatar" src={client.value.avatarURL} />
                         : <div className="avatar avatar__empty" children={<HideImageRounded />} />
@@ -48,8 +50,8 @@ export function UserPanel() {
                     </div>
                 </div>
 
-                <div className="buttons">
-                    {isSupportedFS.value &&
+                <div className="right">
+                    {isSupportedFS &&
                         <Button.Icon
                             onClick={onOpenDialog}
                             icon={isStoredInFS.value ? FolderRounded : CreateNewFolderRounded}

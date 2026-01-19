@@ -1,21 +1,13 @@
-.user-panel {
+.dock {
+    overflow: hidden;
+    flex-shrink: 0;
+    border-radius: 11px;
+
     margin-left: 8px;
     margin-right: 8px;
     margin-bottom: 8px;
 
-    > .volume {
-        border-top-right-radius: 11px;
-        border-top-left-radius: 11px;
-    }
-
-    > .playlist-buffer-component {
-        > .background {
-            border-top-right-radius: 11px;
-            border-top-left-radius: 11px;
-        }
-    }
-
-    > .main {
+    > .client-section {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -24,7 +16,7 @@
         border-bottom-right-radius: 11px;
         border-bottom-left-radius: 11px;
 
-        > .info {
+        > .left {
             display: flex;
             align-items: center;
 
@@ -47,7 +39,7 @@
             }
         }
 
-        > .buttons {
+        > .right {
             display: flex;
             
             > .button-component {
@@ -60,10 +52,6 @@
                 justify-content: center;
                 align-items: center;
             }
-        }
-
-        > .settings-button {
-            padding-right: 18px;
         }
     }
 }
