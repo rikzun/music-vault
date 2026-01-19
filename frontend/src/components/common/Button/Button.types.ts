@@ -19,6 +19,7 @@ export interface ButtonMenuProps extends ButtonBaseProps {
 
 export interface ButtonSmallProps extends ButtonBaseProps {
     value: string
+    disabled?: boolean
     fullWidth?: boolean
 }
 

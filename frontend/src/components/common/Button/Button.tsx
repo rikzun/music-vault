@@ -41,6 +41,7 @@ export namespace Button {
                 data-pmi={JSON.stringify(props["data-pmi"])}
                 className={className}
                 children={props.value}
+                disabled={props.disabled}
                 style={props.color ? { color: props.color } : undefined}
                 {...trueClick}
             />
@@ -61,6 +62,7 @@ export namespace Button {
                 data-pmi={JSON.stringify(props["data-pmi"])}
                 className={className}
                 children={props.value}
+                disabled={props.disabled}
                 style={props.color ? { color: props.color } : undefined}
                 {...trueClick}
             />

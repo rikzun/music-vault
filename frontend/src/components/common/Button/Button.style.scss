@@ -44,6 +44,10 @@
         padding-block: 6px;
         padding-inline: 16px;
 
+        &:disabled {
+            opacity: .6;
+        }
+
         &__full-width {
             width: 100%;
         }
@@ -60,6 +64,10 @@
         background-color: var(--button-white);
         padding-block: 2px;
         padding-inline: 8px;
+
+        &:disabled {
+            opacity: .6;
+        }
 
         &__full-width {
             width: 100%;
