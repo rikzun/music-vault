@@ -7,7 +7,7 @@
     > .column {
         &:first-child {
             width: 100%;
-            margin-right: 4px;
+            margin-right: 8px;
         }
 
         > .field {
@@ -27,14 +27,15 @@
                 border: 1px solid var(--background-main-color);
                 height: 30px;
                 color: var(--text-white);
+                width: 100%;
             }
         }
     }
 
-    .btns {
+    .buttons {
         display: flex;
 
-        > button:first-child {
+        :first-child {
             margin-right: 8px;
         }
     }

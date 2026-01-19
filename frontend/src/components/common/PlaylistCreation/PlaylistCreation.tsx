@@ -39,12 +39,14 @@ export function PlaylistCreation() {
                 <div className="field">
                     <div className="title">title</div>
                     <input
+                        type="text"
                         className="value"
                         onChange={(e) => title.set(e.target.value)}
                         value={title.value}
                     />
                 </div>
-                <div className="btns">
+
+                <div className="buttons">
                     <Button.Tiny
                         onClick={onCreate}
                         value="SAVE"
