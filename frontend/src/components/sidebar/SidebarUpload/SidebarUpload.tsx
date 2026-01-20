@@ -21,11 +21,11 @@ trackWorker.rpc.checkCanvasSupport().then((value) => {
 
 let lastTrackID = 0
 
-const asyncPool = new AsyncPool(10)
+const asyncPool = new AsyncPool(5)
 
 export function SidebarUpload() {
-    const isUploading = useState<boolean>(false)
-    const tracks = UploadAtoms.useSidebarMenu()
+    const isUploading = UploadAtoms.useIsUploading()
+    const tracks = UploadAtoms.useTracks()
 
     const fileHandler = async (files: File[]) => {
         if (!files.length) return

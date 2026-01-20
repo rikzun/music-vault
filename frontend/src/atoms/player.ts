@@ -8,4 +8,7 @@ export namespace PlayerAtoms {
 
     export const trackList = atom<Map<number, Track>>(new Map())
     export const useTracklist = () => useAtom(trackList)
+
+    export const isPlaying = atom<boolean>(false)
+    export const useIsPlaying = () => useAtom(isPlaying)
 }

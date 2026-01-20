@@ -88,14 +88,16 @@ export function SectionPlayer() {
         currentTimeTimer.current = null
     }
 
-    const onPlayClick = () => {
+    const onPlayClick = (overridePlaystate: boolean | undefined = undefined) => {
+        const playingState = overridePlaystate !== undefined ? overridePlaystate : isPlaying.value
+
         if (audioContext.state === "suspended") {
             audioContext.resume()
         }
 
         if (!audioElement.src) return
 
-        if (isPlaying.value) {
+        if (playingState) {
             stopTimer()
             audioElement.pause()
         } else {
@@ -107,7 +109,27 @@ export function SectionPlayer() {
     }
 
     const onEnded = () => {
-        isPlaying.set(false)
+        if (!currentTrack.value) return
+
+        const trackKeys = trackList.value.keys()
+        while(true) {
+            let next = trackKeys.next()
+            if (next.done) {
+                isPlaying.set(false)
+                return
+            }
+            
+            if (next.value === currentTrack.value) {
+                let nextNext = trackKeys.next()
+                if (nextNext.done) {
+                    isPlaying.set(false)
+                    currentTrack.set(0) // no track
+                    return
+                }
+                currentTrack.set(nextNext.value)
+                break
+            }
+        }
     }
 
     const onPause = () => {
@@ -127,7 +149,11 @@ export function SectionPlayer() {
         const target = event.target as HTMLAudioElement
         if (!target.paused) return
 
-        onPlayClick()
+        if (target.paused) {
+            onPlayClick(false)
+        } else {
+            onPlayClick()
+        }
     }
 
     // rewrite that shit
