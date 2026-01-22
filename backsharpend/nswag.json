@@ -1,0 +1,19 @@
+{
+    "runtime": "Net100",
+    "defaultVariables": null,
+  
+    "documentGenerator": {
+      "fromAssembly": {
+        "assemblyPath": "bin/Debug/net10.0/Backend.dll",
+        "entryPoint": "Project",
+        "controllerNames": [],
+        "controllerTypes": [],
+        "useDocumentProvider": false
+      }
+    },
+  
+    "output": {
+      "swagger": "wwwroot/openapi.json"
+    }
+  }
+  

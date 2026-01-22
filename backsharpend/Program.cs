@@ -1,62 +1,64 @@
 using Microsoft.EntityFrameworkCore;
+using NSwag;
+using Project.Middleware;
 
-var builder = WebApplication.CreateBuilder(args);
+namespace Project;
 
-var connectionString = "Host=127.0.0.1;Port=5543;Database=db;Username=user;Password=password";
-
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
-builder.Services.AddDbContext<MyDbContext>(options =>
-    options
-    .UseNpgsql(connectionString)
-    .UseSnakeCaseNamingConvention()); 
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+public class Program
 {
-    app.MapOpenApi();
-}
+    
+    public static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
 
-app.UseHttpsRedirection();
+        builder.Services.AddCors();
+        builder.Services.AddControllers();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+        builder.Services.AddOpenApiDocument((options) =>
+        {
+            options.PostProcess = (document) =>
+            {
+                document.Info = new OpenApiInfo
+                {
+                    Title = "Music Vault",
+                    Version = DateTime.Now.ToString("dd.MM.yyyy HH:mm")
+                };
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+                document.Components.SecuritySchemes["Token"] = new OpenApiSecurityScheme
+                {
+                    Type = OpenApiSecuritySchemeType.ApiKey,
+                    Name = "Authorization",
+                    In = OpenApiSecurityApiKeyLocation.Header,
+                };
 
-app.MapGet("/pushtask", async (MyDbContext db) =>
-{
-  var newTask = new Task
-  {
-    text = "Aboba"
-  };
+                document.Security = [
+                    new OpenApiSecurityRequirement
+                    {
+                        { "Token", Array.Empty<string>() }
+                    }
+                ];
+            };
+        });
 
-  db.Tasks.Add(newTask);
-  await db.SaveChangesAsync();
+        builder.Services.AddDbContext<MyDbContext>((options) =>
+        {
+            options
+                .UseNpgsql(builder.Configuration.GetConnectionString("Default"))
+                .UseSnakeCaseNamingConvention();
+        }); 
+        
+        var app = builder.Build();
 
-  return Results.Created($"/tasks/{newTask.Id}", newTask);
-});
+        app.UseHttpsRedirection();
+        app.MapControllers();
 
-app.Run();
+        app.UseOpenApi((options) =>
+        {
+            options.Path = "/openapi.json";
+        });
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        app.UseSwaggerUIWrapper("/openapi.json");
+        
+        app.Run();
+    }
 }
