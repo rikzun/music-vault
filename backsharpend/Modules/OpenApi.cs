@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using NSwag;
 using NSwag.Generation.AspNetCore;
 using NSwag.Generation.Processors;
@@ -44,10 +45,19 @@ public static class OpenApi
         {
             if (context is not AspNetCoreOperationProcessorContext aspnetContext)
             {
+                context.OperationDescription.Operation.Security = [[]];
                 return true;
             }
 
-            foreach (var metadata in aspnetContext.ApiDescription.ActionDescriptor.EndpointMetadata)
+            var endpointMetadata = aspnetContext.ApiDescription.ActionDescriptor.EndpointMetadata;
+
+            var isSecured = endpointMetadata.Any((v) => v is AuthorizeAttribute);
+            if (!isSecured)
+            {
+                context.OperationDescription.Operation.Security = [[]];
+            }
+
+            foreach (var metadata in endpointMetadata)
             {
                 if (metadata is OpenApiOperation openApiMetadata)
                 {

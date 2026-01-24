@@ -1,9 +1,10 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Project.Modules;
 
 namespace Project;
 
-public class Program
+public static class Program
 {
     public static void Main(string[] args)
     {
@@ -17,17 +18,24 @@ public class Program
             options
                 .UseNpgsql(builder.Configuration.GetConnectionString("Default"))
                 .UseSnakeCaseNamingConvention();
-        }); 
+        });
+
+        builder.Services
+            .AddAuthentication("Token")
+            .AddScheme<AuthenticationSchemeOptions, TokenAuthenticationHandler>("Token", null);
+        
+        builder.Services.AddAuthorization();
         
         var app = builder.Build();
+
+        app.UseAuthentication();
+        app.UseAuthorization();
 
         app.UseHttpsRedirection();
         app.MapOpenApi();
         app.MapScalar();
 
-        app.MapGet("/time", () => DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss"))
-            .WithSummary("Get current time")
-            .WithTags("Time");
+        app.SetupRouting();
 
         app.Run();
     }
