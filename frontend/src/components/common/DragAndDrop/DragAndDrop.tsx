@@ -27,6 +27,7 @@ export function DragAndDrop(props: DragAndDropProps) {
             aria-label={props["aria-label"]}
             onDragOver={(e) => {
                 if (props.disabled) return
+                if (e.dataTransfer.types[0] !== "Files" && e.dataTransfer.types.length > 1) return
 
                 e.preventDefault()
                 e.stopPropagation()
