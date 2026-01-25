@@ -26,6 +26,8 @@ const asyncPool = new AsyncPool(5)
 export function SidebarUpload() {
     const isUploading = UploadAtoms.useIsUploading()
     const tracks = UploadAtoms.useTracks()
+    const currentEditKey = UploadAtoms.useCurrentEditKey()
+    const currentTrackData = UploadAtoms.useCurrentTrackData()
 
     const fileHandler = async (files: File[]) => {
         if (!files.length) return
@@ -139,6 +141,9 @@ export function SidebarUpload() {
 
             return []
         })
+
+        currentEditKey.set(null)
+        currentTrackData.set(null)
     }
 
     const fileInput = useInput({ handler: fileHandler, multiple: true })

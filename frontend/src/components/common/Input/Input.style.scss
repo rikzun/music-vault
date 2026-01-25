@@ -13,6 +13,18 @@
         border-radius: 7px;
     }
 
+    &-text {
+        background-color: var(--background-color);
+        color: white;
+        border-radius: 7px;
+        padding-inline: 4px;
+        padding-block: unset;
+    }
+    
+    &__full-width {
+        width: 100%;
+    }
+
     &-image {
         display: flex;
         justify-content: center;

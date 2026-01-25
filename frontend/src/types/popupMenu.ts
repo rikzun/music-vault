@@ -3,6 +3,7 @@ import { PrimitiveType } from "src/types/types"
 export type PopupMenuType =
     | "playlists"
     | "addPlaylistToBuffer"
+    | "uploadTrack"
 
 export type HorizontalPosition =
     | "left"

@@ -1,18 +1,22 @@
 import "./Input.style.scss"
-import { InputExpandedProps, InputImageProps } from "@components/common/Input"
+import { InputTextProps, InputImageProps } from "@components/common/Input"
 import { useInput } from "@utils/hooks"
 import { useTrueClick } from "@utils/hooks/useTrueClick"
 import SearchRounded from "@mui/icons-material/SearchRounded"
 import HideImageRounded from "@mui/icons-material/HideImageRounded"
 
 export namespace Input {
-    export function Expanded(props: InputExpandedProps) {
+    const cl = "input-component"
+
+    export function Expanded(props: InputTextProps) {
+        const className = cl + " input-component-expanded"
+
         return (
             <textarea
                 spellCheck={false}
                 value={props.value || undefined}
                 defaultValue={props.defaultValue || undefined}
-                className="input-component input-component-expanded"
+                className={className}
                 onChange={(e) => {
                     props.onChange?.(e.target.value)
                     
@@ -24,11 +28,28 @@ export namespace Input {
         )
     }
 
+    export function Text(props: InputTextProps) {
+        let className = cl + " input-component-text"
+        if (props.fullWidth) className += " " + (cl + "__full-width")
+
+        return (
+            <input 
+                type="text"
+                title={props.value || undefined}
+                spellCheck={false}
+                value={props.value || undefined}
+                defaultValue={props.defaultValue || undefined}
+                className={className}
+                onChange={(e) => props.onChange?.(e.target.value)}
+            />
+        )
+    }
+
     export function Image(props: InputImageProps) {
         const input = useInput({ handler: props.onChange })
         const trueClick = useTrueClick(input.click)
 
-        let className = "input-component input-component-image"
+        let className = cl + " input-component-image"
         if (!props.imageURL) className += " input-component-image__empty"
 
         return (

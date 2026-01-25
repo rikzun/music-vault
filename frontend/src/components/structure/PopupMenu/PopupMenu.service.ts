@@ -2,6 +2,7 @@ import { EventBus } from "@utils/hooks"
 import { PopupMenuType } from "src/types/popupMenu"
 import { getDefaultStore } from "jotai"
 import { BufferAtoms } from "@atoms/buffer"
+import { UploadAtoms } from "@atoms/upload"
 
 export interface PopupMenuItem {
     label: string
@@ -46,6 +47,26 @@ export const popupMenuOptions: PopupMenuOptions = {
             label: "Add to buffer",
             onClick: (data: { id: number }) => {
                 getDefaultStore().set(BufferAtoms.playlistID, data.id)
+            }
+        }
+    ],
+    "uploadTrack": [
+        {
+            label: "Edit",
+            onClick: (data: { key: number }) => {
+                EventBus.emit("uploadTrackEdit", data)
+            }
+        },
+        {
+            label: "Remove",
+            onClick: (data: { key: number }) => {
+                getDefaultStore().set(UploadAtoms.tracks, (state) => {
+                    const index = state.findIndex((v) => v.key === data.key)
+                    if (index === -1) return state
+
+                    state.splice(index, 1)
+                    return [...state]
+                })
             }
         }
     ]
