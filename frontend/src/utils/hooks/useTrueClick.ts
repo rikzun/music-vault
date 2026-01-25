@@ -26,11 +26,11 @@ export function useTrueClick<T extends Element>(handler?: TrueClickHandler<T> | 
         handler?.(e)
     }
 
-    const onPointerLeave = (e: ReactEvent.Pointer<T>) => {
+    const onPointerLeave = () => {
         isPointerDown.current = false
     }
 
-    const onPointerCancel = (e: ReactEvent.Pointer<T>) => {
+    const onPointerCancel = () => {
         isPointerDown.current = false
     }
 
