@@ -17,6 +17,7 @@ export namespace Input {
                 value={props.value || undefined}
                 defaultValue={props.defaultValue || undefined}
                 className={className}
+                style={props.style || undefined}
                 onChange={(e) => {
                     props.onChange?.(e.target.value)
                     
@@ -40,6 +41,7 @@ export namespace Input {
                 value={props.value || undefined}
                 defaultValue={props.defaultValue || undefined}
                 className={className}
+                style={props.style || undefined}
                 onChange={(e) => props.onChange?.(e.target.value)}
             />
         )
@@ -47,10 +49,15 @@ export namespace Input {
 
     export function Image(props: InputImageProps) {
         const input = useInput({ handler: props.onChange })
-        const trueClick = useTrueClick(input.click)
+        
+        const trueClick = useTrueClick(() => {
+            if (props.disabled) return
+            input.click()
+        })
 
         let className = cl + " input-component-image"
         if (!props.imageURL) className += " input-component-image__empty"
+        if (props.disabled) className += " input-component-image__disabled"
 
         return (
             <button className={className} {...trueClick}>

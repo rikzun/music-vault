@@ -1,23 +1,17 @@
+import { useTrueClick } from "@utils/hooks/useTrueClick"
 import "./Plane.style.scss"
 
 export interface PlaneProps {
-    onPointerDown: () => void
-    onTouchStart: () => void
+    onClick: () => void
 }
 
 export function Plane(props: PlaneProps) {
+    const trueClick = useTrueClick(props.onClick, false)
+
     return (
         <div
             className="plane-component"
-            onPointerDown={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                props.onPointerDown()
-            }}
-            onTouchStart={(e) => {
-                e.stopPropagation()
-                props.onTouchStart()
-            }}
+            {...trueClick}
         />
     )
 }

@@ -1,4 +1,4 @@
-import { IUploadTrack } from "@components/sidebar/SidebarUpload"
+import { IUploadTrack, TrackImage } from "@components/sidebar/SidebarUpload"
 import { useAtom } from "@utils/hooks"
 import { atom } from "jotai"
 
@@ -17,7 +17,8 @@ export namespace UploadAtoms {
 }
 
 export interface TrackEditFields {
-    title: string
+    image: TrackImage | null
+    title: string | null
     artists: string[]
-    album: string
+    album: string | null
 }

@@ -46,6 +46,16 @@
             }
         }
 
+        &__disabled {
+            > .cover {
+                display: none !important;
+            }
+
+            > .MuiSvgIcon-root {
+                display: block !important;
+            }
+        }
+
         > .cover {
             display: none;
             position: absolute;

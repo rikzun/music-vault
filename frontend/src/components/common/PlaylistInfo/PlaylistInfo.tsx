@@ -39,6 +39,7 @@ export function PlaylistInfo() {
                     data-pmi={{
                         type: "addPlaylistToBuffer",
                         anchorH: "right",
+                        transformH: "right",
                         data: { id: currentPlaylistID.value }
                     }}
                 />

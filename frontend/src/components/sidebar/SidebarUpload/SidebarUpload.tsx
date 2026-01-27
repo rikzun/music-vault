@@ -1,7 +1,7 @@
 import "./SidebarUpload.style.scss"
 import axios from "axios"
 import { Button } from "@components/common/Button"
-import { useInput, useState } from "@utils/hooks"
+import { useInput } from "@utils/hooks"
 import CloudDownloadRounded from "@mui/icons-material/CloudDownloadRounded"
 import { IUploadTrack } from "./SidebarUpload.types"
 import { DragAndDrop } from "@components/common/DragAndDrop"
@@ -12,7 +12,7 @@ import { UploadTrackProgress } from "@components/common/UploadTrackProgress"
 import { UploadAtoms } from "@atoms/upload"
 import { AsyncPool } from "@utils/asyncPool"
 
-const trackWorker = Workers.Track()
+export const trackWorker = Workers.Track()
 let isCanvasSupported: boolean | null = null
 
 trackWorker.rpc.checkCanvasSupport().then((value) => {
@@ -169,10 +169,17 @@ export function SidebarUpload() {
 
                 {totalTracks !== 0 &&
                     <div className="right">
-                        {isUploading.value
-                            ? `${uploadedTracks} / ${totalTracks} | ${failedTracks}`
-                            : `${processedTracks} / ${totalTracks} | ${missingInfoTracks}`
-                        }
+                        {!isUploading.value && <>
+                            <span className="green" children={processedTracks} /><span children=" / " />
+                            <span children={totalTracks} /><span children=" | " />
+                            <span className="yellow" children={missingInfoTracks} />
+                        </>}
+
+                        {isUploading.value && <>
+                            <span className="green" children={uploadedTracks} /><span children=" / " />
+                            <span>{totalTracks}</span><span children=" | " />
+                            <span className="red" children={failedTracks} />
+                        </>}
                     </div>
                 }
             </div>
@@ -227,6 +234,7 @@ export function SidebarUpload() {
                     <Button.Small
                         value="Upload"
                         onClick={onUpload}
+                        disabled={currentEditKey.value !== null}
                         fullWidth
                     />
 

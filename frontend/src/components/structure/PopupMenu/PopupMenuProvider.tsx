@@ -1,18 +1,23 @@
 import "./PopupMenu.styles.scss"
 import { DefaultMenu } from "./PopupMenuDefault"
 import { useState } from "@utils/hooks"
-import { Fragment, PropsWithChildren, useLayoutEffect } from "react"
+import { Fragment, PropsWithChildren, useLayoutEffect, useRef } from "react"
 import { TouchMenu } from "./PopupMenuTouch"
 import { Plane } from "@components/common/Plane"
 import { PopupMenuAtoms } from "@atoms/popupMenu"
 import { PopupMenuData, PopupMenuInitiator } from "src/types/popupMenu"
 
+const pressed = "popup-menu-pressed"
+
 export function PopupMenuProvider(props: PropsWithChildren) {
+    const targetRef = useRef<HTMLElement>(null)
     const defaultMenuData = PopupMenuAtoms.useDefaultPosition()
     const touchMenuData = useState<true | null>(null)
 
     useLayoutEffect(() => {
         const onClickPMI = (target: HTMLElement) => {
+            targetRef.current = target
+
             const pmi = JSON.parse(target.dataset["pmi"]!) as PopupMenuInitiator
             const rect = target.getBoundingClientRect()
 
@@ -42,6 +47,8 @@ export function PopupMenuProvider(props: PropsWithChildren) {
                 y: yPos,
                 data: pmi.data
             })
+
+            targetRef.current.classList.add(pressed)
         }
         
         const onClickCM = (e: MouseEvent, target: HTMLElement) => {
@@ -143,10 +150,13 @@ export function PopupMenuProvider(props: PropsWithChildren) {
             {props.children}
 
             {(defaultMenuData.value || touchMenuData.value) && (
-                <Plane
-                    onPointerDown={() => defaultMenuData.set(null)}
-                    onTouchStart={() => touchMenuData.set(null)}
-                />
+                <Plane onClick={() => {
+                    targetRef.current?.classList.remove(pressed)
+                    targetRef.current = null
+
+                    defaultMenuData.set(null)
+                    touchMenuData.set(null)
+                }} />
             )}
 
             <DefaultMenu />

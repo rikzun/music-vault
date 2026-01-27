@@ -30,4 +30,16 @@
             margin-right: 8px;
         }
     }
+
+    .green {
+        color: var(--green-color)
+    }
+
+    .yellow {
+        color: var(--info-color)
+    }
+
+    .red {
+        color: var(--error-color)
+    }
 }

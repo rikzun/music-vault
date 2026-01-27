@@ -18,10 +18,8 @@ export class TrackWorkerRPC extends WorkerLib.RPC {
         }
     }
 
-    async resizeImage(data: Uint8Array, format: string): Promise<TrackImage | null> {
-        const startBlob = new Blob([data as BlobPart], { type: format })
-
-        const imageBitmap = await createImageBitmap(startBlob, {
+    async resizeImage(data: Blob): Promise<TrackImage> {
+        const imageBitmap = await createImageBitmap(data, {
             resizeWidth: this.imageSize,
             resizeHeight: this.imageSize,
             resizeQuality: "high"
@@ -78,12 +76,9 @@ export class TrackWorkerRPC extends WorkerLib.RPC {
             (imageFormat == null || imageFormat == "")
         ) return data
 
-        const resizedImage = await this.resizeImage(imageData, imageFormat)
-
-        if (resizedImage) {
-            data.image = resizedImage
-            return data
-        }
+        const imageBlob = new Blob([imageData as BlobPart], { type: imageFormat })
+        const resizedImage = await this.resizeImage(imageBlob)
+        data.image = resizedImage
 
         return data
     }

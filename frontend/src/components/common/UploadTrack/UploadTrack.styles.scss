@@ -20,7 +20,6 @@
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        min-height: 36px;
 
         > .title {
             text-transform: uppercase;
@@ -31,8 +30,10 @@
         }
 
         > .value {
+            position: relative;
             text-align: left;
             width: 100%;
+            height: 22px;
         }
     }
 
@@ -42,7 +43,7 @@
         min-height: 36px;
 
         > .column {
-            margin-right: 4px;
+            margin-right: 8px;
             flex: 1;
 
             &.column-image {
@@ -63,23 +64,10 @@
     .field-image {
         height: 36px;
 
-        > .image {
+        > .input-component-image {
             height: 76px;
             width: 76px;
             min-height: 76px;
-            border-radius: 11px;
-
-            &.image-empty {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                border: 1px dashed white;
-
-                > svg {
-                    width: 38px;
-                    height: 38px;
-                }
-            }
         }
     }
 
@@ -100,5 +88,32 @@
         &:last-child {
             margin-bottom: unset
         }
+    }
+
+    > .buttons {
+        display: flex;
+
+        > :first-child {
+            margin-right: 8px;
+        }
+    }
+
+    .add-icon {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 22px;
+        height: 22px;
+        cursor: pointer;
+        border-radius: 7px;
+
+        > svg {
+            width: 22px;
+            height: 22px;
+        }
+    }
+
+    .unknown-data {
+        color: var(--info-color);
     }
 }
