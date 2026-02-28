@@ -1,9 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using Project.Domain;
 
-public class AppDbContext : DbContext
+namespace Project;
+
+public class AppDbContext(DbContextOptions<AppDbContext> options)
+    : DbContext(options)
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options)
-        : base(options) { }
 
-    // public DbSet<Task> Tasks => Set<Task>();
+    public DbSet<Client> Clients => Set<Client>();
 }

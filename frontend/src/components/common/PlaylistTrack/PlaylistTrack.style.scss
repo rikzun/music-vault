@@ -4,6 +4,7 @@
     border-radius: 7px;
     background-color: var(--background-color);
     cursor: pointer;
+    content-visibility: auto;
 
     > .container {
         z-index: 1;

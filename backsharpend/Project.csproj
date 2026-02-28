@@ -9,7 +9,7 @@
     
     <ServerGarbageCollection>false</ServerGarbageCollection>
     <InvariantGlobalization>true</InvariantGlobalization>
-    <PublishAot>true</PublishAot>
+    <!-- <PublishAot>true</PublishAot> -->
   </PropertyGroup>
 
   <PropertyGroup>
