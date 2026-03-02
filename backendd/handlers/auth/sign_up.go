@@ -16,7 +16,10 @@ func SignUpInfo() []endpoint.EndPointOption {
 	return []endpoint.EndPointOption{
 		endpoint.WithTags("Auth"),
 		endpoint.WithBody(models.AuthSignUpBody{}),
-		endpoint.WithSuccessfulReturns([]response.Response{response.New(models.AuthResponse{}, "200", "OK")}),
+		endpoint.WithSuccessfulReturns([]response.Response{
+			response.New(models.AuthResponse{}, "200", "OK"),
+			response.New(apierrors.ApiError{}, "409", "Conflict"),
+		}),
 	}
 }
 
@@ -47,8 +50,8 @@ func SignUp(
 
 	clientService := clientServiceFactory.WithTx(reqCtx, tx)
 
-	clientID, uniqueViolation, err := clientService.CreateAndGetID(body.Email, body.Login, passwordHash)
-	if uniqueViolation {
+	resp, err := clientService.CreateAndGetID(body.Email, body.Login, passwordHash)
+	if resp.UniqueViolation {
 		return apierrors.ClientUniqueError()
 	}
 	if err != nil {
@@ -59,7 +62,7 @@ func SignUp(
 	ua := ctx.UserAgent()
 
 	authTokenService := authTokenServiceFactory.WithTx(reqCtx, tx)
-	token, err := authTokenService.Create(clientID, ip, ua)
+	token, err := authTokenService.Create(resp.ClientID, ip, ua)
 	if err != nil {
 		return err
 	}

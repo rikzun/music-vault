@@ -1,33 +1,39 @@
 package services
 
 import (
-	"backend/db/sqlc"
 	"errors"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 func (self *AuthToken) Create(clientID int32, ip string, ua string) (string, error) {
 	token := uuid.New()
 
-	err := self.queries.CreateAuthToken(self.context, sqlc.CreateAuthTokenParams{
-		ClientID:  clientID,
-		Token:     pgtype.UUID{Bytes: token, Valid: true},
-		Ip:        ip,
-		UserAgent: pgtype.Text{String: ua, Valid: true},
-	})
+	query := `
+		INSERT INTO auth_tokens (client_id, token, ip, user_agent)
+		VALUES ($1, $2, $3, $4)
+	`
+
+	_, err := self.database.Exec(self.context, query,
+		clientID, token, ip, ua,
+	)
 
 	return token.String(), err
 }
 
 func (self *AuthToken) FindOrCreate(clientID int32, ip string, ua string) (string, error) {
-	token, err := self.queries.FindAuthToken(self.context, sqlc.FindAuthTokenParams{
-		ClientID:  clientID,
-		Ip:        ip,
-		UserAgent: pgtype.Text{String: ua, Valid: true},
-	})
+	query := `
+		SELECT token
+		FROM auth_tokens
+		WHERE client_id = $1 AND (ip = $2 OR user_agent = $3)
+	`
+
+	var token string
+
+	err := self.database.QueryRow(self.context, query,
+		clientID, ip, ua,
+	).Scan(&token)
 
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -43,5 +49,5 @@ func (self *AuthToken) FindOrCreate(clientID int32, ip string, ua string) (strin
 		return "", err
 	}
 
-	return token.String(), nil
+	return token, nil
 }

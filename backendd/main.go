@@ -4,7 +4,6 @@ import (
 	"backend/core"
 	apierrors "backend/core/api_errors"
 	"backend/core/routing"
-	"backend/db/sqlc"
 	auth_handlers "backend/handlers/auth"
 	"backend/services"
 	"log/slog"
@@ -34,11 +33,9 @@ func main() {
 		Version: time.Now().Format("2006-01-02 15:04:05"),
 	})
 
-	queries := sqlc.New(database)
-
 	txFactory := core.NewTxFactory(database)
-	clientServiceFactory := services.NewClientFactory(queries)
-	authTokenServiceFactory := services.NewAuthTokenFactory(queries)
+	clientServiceFactory := services.NewClientFactory(database)
+	authTokenServiceFactory := services.NewAuthTokenFactory(database)
 
 	router := routing.New(routing.Config{
 		App:    app,

@@ -1,6 +1,7 @@
 package routing
 
 import (
+	"fmt"
 	"log/slog"
 	"os"
 	"reflect"
@@ -25,6 +26,7 @@ func buildPlan(handlerType reflect.Type, args []any) []argPlan {
 	var plan []argPlan
 	for i := 0; i < handlerType.NumIn(); i++ {
 		argType := handlerType.In(i)
+		found := false
 
 		if argType == fiberCtxType {
 			plan = append(plan, argPlan{index: i, resolve: func(ctx fiber.Ctx) reflect.Value {
@@ -43,7 +45,24 @@ func buildPlan(handlerType reflect.Type, args []any) []argPlan {
 				return fv
 			}})
 
+			found = true
 			break
+		}
+
+		if !found {
+			for _, fv := range argsValues {
+				if fv.Kind() == reflect.Ptr && fv.Type().Elem() == argType {
+					slog.Error(fmt.Sprintf("buildPlan: argument %d: handler expects %s, but got *%s (pass value, not pointer)", i, argType, argType))
+					os.Exit(1)
+				}
+				if argType.Kind() == reflect.Ptr && argType.Elem() == fv.Type() {
+					slog.Error(fmt.Sprintf("buildPlan: argument %d: handler expects *%s, but got %s (pass pointer, not value)", i, fv.Type(), fv.Type()))
+					os.Exit(1)
+				}
+			}
+
+			slog.Error(fmt.Sprintf("buildPlan: no argument provided for parameter %d of type %s", i, argType))
+			os.Exit(1)
 		}
 	}
 

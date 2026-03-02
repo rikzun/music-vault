@@ -18,7 +18,7 @@ CREATE TABLE auth_tokens
     token      UUID      NOT NULL,
     ip         TEXT      NOT NULL,
     user_agent TEXT,
-    created_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
 
     UNIQUE (token)
 );

@@ -11,8 +11,8 @@ type TxFactory struct {
 	database *pgxpool.Pool
 }
 
-func NewTxFactory(database *pgxpool.Pool) *TxFactory {
-	return &TxFactory{
+func NewTxFactory(database *pgxpool.Pool) TxFactory {
+	return TxFactory{
 		database: database,
 	}
 }

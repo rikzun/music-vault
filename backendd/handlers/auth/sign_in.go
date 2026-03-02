@@ -16,7 +16,11 @@ func SignInInfo() []endpoint.EndPointOption {
 	return []endpoint.EndPointOption{
 		endpoint.WithTags("Auth"),
 		endpoint.WithBody(models.AuthSignInBody{}),
-		endpoint.WithSuccessfulReturns([]response.Response{response.New(models.AuthResponse{}, "200", "OK")}),
+		endpoint.WithSuccessfulReturns([]response.Response{
+			response.New(models.AuthResponse{}, "200", "OK"),
+			response.New(apierrors.ApiError{}, "404", "Not Found"),
+			response.New(apierrors.ApiError{}, "401", "Unauthorized"),
+		}),
 	}
 }
 
@@ -42,15 +46,15 @@ func SignIn(
 
 	clientService := clientServiceFactory.WithTx(reqCtx, tx)
 
-	data, found, err := clientService.FindByIdentifier(body.Identifier)
-	if !found {
+	resp, err := clientService.FindByIdentifier(body.Identifier)
+	if !resp.Found {
 		return apierrors.ClientNotFound()
 	}
 	if err != nil {
 		return err
 	}
 
-	compared := utils.Bcrypt.Compare(data.PasswordHash, body.Password)
+	compared := utils.Bcrypt.Compare(resp.PasswordHash, body.Password)
 	if !compared {
 		return apierrors.ClientPasswordMismatch()
 	}
@@ -59,7 +63,7 @@ func SignIn(
 
 	ip := ctx.IP()
 	ua := ctx.UserAgent()
-	token, err := authTokenService.FindOrCreate(data.ClientID, ip, ua)
+	token, err := authTokenService.FindOrCreate(resp.ClientID, ip, ua)
 
 	if err != nil {
 		return err
