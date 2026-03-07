@@ -1,6 +1,8 @@
 package apierrors
 
-import "github.com/gofiber/fiber/v3"
+import (
+	"github.com/gofiber/fiber/v3"
+)
 
 const (
 	JsonParseErrorCode         ApiErrorCode = "JSON.PARSE_ERROR"
@@ -10,21 +12,21 @@ const (
 	ClientPasswordMismatchCode ApiErrorCode = "CLIENT.PASSWORD_MISMATCH"
 )
 
-func ClientUniqueError() error {
+func ClientUniqueError() *ApiError {
 	return &ApiError{
 		Status: fiber.StatusConflict,
 		Code:   ClientUniqueViolationCode,
 	}
 }
 
-func ClientNotFound() error {
+func ClientNotFound() *ApiError {
 	return &ApiError{
 		Status: fiber.StatusNotFound,
 		Code:   ClientNotFoundCode,
 	}
 }
 
-func ClientPasswordMismatch() error {
+func ClientPasswordMismatch() *ApiError {
 	return &ApiError{
 		Status: fiber.StatusUnauthorized,
 		Code:   ClientPasswordMismatchCode,

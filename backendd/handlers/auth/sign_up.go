@@ -6,6 +6,7 @@ import (
 	"backend/models"
 	"backend/services"
 	"backend/utils"
+	"log/slog"
 
 	"github.com/go-swagno/swagno/v3/components/endpoint"
 	"github.com/go-swagno/swagno/v3/components/http/response"
@@ -18,7 +19,7 @@ func SignUpInfo() []endpoint.EndPointOption {
 		endpoint.WithBody(models.AuthSignUpBody{}),
 		endpoint.WithSuccessfulReturns([]response.Response{
 			response.New(models.AuthResponse{}, "200", "OK"),
-			response.New(apierrors.ApiError{}, "409", "Conflict"),
+			apierrors.ClientUniqueError().Response(),
 		}),
 	}
 }
@@ -32,6 +33,7 @@ func SignUp(
 	var body models.AuthSignUpBody
 
 	if err := ctx.Bind().Body(&body); err != nil {
+		slog.Error(err.Error())
 		return err
 	}
 

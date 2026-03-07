@@ -18,8 +18,8 @@ func SignInInfo() []endpoint.EndPointOption {
 		endpoint.WithBody(models.AuthSignInBody{}),
 		endpoint.WithSuccessfulReturns([]response.Response{
 			response.New(models.AuthResponse{}, "200", "OK"),
-			response.New(apierrors.ApiError{}, "404", "Not Found"),
-			response.New(apierrors.ApiError{}, "401", "Unauthorized"),
+			apierrors.ClientNotFound().Response(),
+			apierrors.ClientPasswordMismatch().Response(),
 		}),
 	}
 }

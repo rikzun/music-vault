@@ -20,6 +20,12 @@ func (self *routing) RouteScalar() {
 			o.Configurations["operationTitleSource"] = "path"
 			o.Configurations["darkMode"] = true
 			o.Configurations["hideClientButton"] = true
+			o.Configurations["defaultOpenAllTags"] = true
+			o.Configurations["hideModels"] = true
+
+			o.Configurations["authentication"] = map[string]any{
+				"preferredSecurityScheme": "apiKeyAuth",
+			}
 
 			o.Configurations["defaultHttpClient"] = scalar.HTTPClientConfig{
 				TargetKey: "shell",

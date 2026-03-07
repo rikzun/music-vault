@@ -100,7 +100,7 @@ func wrap(handler any, args []any) any {
 	}).Interface().(func(fiber.Ctx) error)
 }
 
-func Wrapper(args ...any) func(any, ...any) (any, []any) {
+func DIWrapper(args ...any) func(any, ...any) (any, []any) {
 	return func(handler any, handlers ...any) (any, []any) {
 		wrappedHandler := wrap(handler, args)
 

@@ -3,14 +3,17 @@ package main
 import (
 	"backend/core"
 	apierrors "backend/core/api_errors"
+	"backend/core/middleware"
 	"backend/core/routing"
 	auth_handlers "backend/handlers/auth"
+	client_handlers "backend/handlers/client"
 	"backend/services"
 	"log/slog"
 	"os"
 	"time"
 
 	swagno3 "github.com/go-swagno/swagno/v3"
+	"github.com/go-swagno/swagno/v3/components/security"
 	"github.com/gofiber/fiber/v3"
 )
 
@@ -32,6 +35,7 @@ func main() {
 		Title:   "Music Vault",
 		Version: time.Now().Format("2006-01-02 15:04:05"),
 	})
+	openapi.SetApiKeyAuth("Authorization", security.Header, "")
 
 	txFactory := core.NewTxFactory(database)
 	clientServiceFactory := services.NewClientFactory(database)
@@ -40,38 +44,33 @@ func main() {
 	router := routing.New(routing.Config{
 		App:    app,
 		Swagno: openapi,
-		Prefix: "api",
 
-		WrapperFunc: routing.Wrapper(
+		Security: middleware.Authorization(authTokenServiceFactory),
+		WrapperFunc: routing.DIWrapper(
 			txFactory, clientServiceFactory, authTokenServiceFactory,
 		),
 	})
 
 	{
-		unsecured := router.Group("")
+		unsecured := router.Group("api", middleware.DefaultHeaders)
 		unsecured.Post("auth/sign-up", auth_handlers.SignUpInfo, auth_handlers.SignUp)
 		unsecured.Post("auth/sign-in", auth_handlers.SignInInfo, auth_handlers.SignIn)
+
+		secured := router.GroupSecured("api", middleware.DefaultHeaders)
+		secured.Get("client/me", client_handlers.MeInfo, client_handlers.Me)
 
 		router.RouteOpenApi()
 		router.RouteScalar()
 	}
 
-	app.Hooks().OnPreStartupMessage(func(message *fiber.PreStartupMessageData) error {
-		message.BannerHeader = "" +
-			message.ColorScheme.Red + " ___      ___ " + message.ColorScheme.Cyan + " ___      ___ \n" +
-			message.ColorScheme.Red + "|\"  \\    /\"  |" + message.ColorScheme.Cyan + "|\"  \\    /\"  |\n" +
-			message.ColorScheme.Red + " \\   \\  //   |" + message.ColorScheme.Cyan + " \\   \\  //  / \n" +
-			message.ColorScheme.Red + " /\\   \\/.    |" + message.ColorScheme.Cyan + "  \\   \\/. ./  \n" +
-			message.ColorScheme.Red + "|: \\.        |" + message.ColorScheme.Cyan + "   \\.    //   \n" +
-			message.ColorScheme.Red + "|.  \\    /:  |" + message.ColorScheme.Cyan + "    \\    /    \n" +
-			message.ColorScheme.Red + "|___|\\__/|___|" + message.ColorScheme.Cyan + "     \\__/     " +
-			message.ColorScheme.Reset
-
+	app.Hooks().OnPostStartupMessage(func(m *fiber.PostStartupMessageData) error {
+		println("Backend started")
 		return nil
 	})
 
 	err := app.Listen(":3001", fiber.ListenConfig{
-		EnablePrefork: true,
+		DisableStartupMessage: true,
+		EnablePrefork:         true,
 	})
 
 	if err != nil {

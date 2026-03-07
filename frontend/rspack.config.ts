@@ -10,11 +10,11 @@ import type { Configuration, NormalModule } from "@rspack/core"
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const IS_DEVELOPMENT = process.env.NODE_ENV !== "production"
-const IS_SERVE = process.env.WEBPACK_SERVE == "true"
+const IS_DEVELOPMENT = process.env["NODE_ENV"] !== "production"
+const IS_SERVE = process.env["WEBPACK_SERVE"] == "true"
 const ENV = dotenv({ path: "../.env", quiet: true }).parsed!
 
-let APP_URL = ENV["APP_URL"]
+let APP_URL = process.env["APP_URL"] ?? ENV["APP_URL"]
 if (!APP_URL.endsWith("/")) APP_URL += "/"
 
 const PATH_NODE_MODULES_FOLDER = path.join(__dirname, "node_modules")
