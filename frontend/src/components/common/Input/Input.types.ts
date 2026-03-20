@@ -13,3 +13,9 @@ export interface InputImageProps {
     disabled?: boolean | null
     onChange: (file: File) => void
 }
+
+export interface InputFormFieldProps {
+    label?: string | null
+    sublabel?: string | null
+    fullWidth?: boolean | null
+}

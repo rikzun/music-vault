@@ -1,0 +1,67 @@
+.auth-page-component {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    background-color: var(--background-main-color);
+
+    > .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        margin-left: 11px;
+        margin-top: 11px;
+        margin-right: 11px;
+
+        width: calc(100% - 22px);
+        height: 100%;
+        border-radius: 17px;
+
+        position: relative;
+        overflow: hidden;
+
+        > form {
+            width: 500px; //remove
+
+            z-index: 1;
+            position: relative;
+
+            background-color: rgba(17, 17, 17, .8);
+            border: 1px solid var(--background-color);
+            border-radius: 7px;
+            padding: 16px;
+
+            > .row {
+                &-title {
+                    position: absolute;
+                    top: -100px;
+                    font-weight: 200;
+                    font-size: 40px;
+                    text-transform: uppercase;
+                    text-shadow: 2px 4px 4px rgba(0, 0, 0, 0.25);
+                    text-align: center;
+                    width: calc(100% - 32px);
+                }
+            }
+        }
+    }
+
+    > .footer {
+        height: 38px;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        > .item {
+            text-transform: uppercase;
+        }
+
+        > .divider-component {
+            margin-inline: 8px;
+        }
+    }
+}

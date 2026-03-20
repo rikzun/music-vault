@@ -1,5 +1,5 @@
 import "./Input.style.scss"
-import { InputTextProps, InputImageProps } from "@components/common/Input"
+import { InputTextProps, InputImageProps, InputFormFieldProps } from "@components/common/Input"
 import { useInput } from "@utils/hooks"
 import { useTrueClick } from "@utils/hooks/useTrueClick"
 import SearchRounded from "@mui/icons-material/SearchRounded"
@@ -70,6 +70,24 @@ export namespace Input {
                     : <HideImageRounded />
                 }
             </button>
+        )
+    }
+
+    export function FormField(props: InputFormFieldProps) {
+        let className = cl + " input-component-form-field"
+        if (props.fullWidth) className += " " + (cl + "__full-width")
+
+        return (
+            <div className={className}>
+                <div className="top">
+                    <div className="title" children={props.label} />
+
+                </div>
+
+                <input
+                    type="text"
+                />
+            </div>
         )
     }
 }

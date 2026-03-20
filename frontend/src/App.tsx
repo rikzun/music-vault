@@ -1,7 +1,7 @@
 import "./App.style.scss"
 import "overlayscrollbars/overlayscrollbars.css"
 import axios, { AxiosError } from "axios"
-import { Auth } from "@components/common/Auth"
+import { Auth } from "@components/structure/Auth"
 import { SectionSidebar } from "@components/structure/SectionSidebar"
 import { SectionPlayer } from "@components/structure/SectionPlayer"
 import { SectionPlaylist } from "@components/structure/SectionPlaylist"

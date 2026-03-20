@@ -5,6 +5,7 @@ import type {
     PointerEvent,
     FocusEvent,
     FormEvent,
+    SubmitEvent,
     ChangeEvent,
     InputEvent,
     KeyboardEvent,
@@ -22,6 +23,7 @@ export namespace ReactEvent {
     export type Pointer     <T = Element>                 = PointerEvent<T>
     export type Focus       <T = Element, RT = Element>   = FocusEvent<T, RT>
     export type Form        <T = Element>                 = FormEvent<T>
+    export type Submit      <T = Element>                 = SubmitEvent<T>
     export type Change      <T = Element>                 = ChangeEvent<T>
     export type Input       <T = Element>                 = InputEvent<T>
     export type Keyboard    <T = Element>                 = KeyboardEvent<T>
