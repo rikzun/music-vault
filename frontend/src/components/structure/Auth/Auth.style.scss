@@ -34,17 +34,40 @@
             border-radius: 7px;
             padding: 16px;
 
-            > .row {
-                &-title {
-                    position: absolute;
-                    top: -100px;
-                    font-weight: 200;
-                    font-size: 40px;
-                    text-transform: uppercase;
-                    text-shadow: 2px 4px 4px rgba(0, 0, 0, 0.25);
-                    text-align: center;
-                    width: calc(100% - 32px);
+            > .title {
+                position: absolute;
+                top: -100px;
+                font-weight: 200;
+                font-size: 40px;
+                text-transform: uppercase;
+                text-shadow: 2px 4px 4px rgba(0, 0, 0, 0.25);
+                text-align: center;
+                width: calc(100% - 32px);
+
+                margin-bottom: 4px;
+            }
+
+            > .change-mode {
+                margin-bottom: 8px;
+            }
+
+            > .input-component-form-field {
+                margin-bottom: 8px;
+
+                > .top {
+                    > .label, .button-text {
+                        color: var(--button-white)
+                    }
                 }
+            }
+
+            > .button-small {
+                margin-top: 16px;
+                height: 40px;
+                background-color: rgba(86, 86, 86, .6);
+                color: var(--button-white);
+                font-weight: 400;
+                font-size: 16px;
             }
         }
     }
@@ -56,8 +79,9 @@
         justify-content: center;
         align-items: center;
 
-        > .item {
+        > .button-text {
             text-transform: uppercase;
+            color: white;
         }
 
         > .divider-component {

@@ -1,4 +1,4 @@
-import { CSSProperties } from "react"
+import { CSSProperties, HTMLInputAutoCompleteAttribute } from "react"
 
 export interface InputTextProps {
     defaultValue?: string | null
@@ -16,6 +16,17 @@ export interface InputImageProps {
 
 export interface InputFormFieldProps {
     label?: string | null
-    sublabel?: string | null
+    subLabel?: string | null
     fullWidth?: boolean | null
+
+    defaultValue?: string | null
+    value?: string | null
+    placeholder?: string | null
+
+    onChange?: (content: string) => void
+    onSubLabelClick?: () => void
+
+    email?: boolean | null
+    password?: boolean | null
+    autoComplete?: HTMLInputAutoCompleteAttribute | null
 }

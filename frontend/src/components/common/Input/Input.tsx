@@ -1,9 +1,12 @@
 import "./Input.style.scss"
 import { InputTextProps, InputImageProps, InputFormFieldProps } from "@components/common/Input"
-import { useInput } from "@utils/hooks"
+import { useInput, useState } from "@utils/hooks"
 import { useTrueClick } from "@utils/hooks/useTrueClick"
 import SearchRounded from "@mui/icons-material/SearchRounded"
 import HideImageRounded from "@mui/icons-material/HideImageRounded"
+import VisibilityRounded from "@mui/icons-material/VisibilityRounded"
+import VisibilityOffRounded from "@mui/icons-material/VisibilityOffRounded"
+import { Button } from "@components/common/Button"
 
 export namespace Input {
     const cl = "input-component"
@@ -74,19 +77,51 @@ export namespace Input {
     }
 
     export function FormField(props: InputFormFieldProps) {
+        const passwordVisible = useState(false)
+
         let className = cl + " input-component-form-field"
         if (props.fullWidth) className += " " + (cl + "__full-width")
+
+        let type = "text"
+        if (passwordVisible.value) type = "text"
+        else if (props.email) type = "email"
+        else if (props.password) type = "password"
+
+        let bottomClassName = "bottom"
+        if (props.password) bottomClassName += " bottom__password"
 
         return (
             <div className={className}>
                 <div className="top">
-                    <div className="title" children={props.label} />
-
+                    <div className="label" children={props.label} />
+                    
+                    {Boolean(props.subLabel) && (
+                        <Button.Text
+                            value={props.subLabel!}
+                            onClick={props.onSubLabelClick}
+                        />
+                    )}
                 </div>
 
-                <input
-                    type="text"
-                />
+                <div className={bottomClassName}>
+                    <input
+                        type={type}
+                        title={props.value || undefined}
+                        spellCheck={false}
+                        value={props.value || undefined}
+                        placeholder={props.placeholder ?? undefined}
+                        defaultValue={props.defaultValue || undefined}
+                        onChange={(e) => props.onChange?.(e.target.value)}
+                        autoComplete={props.autoComplete ?? undefined}
+                    />
+
+                    {props.password && (
+                        <Button.Icon
+                            icon={passwordVisible.value ? VisibilityOffRounded : VisibilityRounded}
+                            onClick={() => passwordVisible.invert()}
+                        />
+                    )}
+                </div>
             </div>
         )
     }

@@ -92,4 +92,57 @@
             object-fit: cover;
         }
     }
+
+    &-form-field {
+        display: flex;
+        flex-direction: column;
+
+        > .top {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-end;
+
+            > .label {
+                font-size: 16px;
+            }
+
+            > .button-text {
+                font-weight: 700;
+                font-size: 14px;
+            }
+        }
+
+        > .bottom {
+            position: relative;
+            display: flex;
+            align-items: center;
+            
+            > input {
+                background-color: rgba(27, 27, 27, .6);
+                border: 1px solid var(--background-main-color);
+                border-radius: 11px;
+                font-size: 16px;
+                padding-inline: 13px;
+                padding-block: 9px;
+                color: white;
+                width: 100%;
+
+                &::placeholder {
+                    color: rgba(255, 255, 255, .2);
+                }
+            }
+
+            &__password {
+                > input {
+                    padding-right: 46px;
+                }
+            }
+
+            > .button-icon {
+                position: absolute;
+                right: 12px;
+            }
+        }
+    }
 }

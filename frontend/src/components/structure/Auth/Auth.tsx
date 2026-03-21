@@ -10,6 +10,8 @@ import { useEffect, useRef } from "react"
 import { ParallaxBackground } from "@components/common/ParallaxBackground"
 import BackgroundURL from "@assets/auth-background.jpg?url"
 import HelpOutlineRounded from "@mui/icons-material/HelpOutlineRounded"
+import { Input } from "@components/common/Input"
+import { Button } from "@components/common/Button"
 
 interface SignData {
     email: string
@@ -18,11 +20,14 @@ interface SignData {
 }
 
 type AuthMode =
-    | "signin"
-    | "signup"
+    | "sign-in"
+    | "sign-up"
 
 export function Auth() {
-    const mode = useState<AuthMode>("signin")
+    const mode = useState<AuthMode>("sign-in")
+    const isSignIn = mode.value === "sign-in"
+    const isSignUp = mode.value === "sign-up"
+
     const tokenAtom = SettingsAtoms.useToken()
 
     // const onSubmit = (e: ReactEvent.Submit<HTMLFormElement>) => {
@@ -58,38 +63,60 @@ export function Auth() {
     //     })
     // }
 
+    const onSubmit = (e: ReactEvent.Submit<HTMLFormElement>) => {
+        e.preventDefault()
+    }
+
     return (
         <div className="auth-page-component">
             <div className="container">
                 <ParallaxBackground imageURL={BackgroundURL} />
 
-                <form>
+                <form onSubmit={onSubmit}>
                     <div
-                        className="row row-title"
+                        className="title"
                         children="Music Vault"
                     />
 
-                    <div className="row">
+                    <div className="change-mode">
                         Sign In / Sign Up
 
                         <HelpOutlineRounded />
                     </div>
-                    {/* {mode.value === "signin" && (
 
-                    )} */}
+                    {isSignIn && (
+                        <>
+                            <Input.FormField
+                                label="Identifier"
+                                placeholder="email or login"
+                                autoComplete="on"
+                                email
+                            />
+
+                            <Input.FormField
+                                label="Password"
+                                placeholder="••••••••"
+
+                                subLabel="Forgot password?"
+                                autoComplete="current-password"
+                                password
+                            />
+
+                            <Button.Small value="SIGN IN" fullWidth />
+                        </>
+                    )}
+                    
+                    
+
                 </form>
             </div>
 
             <div className="footer">
-                <div className="item">terms</div>
-
+                <Button.Text value="TERMS" />
                 <Divider />
-
-                <div className="item">report</div>
-                
+                <Button.Text value="REPORT" />
                 <Divider />
-                
-                <div className="item">credits</div>
+                <Button.Text value="CREDITS" />
             </div>
         </div>
     )
