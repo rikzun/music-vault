@@ -1,0 +1,25 @@
+.switch-container-component {
+    display: flex;
+    justify-content: center;
+    position: relative;
+
+    > button {
+        font-size: 14px;
+        font-weight: 700;
+
+        &:first-child {
+            text-align: right;
+        }
+
+        &:last-child {
+            text-align: left;
+        }
+    }
+
+    > .underline {
+        position: absolute;
+        height: 2px;
+        background: var(--button-active);
+        transition: left 0.3s ease-out;
+    }
+}

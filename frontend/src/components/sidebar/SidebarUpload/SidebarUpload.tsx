@@ -11,6 +11,7 @@ import { Scrollbar } from "@components/common/Scrollbar"
 import { UploadTrackProgress } from "@components/common/UploadTrackProgress"
 import { UploadAtoms } from "@atoms/upload"
 import { AsyncPool } from "@utils/asyncPool"
+import { ID } from "src/types/types"
 
 export const trackWorker = Workers.Track()
 let isCanvasSupported: boolean | null = null
@@ -71,63 +72,113 @@ export function SidebarUpload() {
     const onUpload = () => {
         isUploading.set(true)
 
+        const data: Record<string, number[]> = {}
+
         tracks.value.forEach((track, index) => {
-            const reader = new FileReader()
+            const image = track.meta!.image!
+            const pHash = image.pHash
 
-            reader.onload = async(e) => {
-                const metaJSON = JSON.stringify({
-                    title: track.meta!.title,
-                    artists: track.meta!.artists,
-                    album: track.meta!.album,
-                    codec: track.meta!.codec,
-                    bitrate: track.meta!.bitrate,
-                    lossless: track.meta!.lossless
-                })
+            data[pHash] ??= []
+            data[pHash].push(index)
+        })
 
-                const meta = new Blob([metaJSON], {
-                    type: "application/octet-stream"
-                })
+        interface PHashStatus {
+            pHash: string
+            id: number | null
+        }
 
-                const image = track.meta!.image?.blob || null
-
-                const data = [meta, image, e.target!.result]
-                    .filter(Boolean) as BlobPart[]
-
-                const blob = new Blob(data, {
-                    type: "application/octet-stream"
-                })
-
-                tracks.set((state) => {
-                    state[index].progress = 0
-                    return [...state]
-                })
-
-                asyncPool.add(() => {
-                    return axios.post("/track/upload", blob, {
-                        headers: {
-                            "Content-Type": "application/octet-stream",
-                            "X-Meta-Size": meta.size,
-                            "X-Image-Size": image?.size ?? 0
-                        },
-                        onUploadProgress: (e) => {
-                            const progress = Math.round((e.progress ?? 0) * 100)
-    
-                            tracks.set((state) => {
-                                state[index].progress = progress
-                                return [...state]
-                            })
+        Promise.allSettled(
+            Object.keys(data).map((pHash) => {
+                return new Promise<PHashStatus>((resolve, reject) => {
+                    axios.get<ID>("/tracks/covers/match", {
+                        params: { pHash }
+                    }).then((res) => {
+                        resolve({pHash, id: res.data.id})
+                    }).catch((err) => {
+                        if (axios.isAxiosError(err) && err.status == 404) {
+                            resolve({pHash, id: null})
+                            return
                         }
-                    }).catch(() => {
-                        tracks.set((state) => {
-                            state[index].errorStatus = "unknown_error"
-                            return [...state]
-                        })
+
+                        reject()
                     })
                 })
-            }
+            })
+        ).then((values) => {
+            values.forEach((v) => {
+                if (v.status == "fulfilled" && !v.value.id) {
+                    const pHash = v.value.pHash
 
-            reader.readAsArrayBuffer(track.file)
+                    const trackIndex = data[pHash][0]
+                    const imageBlob = tracks.value[trackIndex].meta!.image!.blob
+
+                    axios.post<ID>("/tracks/covers/upload", imageBlob, {
+                        headers: {
+                            "Content-Type": "application/octet-stream",
+                        },
+                        params: { pHash }
+                    })
+                }
+            })
         })
+
+        // tracks.value.forEach((track, index) => {
+        //     const reader = new FileReader()
+
+        //     reader.onload = async(e) => {
+        //         const metaJSON = JSON.stringify({
+        //             title: track.meta!.title,
+        //             artists: track.meta!.artists,
+        //             album: track.meta!.album,
+        //             codec: track.meta!.codec,
+        //             bitrate: track.meta!.bitrate,
+        //             lossless: track.meta!.lossless
+        //         })
+
+        //         const meta = new Blob([metaJSON], {
+        //             type: "application/octet-stream"
+        //         })
+
+        //         const image = track.meta!.image?.blob || null
+
+        //         const data = [meta, image, e.target!.result]
+        //             .filter(Boolean) as BlobPart[]
+
+        //         const blob = new Blob(data, {
+        //             type: "application/octet-stream"
+        //         })
+
+        //         tracks.set((state) => {
+        //             state[index].progress = 0
+        //             return [...state]
+        //         })
+
+        //         asyncPool.add(() => {
+        //             return axios.post("/track/upload", blob, {
+        //                 headers: {
+        //                     "Content-Type": "application/octet-stream",
+        //                     "X-Meta-Size": meta.size,
+        //                     "X-Image-Size": image?.size ?? 0
+        //                 },
+        //                 onUploadProgress: (e) => {
+        //                     const progress = Math.round((e.progress ?? 0) * 100)
+    
+        //                     tracks.set((state) => {
+        //                         state[index].progress = progress
+        //                         return [...state]
+        //                     })
+        //                 }
+        //             }).catch(() => {
+        //                 tracks.set((state) => {
+        //                     state[index].errorStatus = "unknown_error"
+        //                     return [...state]
+        //                 })
+        //             })
+        //         })
+        //     }
+
+        //     reader.readAsArrayBuffer(track.file)
+        // })
     }
 
     const onCancel = () => {

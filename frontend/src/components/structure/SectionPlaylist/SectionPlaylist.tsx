@@ -21,15 +21,15 @@ export function SectionPlaylist() {
             ? "/playlist/uploaded"
             : `/playlist/${currentPlaylistID.value}/get-tracks`
 
-        axios.get<UploadedPlaylistResponse>(url).then((res) => {
-            const trackMap = new Map<number, Track>()
+        // axios.get<UploadedPlaylistResponse>(url).then((res) => {
+        //     const trackMap = new Map<number, Track>()
 
-            res.data.data.forEach((track) => {
-                trackMap.set(track.id, track)
-            })
+        //     res.data.data.forEach((track) => {
+        //         trackMap.set(track.id, track)
+        //     })
 
-            trackList.set(trackMap)
-        })
+        //     trackList.set(trackMap)
+        // })
     }, [currentPlaylistID.value])
 
     return (

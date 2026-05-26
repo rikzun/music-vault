@@ -15,6 +15,7 @@ export interface InputImageProps {
 }
 
 export interface InputFormFieldProps {
+    name?: string | null
     label?: string | null
     subLabel?: string | null
     fullWidth?: boolean | null
@@ -29,4 +30,5 @@ export interface InputFormFieldProps {
     email?: boolean | null
     password?: boolean | null
     autoComplete?: HTMLInputAutoCompleteAttribute | null
+    minLength?: number | null
 }

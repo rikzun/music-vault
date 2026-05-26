@@ -22,6 +22,7 @@ export function SidebarPlaylist() {
     EventBus.useListener("playlistCreationCancel", () => menu.set("playlistList"))
 
     useEffect(() => {
+        return
         axios.get<GetListPlaylistResponse>("playlist/get-list").then((res) => {
             // res.data.data.forEach((v) => {
             //     if (!v.imageURL) return

@@ -31,12 +31,43 @@ export class TrackWorkerRPC extends WorkerLib.RPC {
         ctx.transferFromImageBitmap(imageBitmap)
         imageBitmap.close()
 
+        const hash = await this.getPerceptualHash(canvas)
         const blob = await canvas.convertToBlob()
 
         return {
+            pHash: hash,
             blob: blob,
             objectURL: URL.createObjectURL(blob)
         }
+    }
+
+    async getPerceptualHash(canvas: OffscreenCanvas): Promise<string> {
+        const smallCanvas = new OffscreenCanvas(8, 8)
+        const ctx = smallCanvas.getContext('2d')!
+        
+        ctx.drawImage(canvas, 0, 0, 8, 8)
+        
+        const data = ctx.getImageData(0, 0, 8, 8).data
+        
+        const grayscale = new Uint8Array(64)
+        let totalBrightness = 0
+        
+        for (let i = 0; i < data.length; i += 4) {
+            const gray = Math.round(data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114)
+            grayscale[i / 4] = gray
+            totalBrightness += gray
+        }
+        
+        const avgBrightness = totalBrightness / 64
+        
+        let hashStr = "";
+        for (let i = 0; i < 64; i++) {
+            hashStr += grayscale[i] >= avgBrightness ? "1" : "0"
+        }
+        
+        return BigInt("0b" + hashStr)
+            .toString(10)
+            .padStart(20, "0")
     }
 
     async parseMeta(file: File) {

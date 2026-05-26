@@ -1,6 +1,10 @@
 import { OverridableComponent } from "@mui/material/OverridableComponent"
 import { SvgIconTypeMap } from "@mui/material/SvgIcon"
 
+export interface ID {
+    id: number
+}
+
 export interface SignResponse {
     token: string
 }

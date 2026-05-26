@@ -1,4 +1,5 @@
 export interface TrackImage {
+    pHash: string
     blob: Blob
     objectURL: string
 }

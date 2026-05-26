@@ -7,14 +7,16 @@ import (
 	"backend/core/routing"
 	auth_handlers "backend/handlers/auth"
 	client_handlers "backend/handlers/client"
+	track_covers_handlers "backend/handlers/tracks/covers"
 	"backend/services"
-	"log/slog"
 	"os"
 	"time"
 
 	swagno3 "github.com/go-swagno/swagno/v3"
 	"github.com/go-swagno/swagno/v3/components/security"
 	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/log"
+	"github.com/gofiber/fiber/v3/middleware/logger"
 )
 
 func main() {
@@ -27,9 +29,12 @@ func main() {
 	}
 
 	app := fiber.New(fiber.Config{
-		ErrorHandler:    apierrors.ErrorHandler,
-		StructValidator: core.NewValidator(),
+		ErrorHandler:      apierrors.ErrorHandler,
+		StructValidator:   core.NewValidator(),
+		StreamRequestBody: true,
 	})
+
+	loggerHandler := logger.New()
 
 	openapi := swagno3.New(swagno3.Config{
 		Title:   "Music Vault",
@@ -40,6 +45,7 @@ func main() {
 	txFactory := core.NewTxFactory(database)
 	clientServiceFactory := services.NewClientFactory(database)
 	authTokenServiceFactory := services.NewAuthTokenFactory(database)
+	trackServiceFactory := services.NewTrackFactory(database)
 
 	router := routing.New(routing.Config{
 		App:    app,
@@ -47,24 +53,27 @@ func main() {
 
 		Security: middleware.Authorization(authTokenServiceFactory),
 		WrapperFunc: routing.DIWrapper(
-			txFactory, clientServiceFactory, authTokenServiceFactory,
+			txFactory, clientServiceFactory, authTokenServiceFactory, trackServiceFactory,
 		),
 	})
 
 	{
-		unsecured := router.Group("api", middleware.DefaultHeaders)
+		unsecured := router.Group("api", loggerHandler, middleware.DefaultHeaders)
 		unsecured.Post("auth/sign-up", auth_handlers.SignUpInfo, auth_handlers.SignUp)
 		unsecured.Post("auth/sign-in", auth_handlers.SignInInfo, auth_handlers.SignIn)
 
-		secured := router.GroupSecured("api", middleware.DefaultHeaders)
+		secured := router.GroupSecured("api", loggerHandler, middleware.DefaultHeaders)
 		secured.Get("client/me", client_handlers.MeInfo, client_handlers.Me)
+
+		secured.Get("tracks/covers/match", track_covers_handlers.MatchInfo, track_covers_handlers.Match)
+		secured.Post("tracks/covers/upload", track_covers_handlers.UploadInfo, track_covers_handlers.Upload)
 
 		router.RouteOpenApi()
 		router.RouteScalar()
 	}
 
 	app.Hooks().OnPostStartupMessage(func(m *fiber.PostStartupMessageData) error {
-		println("Backend started")
+		log.Info("Backend started")
 		return nil
 	})
 
@@ -74,7 +83,7 @@ func main() {
 	})
 
 	if err != nil {
-		slog.Error(err.Error())
+		log.Error(err)
 		os.Exit(1)
 	}
 }

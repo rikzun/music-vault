@@ -91,3 +91,36 @@ func (self *Client) FindByIdentifier(identifier string) (FindByIdentifierRespons
 		Found:        true,
 	}, nil
 }
+
+type FindByIDResponse struct {
+	Login string
+	Found bool
+}
+
+func (self *Client) FindByID(id int32) (FindByIDResponse, error) {
+	query := `
+		SELECT
+			login
+		FROM clients
+		WHERE id = $1;
+	`
+
+	var login string
+
+	err := self.database.QueryRow(self.context, query,
+		id,
+	).Scan(&login)
+
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return FindByIDResponse{}, nil
+		}
+
+		return FindByIDResponse{}, err
+	}
+
+	return FindByIDResponse{
+		Login: login,
+		Found: true,
+	}, nil
+}

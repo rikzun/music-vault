@@ -105,6 +105,7 @@ export namespace Input {
 
                 <div className={bottomClassName}>
                     <input
+                        name={props.name || undefined}
                         type={type}
                         title={props.value || undefined}
                         spellCheck={false}
@@ -113,6 +114,7 @@ export namespace Input {
                         defaultValue={props.defaultValue || undefined}
                         onChange={(e) => props.onChange?.(e.target.value)}
                         autoComplete={props.autoComplete ?? undefined}
+                        minLength={props.minLength || undefined}
                     />
 
                     {props.password && (

@@ -6,12 +6,12 @@ import { SignResponse } from "src/types/types"
 import { LocalStorage } from "@utils/localStorage"
 import { ReactEvent } from "@utils/react"
 import { Divider } from "@components/common/Divider"
-import { useEffect, useRef } from "react"
 import { ParallaxBackground } from "@components/common/ParallaxBackground"
 import BackgroundURL from "@assets/auth-background.jpg?url"
 import HelpOutlineRounded from "@mui/icons-material/HelpOutlineRounded"
 import { Input } from "@components/common/Input"
 import { Button } from "@components/common/Button"
+import { Switch } from "@components/common/Switch"
 
 interface SignData {
     email: string
@@ -30,41 +30,44 @@ export function Auth() {
 
     const tokenAtom = SettingsAtoms.useToken()
 
-    // const onSubmit = (e: ReactEvent.Submit<HTMLFormElement>) => {
-    //     e.preventDefault()
-
-    //     const form = e.target as HTMLFormElement
-    //     const formData = new FormData(form)
-    //     const formJson = Object.fromEntries(formData.entries()) as unknown as SignData
-
-    //     const handler = isSignIn.value ? signInHandler : signUpHandler
-    //     handler(formJson)
-    // }
-
-    // const signInHandler = (data: SignData) => {
-    //     axios.post<SignResponse>("auth/sign-in", data).then((res) => {
-    //         console.log(res)
-    //         LocalStorage.setString("token", res.data.token)
-    //         tokenAtom.set(res.data.token)
-    //         axios.defaults.headers["Authorization"] = res.data.token
-    //     }).catch((reason) => {
-    //         console.log(reason)
-    //     })
-    // }
-
-    // const signUpHandler = (data: SignData) => {
-    //     axios.post<SignResponse>("auth/sign-up", data).then((res) => {
-    //         console.log(res)
-    //         LocalStorage.setString("token", res.data.token)
-    //         tokenAtom.set(res.data.token)
-    //         axios.defaults.headers["Authorization"] = res.data.token
-    //     }).catch((reason) => {
-    //         console.log(reason)
-    //     })
-    // }
-
     const onSubmit = (e: ReactEvent.Submit<HTMLFormElement>) => {
         e.preventDefault()
+
+        const formData = new FormData(e.target)
+
+        if (isSignIn) onSignIn(formData)
+        else onSignUp(formData)
+    }
+
+    const onSignIn = (formData: FormData) => {
+        const identifier = formData.get("identifier")
+        const password = formData.get("password")
+
+        const data = { identifier, password }
+
+        axios.post<SignResponse>("auth/sign-in", data).then((res) => {
+            LocalStorage.setString("token", res.data.token)
+            tokenAtom.set(res.data.token)
+            axios.defaults.headers["Authorization"] = res.data.token
+        }).catch((reason) => {
+            console.log(reason)
+        })
+    }
+    
+    const onSignUp = (formData: FormData) => {
+        const email = formData.get("email")
+        const login = formData.get("login")
+        const password = formData.get("password")
+
+        const data = { email, login, password }
+
+        axios.post<SignResponse>("auth/sign-up", data).then((res) => {
+            LocalStorage.setString("token", res.data.token)
+            tokenAtom.set(res.data.token)
+            axios.defaults.headers["Authorization"] = res.data.token
+        }).catch((reason) => {
+            console.log(reason)
+        })
     }
 
     return (
@@ -79,43 +82,74 @@ export function Auth() {
                     />
 
                     <div className="change-mode">
-                        Sign In / Sign Up
+                        <Switch.Container>
+                            <Switch.Option label="Sign In" onSelect={() => mode.set("sign-in")} active={mode.value == "sign-in"} />
+                            <Switch.Option label="Sign Up" onSelect={() => mode.set("sign-up")} active={mode.value == "sign-up"} />
+                        </Switch.Container>
 
-                        <HelpOutlineRounded />
+                        {/* <HelpOutlineRounded /> */}
                     </div>
 
                     {isSignIn && (
                         <>
                             <Input.FormField
+                                name="identifier"
                                 label="Identifier"
                                 placeholder="email or login"
                                 autoComplete="on"
-                                email
                             />
 
                             <Input.FormField
+                                name="password"
                                 label="Password"
                                 placeholder="••••••••"
 
                                 subLabel="Forgot password?"
                                 autoComplete="current-password"
                                 password
+                                minLength={8}
                             />
 
                             <Button.Small value="SIGN IN" fullWidth />
                         </>
                     )}
                     
-                    
+                    {isSignUp && (
+                        <>
+                            <Input.FormField
+                                name="email"
+                                label="Email"
+                                placeholder="example@gmail.com"
+                                autoComplete="on"
+                            />
 
+                            <Input.FormField
+                                name="login"
+                                label="Login"
+                                placeholder="rikzun"
+                            />
+
+                            <Input.FormField
+                                name="password"
+                                label="Password"
+                                placeholder="••••••••"
+
+                                autoComplete="current-password"
+                                password
+                                minLength={8}
+                            />
+
+                            <Button.Small value="SIGN UP" fullWidth />
+                        </>
+                    )}
                 </form>
             </div>
 
             <div className="footer">
                 <Button.Text value="TERMS" />
-                <Divider />
+                <Divider size="small" />
                 <Button.Text value="REPORT" />
-                <Divider />
+                <Divider size="small" />
                 <Button.Text value="CREDITS" />
             </div>
         </div>

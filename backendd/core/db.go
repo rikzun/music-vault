@@ -3,9 +3,9 @@ package core
 import (
 	"context"
 	"fmt"
-	"log/slog"
 	"os"
 
+	"github.com/gofiber/fiber/v3/log"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -25,12 +25,12 @@ func InitDatabase(config *ConfigStruct) *pgxpool.Pool {
 
 	database, err := pgxpool.New(context.Background(), connString)
 	if err != nil {
-		slog.Error("wrong connection string format")
+		log.Error("wrong connection string format")
 		os.Exit(1)
 	}
 
 	if err := database.Ping(context.Background()); err != nil {
-		slog.Error("no response from database")
+		log.Error("no response from database")
 		os.Exit(1)
 	}
 
@@ -47,18 +47,22 @@ func MigrateDB(database *pgxpool.Pool) {
 	tx, err := database.Begin(ctx)
 
 	if err != nil {
-		slog.Warn("migration was not applied")
+		log.Error(err)
 		return
 	}
 
 	if _, err := tx.Exec(ctx, string(schema)); err != nil {
 		tx.Rollback(ctx)
-		slog.Warn("migration was not applied")
+		log.Error(err)
+		log.Error("migrations was not applied")
 		return
 	}
 
 	if err := tx.Commit(ctx); err != nil {
-		slog.Info("migration was applied")
+		log.Error(err)
+		log.Error("migrations was not applied")
 		return
 	}
+
+	log.Info("migrations was applied")
 }

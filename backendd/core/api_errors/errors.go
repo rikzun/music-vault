@@ -5,8 +5,9 @@ import (
 )
 
 const (
-	JsonParseErrorCode         ApiErrorCode = "JSON.PARSE_ERROR"
-	JsonValidateErrorCode      ApiErrorCode = "JSON.VALIDATE_ERROR"
+	JsonParseErrorCode    ApiErrorCode = "JSON.PARSE_ERROR"
+	JsonValidateErrorCode ApiErrorCode = "JSON.VALIDATE_ERROR"
+
 	ClientUniqueViolationCode  ApiErrorCode = "CLIENT.UNIQUE_VIOLATION"
 	ClientNotFoundCode         ApiErrorCode = "CLIENT.NOT_FOUND"
 	ClientPasswordMismatchCode ApiErrorCode = "CLIENT.PASSWORD_MISMATCH"

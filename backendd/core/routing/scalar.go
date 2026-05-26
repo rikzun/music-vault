@@ -1,11 +1,11 @@
 package routing
 
 import (
-	"log/slog"
 	"os"
 
 	scalar "github.com/bdpiprava/scalar-go"
 	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/log"
 )
 
 func (self *routing) RouteScalar() {
@@ -43,7 +43,7 @@ func (self *routing) RouteScalar() {
 	)
 
 	if err != nil {
-		slog.Error(err.Error())
+		log.Error(err)
 		os.Exit(1)
 	}
 

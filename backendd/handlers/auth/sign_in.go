@@ -10,6 +10,7 @@ import (
 	"github.com/go-swagno/swagno/v3/components/endpoint"
 	"github.com/go-swagno/swagno/v3/components/http/response"
 	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/log"
 )
 
 func SignInInfo() []endpoint.EndPointOption {
@@ -33,6 +34,7 @@ func SignIn(
 	var body models.AuthSignInBody
 
 	if err := ctx.Bind().Body(&body); err != nil {
+		log.Error(err)
 		return err
 	}
 
@@ -40,6 +42,7 @@ func SignIn(
 	tx, err := txFactory.Begin(reqCtx)
 
 	if err != nil {
+		log.Error(err)
 		return err
 	}
 	defer tx.Rollback()
@@ -51,6 +54,7 @@ func SignIn(
 		return apierrors.ClientNotFound()
 	}
 	if err != nil {
+		log.Error(err)
 		return err
 	}
 
@@ -66,10 +70,12 @@ func SignIn(
 	token, err := authTokenService.FindOrCreate(resp.ClientID, ip, ua)
 
 	if err != nil {
+		log.Error(err)
 		return err
 	}
 
 	if err := tx.Commit(); err != nil {
+		log.Error(err)
 		return err
 	}
 

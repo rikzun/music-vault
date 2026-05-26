@@ -3,4 +3,14 @@
         font-size: 10px;
         margin-inline: 4px;
     }
+
+    &__auto {
+        font-size: inherit;
+        margin-inline: 4px;
+    }
+
+    &__small {
+        font-size: 8px;
+        margin-inline: 4px;
+    }
 }

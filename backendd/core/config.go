@@ -1,8 +1,9 @@
 package core
 
 import (
-	"log/slog"
 	"os"
+
+	"github.com/gofiber/fiber/v3/log"
 )
 
 type ConfigStruct struct {
@@ -30,7 +31,7 @@ func get(values ...string) string {
 		value, exists := os.LookupEnv(values[0])
 
 		if !exists {
-			slog.Error("env parameter " + values[0] + " not found")
+			log.Errorf("env parameter %v not found", values[0])
 			os.Exit(1)
 		}
 

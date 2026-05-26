@@ -1,12 +1,11 @@
 package routing
 
 import (
-	"fmt"
-	"log/slog"
 	"os"
 	"reflect"
 
 	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/log"
 )
 
 type argPlan struct {
@@ -52,16 +51,16 @@ func buildPlan(handlerType reflect.Type, args []any) []argPlan {
 		if !found {
 			for _, fv := range argsValues {
 				if fv.Kind() == reflect.Ptr && fv.Type().Elem() == argType {
-					slog.Error(fmt.Sprintf("buildPlan: argument %d: handler expects %s, but got *%s (pass value, not pointer)", i, argType, argType))
+					log.Errorf("buildPlan: argument %d: handler expects %s, but got *%s (pass value, not pointer)", i, argType, argType)
 					os.Exit(1)
 				}
 				if argType.Kind() == reflect.Ptr && argType.Elem() == fv.Type() {
-					slog.Error(fmt.Sprintf("buildPlan: argument %d: handler expects *%s, but got %s (pass pointer, not value)", i, fv.Type(), fv.Type()))
+					log.Errorf("buildPlan: argument %d: handler expects *%s, but got %s (pass pointer, not value)", i, fv.Type(), fv.Type())
 					os.Exit(1)
 				}
 			}
 
-			slog.Error(fmt.Sprintf("buildPlan: no argument provided for parameter %d of type %s", i, argType))
+			log.Errorf("buildPlan: no argument provided for parameter %d of type %s", i, argType)
 			os.Exit(1)
 		}
 	}
@@ -84,7 +83,7 @@ func wrap(handler any, args []any) any {
 
 	numIn := handlerType.NumIn()
 	if len(plan) != numIn {
-		slog.Error("not all required arguments were found")
+		log.Error("not all required arguments were found")
 		os.Exit(1)
 	}
 

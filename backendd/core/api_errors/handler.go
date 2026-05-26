@@ -10,51 +10,62 @@ import (
 
 func ErrorHandler(ctx fiber.Ctx, e error) error {
 	status := fiber.StatusInternalServerError
-	apiError := ApiError{}
+	var data *ApiError = nil
 
 	switch err := e.(type) {
 	case *json.SyntaxError:
 		status = fiber.StatusBadRequest
-		apiError.Code = JsonParseErrorCode
-		apiError.Details = map[string]any{
+
+		data = &ApiError{}
+		data.Code = JsonParseErrorCode
+		data.Details = map[string]any{
 			"position": strconv.FormatInt(err.Offset, 10),
 			"message":  err.Error(),
 		}
 
 	case *json.UnmarshalTypeError:
 		status = fiber.StatusBadRequest
-		apiError.Code = JsonParseErrorCode
-		apiError.Details = map[string]any{
+
+		data = &ApiError{}
+		data.Code = JsonParseErrorCode
+		data.Details = map[string]any{
 			"field":    err.Field,
 			"expected": err.Type.String(),
 		}
 
 	case validator.ValidationErrors:
 		status = fiber.StatusBadRequest
-		apiError.Code = JsonValidateErrorCode
-		apiError.Details = map[string]any{}
+
+		data = &ApiError{}
+		data.Code = JsonValidateErrorCode
+		data.Details = map[string]any{}
 
 		for _, vErr := range err {
 			if param := vErr.Param(); param != "" {
-				apiError.Details[vErr.Field()] = map[string]any{
+				data.Details[vErr.Field()] = map[string]any{
 					vErr.Tag(): param,
 				}
 			} else {
-				apiError.Details[vErr.Field()] = map[string]any{
+				data.Details[vErr.Field()] = map[string]any{
 					vErr.Tag(): true,
 				}
 			}
 		}
 
 	case *fiber.Error:
-		println(err.Error())
-		return ctx.SendStatus(err.Code)
+		status = err.Code
 
 	case *ApiError:
 		status = err.Status
-		apiError.Code = err.Code
-		apiError.Details = err.Details
+
+		data = &ApiError{}
+		data.Code = err.Code
+		data.Details = err.Details
 	}
 
-	return ctx.Status(status).JSON(apiError)
+	if data == nil {
+		return ctx.SendStatus(status)
+	}
+
+	return ctx.Status(status).JSON(data)
 }

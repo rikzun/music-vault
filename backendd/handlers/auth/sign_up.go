@@ -6,11 +6,11 @@ import (
 	"backend/models"
 	"backend/services"
 	"backend/utils"
-	"log/slog"
 
 	"github.com/go-swagno/swagno/v3/components/endpoint"
 	"github.com/go-swagno/swagno/v3/components/http/response"
 	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/log"
 )
 
 func SignUpInfo() []endpoint.EndPointOption {
@@ -33,12 +33,13 @@ func SignUp(
 	var body models.AuthSignUpBody
 
 	if err := ctx.Bind().Body(&body); err != nil {
-		slog.Error(err.Error())
+		log.Error(err)
 		return err
 	}
 
 	passwordHash, err := utils.Bcrypt.Generate(body.Password)
 	if err != nil {
+		log.Error(err)
 		return err
 	}
 
@@ -46,6 +47,7 @@ func SignUp(
 	tx, err := txFactory.Begin(reqCtx)
 
 	if err != nil {
+		log.Error(err)
 		return err
 	}
 	defer tx.Rollback()
@@ -57,6 +59,7 @@ func SignUp(
 		return apierrors.ClientUniqueError()
 	}
 	if err != nil {
+		log.Error(err)
 		return err
 	}
 
@@ -66,10 +69,12 @@ func SignUp(
 	authTokenService := authTokenServiceFactory.WithTx(reqCtx, tx)
 	token, err := authTokenService.Create(resp.ClientID, ip, ua)
 	if err != nil {
+		log.Error(err)
 		return err
 	}
 
 	if err := tx.Commit(); err != nil {
+		log.Error(err)
 		return err
 	}
 
