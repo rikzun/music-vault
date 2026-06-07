@@ -2,16 +2,17 @@ import path from "path"
 import fs from "fs"
 import { fileURLToPath } from "url"
 import { config as dotenv } from "dotenv"
+import { defineConfig } from "@rspack/cli"
 import { HtmlRspackPlugin, SwcJsMinimizerRspackPlugin, LightningCssMinimizerRspackPlugin, CopyRspackPlugin, DefinePlugin } from "@rspack/core"
 import { TsCheckerRspackPlugin } from "ts-checker-rspack-plugin"
-import ReactRefreshRspackPlugin from "@rspack/plugin-react-refresh"
-import type { Configuration, NormalModule } from "@rspack/core"
+import { ReactRefreshRspackPlugin } from "@rspack/plugin-react-refresh"
+import type { NormalModule } from "@rspack/core"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const IS_DEVELOPMENT = process.env["NODE_ENV"] !== "production"
-const IS_SERVE = process.env["WEBPACK_SERVE"] == "true"
+const IS_DEVELOPMENT = process.env.NODE_ENV !== "production"
+const IS_SERVE = process.env.WEBPACK_SERVE == "true"
 const ENV = dotenv({ path: "../.env", quiet: true }).parsed!
 
 let APP_URL = process.env["APP_URL"] ?? ENV["APP_URL"]
@@ -33,9 +34,8 @@ const ALIAS_WORKERS_FOLDER = path.join(PATH_SOURCE_FOLDER, "workers")
 
 const targets = ["last 2 versions", "> 0.2%", "not dead", "Firefox ESR"]
 
-const config: Configuration = {
+export default defineConfig({
     mode: IS_DEVELOPMENT ? "development" : "production",
-    devtool: IS_DEVELOPMENT ? "source-map" : false,
     entry: PATH_SOURCE_ENTRY,
     output: {
         path: PATH_OUTPUT_FOLDER,
@@ -44,7 +44,10 @@ const config: Configuration = {
         publicPath: "auto",
         clean: true
     },
-    cache: true,
+    cache: {
+        type: "persistent",
+        buildDependencies: [__filename, PATH_TS_CONFIG]
+    },
     optimization: {
         runtimeChunk: "single",
         splitChunks: {
@@ -157,18 +160,5 @@ const config: Configuration = {
             "ENV.APP_URL": "'" + APP_URL + "'"
         }),
         (IS_DEVELOPMENT && IS_SERVE) && new ReactRefreshRspackPlugin()
-    ],
-    experiments: {
-        css: true,
-        cache: {
-            type: "persistent",
-            buildDependencies: [__filename, PATH_TS_CONFIG]
-        }
-    },
-    performance: {
-        maxEntrypointSize: 512000 * 2,
-        maxAssetSize: 512000
-    }
-}
-
-export default config
+    ]
+})
