@@ -7,9 +7,9 @@ interface QueueTask<T> {
 }
 
 export class AsyncPool {
-    limit: number
-    active: number = 0
-    queue: QueueTask<any>[] = []
+    private limit: number
+    private active: number = 0
+    private queue: QueueTask<any>[] = []
 
     constructor(limit: number) {
         this.limit = limit

@@ -42,3 +42,9 @@ export function trimAndNullIfEmpty(data: string | null | undefined): string | nu
     if (!value) return null
     return value
 }
+
+export function toOctetStream(...parts: BlobPart[]) {
+    return new Blob(parts, {
+        type: "application/octet-stream"
+    })
+}

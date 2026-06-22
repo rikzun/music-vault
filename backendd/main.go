@@ -7,6 +7,7 @@ import (
 	"backend/core/routing"
 	auth_handlers "backend/handlers/auth"
 	client_handlers "backend/handlers/client"
+	track_handlers "backend/handlers/tracks"
 	track_covers_handlers "backend/handlers/tracks/covers"
 	"backend/services"
 	"os"
@@ -46,6 +47,7 @@ func main() {
 	clientServiceFactory := services.NewClientFactory(database)
 	authTokenServiceFactory := services.NewAuthTokenFactory(database)
 	trackServiceFactory := services.NewTrackFactory(database)
+	FFmpegFactory := services.NewFFmpegFactory(database)
 
 	router := routing.New(routing.Config{
 		App:    app,
@@ -53,7 +55,7 @@ func main() {
 
 		Security: middleware.Authorization(authTokenServiceFactory),
 		WrapperFunc: routing.DIWrapper(
-			txFactory, clientServiceFactory, authTokenServiceFactory, trackServiceFactory,
+			txFactory, clientServiceFactory, authTokenServiceFactory, trackServiceFactory, FFmpegFactory,
 		),
 	})
 
@@ -65,6 +67,7 @@ func main() {
 		secured := router.GroupSecured("api", loggerHandler, middleware.DefaultHeaders)
 		secured.Get("client/me", client_handlers.MeInfo, client_handlers.Me)
 
+		secured.Get("tracks/upload", track_handlers.UploadInfo, track_handlers.Upload)
 		secured.Get("tracks/covers/match", track_covers_handlers.MatchInfo, track_covers_handlers.Match)
 		secured.Post("tracks/covers/upload", track_covers_handlers.UploadInfo, track_covers_handlers.Upload)
 
@@ -77,7 +80,15 @@ func main() {
 		return nil
 	})
 
-	err := app.Listen(":3001", fiber.ListenConfig{
+	dir := "./uploads"
+	err := os.MkdirAll(dir, os.ModePerm)
+
+	if err != nil {
+		log.Error(err)
+		os.Exit(1)
+	}
+
+	err = app.Listen(":3001", fiber.ListenConfig{
 		DisableStartupMessage: true,
 		EnablePrefork:         true,
 	})

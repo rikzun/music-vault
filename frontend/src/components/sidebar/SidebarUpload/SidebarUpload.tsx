@@ -1,9 +1,9 @@
 import "./SidebarUpload.style.scss"
-import axios from "axios"
+import axios, { AxiosRequestConfig } from "axios"
 import { Button } from "@components/common/Button"
 import { useInput } from "@utils/hooks"
 import CloudDownloadRounded from "@mui/icons-material/CloudDownloadRounded"
-import { IUploadTrack } from "./SidebarUpload.types"
+import { IUploadTrack, TrackImage, UploadData } from "./SidebarUpload.types"
 import { DragAndDrop } from "@components/common/DragAndDrop"
 import { UploadTrack } from "@components/common/UploadTrack"
 import { Workers } from "@workers"
@@ -11,7 +11,8 @@ import { Scrollbar } from "@components/common/Scrollbar"
 import { UploadTrackProgress } from "@components/common/UploadTrackProgress"
 import { UploadAtoms } from "@atoms/upload"
 import { AsyncPool } from "@utils/asyncPool"
-import { ID } from "src/types/types"
+import { ID } from "../../../types/types"
+import { toOctetStream } from "@utils/std"
 
 export const trackWorker = Workers.Track()
 let isCanvasSupported: boolean | null = null
@@ -72,113 +73,105 @@ export function SidebarUpload() {
     const onUpload = () => {
         isUploading.set(true)
 
-        const data: Record<string, number[]> = {}
+        const data: Record<string, IUploadTrack[]> = {}
 
-        tracks.value.forEach((track, index) => {
-            const image = track.meta!.image!
-            const pHash = image.pHash
+        tracks.value.forEach((v) => {
+            const pHash = v.meta?.image?.pHash || "null"
 
             data[pHash] ??= []
-            data[pHash].push(index)
+            data[pHash].push(v)
         })
 
-        interface PHashStatus {
-            pHash: string
-            id: number | null
-        }
+        const imageless = data["null"] ?? []
+        imageless.forEach((track) => {
+            sendTrack(track, null)
+        })
 
-        Promise.allSettled(
-            Object.keys(data).map((pHash) => {
-                return new Promise<PHashStatus>((resolve, reject) => {
-                    axios.get<ID>("/tracks/covers/match", {
-                        params: { pHash }
-                    }).then((res) => {
-                        resolve({pHash, id: res.data.id})
-                    }).catch((err) => {
-                        if (axios.isAxiosError(err) && err.status == 404) {
-                            resolve({pHash, id: null})
-                            return
+        function sendTrack(track: IUploadTrack, imageID: number | null) {
+            const reader = new FileReader()
+
+            reader.onload = async(e) => {
+                const metaJSON = JSON.stringify({
+                    title: track.meta!.title,
+                    artists: track.meta!.artists,
+                    album: track.meta!.album,
+                    codec: track.meta!.codec,
+                    bitrate: track.meta!.bitrate,
+                    lossless: track.meta!.lossless
+                })
+
+                const meta = toOctetStream(metaJSON)
+                const blob = toOctetStream(meta, e.target!.result!)
+
+                const index = tracks.value.findIndex((v) => v.key === track.key)
+
+                tracks.set((state) => {
+                    state[index].progress = 0
+                    return [...state]
+                })
+
+                const headers: AxiosRequestConfig["headers"] = {
+                    "Content-Type": "application/octet-stream",
+                    "X-Meta-Size": meta.size
+                }
+
+                if (imageID) {
+                    headers["X-Image-ID"] = imageID
+                }
+
+                asyncPool.add(() => {
+                    return axios.post("/tracks/upload", blob, {
+                        headers: headers,
+
+                        onUploadProgress: (e) => {
+                            const progress = Math.round((e.progress ?? 0) * 100)
+    
+                            tracks.set((state) => {
+                                state[index].progress = progress
+                                return [...state]
+                            })
                         }
-
-                        reject()
+                    }).catch(() => {
+                        tracks.set((state) => {
+                            state[index].errorStatus = "unknown_error"
+                            return [...state]
+                        })
                     })
                 })
-            })
-        ).then((values) => {
-            values.forEach((v) => {
-                if (v.status == "fulfilled" && !v.value.id) {
-                    const pHash = v.value.pHash
+            }
 
-                    const trackIndex = data[pHash][0]
-                    const imageBlob = tracks.value[trackIndex].meta!.image!.blob
+            reader.readAsArrayBuffer(track.file)
+        }
 
-                    axios.post<ID>("/tracks/covers/upload", imageBlob, {
-                        headers: {
-                            "Content-Type": "application/octet-stream",
-                        },
-                        params: { pHash }
-                    })
-                }
+        delete data["null"]
+        Object.keys(data).forEach(async(pHash) => {
+            const tracks = data[pHash]
+            const image = tracks[0].meta!.image!
+
+            const res = await axios
+                .get<ID>("/tracks/covers/match", { params: { pHash } })
+                .catch(async(err) => {
+                    if (axios.isAxiosError(err) && err.status == 404) {
+                        const res = await axios.post<ID>("/tracks/covers/upload", image.blob, {
+                            headers: {
+                                "Content-Type": "application/octet-stream",
+                            },
+                            params: { pHash }
+                        })
+
+                        return { data: res.data }
+                    }
+
+                    return null
+                })
+
+            const imageID = res?.data.id
+            if (!imageID) return
+
+            tracks.forEach((track) => {
+                sendTrack(track, imageID)
             })
         })
-
-        // tracks.value.forEach((track, index) => {
-        //     const reader = new FileReader()
-
-        //     reader.onload = async(e) => {
-        //         const metaJSON = JSON.stringify({
-        //             title: track.meta!.title,
-        //             artists: track.meta!.artists,
-        //             album: track.meta!.album,
-        //             codec: track.meta!.codec,
-        //             bitrate: track.meta!.bitrate,
-        //             lossless: track.meta!.lossless
-        //         })
-
-        //         const meta = new Blob([metaJSON], {
-        //             type: "application/octet-stream"
-        //         })
-
-        //         const image = track.meta!.image?.blob || null
-
-        //         const data = [meta, image, e.target!.result]
-        //             .filter(Boolean) as BlobPart[]
-
-        //         const blob = new Blob(data, {
-        //             type: "application/octet-stream"
-        //         })
-
-        //         tracks.set((state) => {
-        //             state[index].progress = 0
-        //             return [...state]
-        //         })
-
-        //         asyncPool.add(() => {
-        //             return axios.post("/track/upload", blob, {
-        //                 headers: {
-        //                     "Content-Type": "application/octet-stream",
-        //                     "X-Meta-Size": meta.size,
-        //                     "X-Image-Size": image?.size ?? 0
-        //                 },
-        //                 onUploadProgress: (e) => {
-        //                     const progress = Math.round((e.progress ?? 0) * 100)
-    
-        //                     tracks.set((state) => {
-        //                         state[index].progress = progress
-        //                         return [...state]
-        //                     })
-        //                 }
-        //             }).catch(() => {
-        //                 tracks.set((state) => {
-        //                     state[index].errorStatus = "unknown_error"
-        //                     return [...state]
-        //                 })
-        //             })
-        //         })
-        //     }
-
-        //     reader.readAsArrayBuffer(track.file)
-        // })
     }
 
     const onCancel = () => {

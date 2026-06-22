@@ -45,14 +45,13 @@ CREATE TABLE tracks
     title    TEXT NOT NULL,
     album    TEXT,
     codec    TEXT,
-    bitrate  INT,
-    lossless BOOL NOT NULL
+    bitrate  INT
 );
 
 CREATE OR REPLACE FUNCTION manage_tracks_count()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF TG_OP = 'DELETE' THEN
+    IF TG_OP = "DELETE" THEN
         IF OLD.cover_id IS NOT NULL THEN
             UPDATE track_covers 
             SET tracks_count = tracks_count - 1 
@@ -60,7 +59,7 @@ BEGIN
         END IF;
         RETURN OLD;
 
-    ELSIF TG_OP = 'INSERT' THEN
+    ELSIF TG_OP = "INSERT" THEN
         IF NEW.cover_id IS NOT NULL THEN
             UPDATE track_covers 
             SET tracks_count = tracks_count + 1 
@@ -68,7 +67,7 @@ BEGIN
         END IF;
         RETURN NEW;
 
-    ELSIF TG_OP = 'UPDATE' THEN
+    ELSIF TG_OP = "UPDATE" THEN
         IF OLD.cover_id IS DISTINCT FROM NEW.cover_id THEN
             
             IF OLD.cover_id IS NOT NULL THEN

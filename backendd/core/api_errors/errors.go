@@ -11,6 +11,9 @@ const (
 	ClientUniqueViolationCode  ApiErrorCode = "CLIENT.UNIQUE_VIOLATION"
 	ClientNotFoundCode         ApiErrorCode = "CLIENT.NOT_FOUND"
 	ClientPasswordMismatchCode ApiErrorCode = "CLIENT.PASSWORD_MISMATCH"
+
+	TrackContainsVideoCode ApiErrorCode = "TRACK.CONTAINS_VIDEO"
+	TrackUnsupportedCode   ApiErrorCode = "TRACK.UNSUPPORTED"
 )
 
 func ClientUniqueError() *ApiError {
@@ -31,5 +34,19 @@ func ClientPasswordMismatch() *ApiError {
 	return &ApiError{
 		Status: fiber.StatusUnauthorized,
 		Code:   ClientPasswordMismatchCode,
+	}
+}
+
+func TrackContainsVideo() *ApiError {
+	return &ApiError{
+		Status: fiber.StatusBadRequest,
+		Code:   TrackContainsVideoCode,
+	}
+}
+
+func TrackUnsupported() *ApiError {
+	return &ApiError{
+		Status: fiber.StatusBadRequest,
+		Code:   TrackUnsupportedCode,
 	}
 }

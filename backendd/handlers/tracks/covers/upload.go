@@ -57,14 +57,6 @@ func Upload(
 		return err
 	}
 
-	dir := "./uploads"
-
-	err = os.MkdirAll(dir, os.ModePerm)
-	if err != nil {
-		log.Error(err)
-		return err
-	}
-
 	uuidv4, err := uuid.NewRandom()
 	if err != nil {
 		log.Error(err)
@@ -72,7 +64,7 @@ func Upload(
 	}
 
 	filename := uuidv4.String() + ".png"
-	filePath := filepath.Join(dir, filename)
+	filePath := filepath.Join("./uploads", filename)
 
 	file, err := os.Create(filePath)
 	if err != nil {

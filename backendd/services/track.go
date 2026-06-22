@@ -66,3 +66,29 @@ func (self *Track) CreateCover(path string, pHash uint64) (int32, error) {
 
 	return id, err
 }
+
+func (self *Track) CreateTrack(
+	clientID int32,
+	coverID *int64,
+
+	path string,
+	duration float64,
+	title string,
+	album *string,
+	codec string,
+	bitrate uint,
+) (int32, error) {
+	query := `
+		INSERT INTO tracks (uploader_id, cover_id, path, duration, title, album, codec, bitrate)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+		RETURNING id
+	`
+
+	var id int32
+
+	err := self.database.QueryRow(self.context, query,
+		clientID, coverID, path, duration, title, album, codec, bitrate,
+	).Scan(&id)
+
+	return id, err
+}

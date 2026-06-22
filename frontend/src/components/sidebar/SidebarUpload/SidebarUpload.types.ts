@@ -25,3 +25,11 @@ export interface IUploadTrackMeta {
     bitrate: number | null
     lossless: boolean
 }
+
+export interface UploadData {
+    image: TrackImage | null
+    tracks: {
+        track: File
+        meta: IUploadTrackMeta | null
+    }[]
+}

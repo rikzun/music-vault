@@ -4,7 +4,7 @@ import "github.com/gofiber/fiber/v3"
 
 func DefaultHeaders(ctx fiber.Ctx) error {
 	ctx.Response().Header.Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-	ctx.Response().Header.Set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Meta-Size, X-Image-Size")
+	ctx.Response().Header.Set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Meta-Size, X-Image-ID")
 	ctx.Response().Header.Set("Access-Control-Allow-Origin", "*")
 
 	ctx.Response().Header.Set("Cross-Origin-Opener-Policy", "same-origin")
