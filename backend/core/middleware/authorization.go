@@ -1,28 +1,31 @@
 package middleware
 
 import (
-	"backend/domain/services"
-	"net/http"
+	"backend/services"
 
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v3"
 )
 
-var Authorization = func(ctx *gin.Context) {
-	authToken := ctx.GetHeader("Authorization")
+func Authorization(authTokenServiceFactory *services.AuthTokenFactory) func(ctx fiber.Ctx) error {
+	return func(ctx fiber.Ctx) error {
+		token := ctx.Get("Authorization")
 
-	if authToken == "" {
-		ctx.AbortWithStatus(http.StatusUnauthorized)
-		return
+		if token == "" {
+			return ctx.SendStatus(fiber.StatusUnauthorized)
+		}
+
+		authTokenService := authTokenServiceFactory.New(ctx.Context())
+		res, err := authTokenService.FindClientID(token)
+
+		if err != nil {
+			return err
+		}
+
+		if !res.Found {
+			return ctx.SendStatus(fiber.StatusUnauthorized)
+		}
+
+		ctx.Locals("clientID", res.ClientID)
+		return ctx.Next()
 	}
-
-	clientID := services.AuthToken.
-		ValidateAndGetClientID(authToken)
-
-	if clientID == 0 {
-		ctx.AbortWithStatus(http.StatusUnauthorized)
-		return
-	}
-
-	ctx.Set("clientID", clientID)
-	ctx.Next()
 }

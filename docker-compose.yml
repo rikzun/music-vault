@@ -2,7 +2,7 @@ name: music-vault
 
 services:
   frontend:
-    image: nginx:1.29.4-alpine3.23
+    image: nginx:1.31.3-alpine3.24
     security_opt:
       - no-new-privileges:true
     volumes:
@@ -18,7 +18,7 @@ services:
       - traefik.http.routers.frontend.tls.certresolver=letsencrypt
   
   backend:
-    image: ragedunicorn/ffmpeg:7.1.1-alpine3.22.2-1
+    image: ragedunicorn/ffmpeg:7.1.1-alpine3.24.1-1
     security_opt:
       - no-new-privileges:true
     user: root
@@ -35,7 +35,7 @@ services:
       - traefik.http.routers.backend.rule=Host(`vault.hex3.space`) && PathPrefix(`/api`)
       - traefik.http.routers.backend.entrypoints=websecure
       - traefik.http.routers.backend.tls.certresolver=letsencrypt
-      - traefik.http.services.backend.loadbalancer.server.port=8080
+      - traefik.http.services.backend.loadbalancer.server.port=3001
     entrypoint: sh -c "chmod +x /app/vault && /app/vault"
     env_file: .env
     depends_on:
@@ -43,7 +43,7 @@ services:
         condition: service_healthy
   
   database:
-    image: postgres:17.7-alpine3.23
+    image: postgres:17.10-alpine3.24
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
@@ -66,7 +66,7 @@ services:
       retries: 10
 
   traefik:
-    image: traefik:3.6.6
+    image: traefik:3.7.9
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true

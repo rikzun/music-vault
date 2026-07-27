@@ -27,7 +27,6 @@ $frontendItem = Get-Item ./build/frontend -ErrorAction SilentlyContinue
 
 function Build-Backend {
     try {
-        [System.Environment]::SetEnvironmentVariable("GIN_MODE", "release", "Process")
         [System.Environment]::SetEnvironmentVariable("GOOS", "linux", "Process")
         [System.Environment]::SetEnvironmentVariable("GOARCH", "amd64", "Process")
         Set-Location "./backend"
@@ -114,10 +113,10 @@ function Send-Files {
         [string[]] $Files
     )
 
-    & scp -r $Files root@185.239.141.222:$Destination
+    & scp -r $Files root@185.240.121.8:$Destination
     if ($LASTEXITCODE -ne 0) {
-        & ssh root@185.239.141.222 "mkdir -p $Destination"
-        & scp -r $Files root@185.239.141.222:$Destination
+        & ssh root@185.240.121.8 "mkdir -p $Destination"
+        & scp -r $Files root@185.240.121.8:$Destination
     }
 }
 

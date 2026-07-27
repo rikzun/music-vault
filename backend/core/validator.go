@@ -3,20 +3,31 @@ package core
 import (
 	"reflect"
 
-	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
 )
 
-func ConfigureValidator() {
-	if validator, ok := binding.Validator.Engine().(*validator.Validate); ok {
-		validator.RegisterTagNameFunc(func(field reflect.StructField) string {
-			jsonTag := field.Tag.Get("json")
+type structValidator struct {
+	validate *validator.Validate
+}
 
-			if jsonTag == "" {
-				return field.Name
-			}
+func (v *structValidator) Validate(out any) error {
+	return v.validate.Struct(out)
+}
 
-			return jsonTag
-		})
+func NewValidator() *structValidator {
+	v := validator.New(validator.WithRequiredStructEnabled())
+
+	v.RegisterTagNameFunc(func(field reflect.StructField) string {
+		jsonTag := field.Tag.Get("json")
+
+		if jsonTag == "" {
+			return field.Name
+		}
+
+		return jsonTag
+	})
+
+	return &structValidator{
+		validate: v,
 	}
 }

@@ -2,33 +2,109 @@ package main
 
 import (
 	"backend/core"
+	apierrors "backend/core/api_errors"
 	"backend/core/middleware"
-	"backend/domain"
-	"backend/global"
+	"backend/core/routing"
+	"backend/db"
+	auth_handlers "backend/handlers/auth"
+	client_handlers "backend/handlers/client"
+	track_handlers "backend/handlers/tracks"
+	track_covers_handlers "backend/handlers/tracks/covers"
+	"backend/services"
+	"os"
+	"time"
 
-	"github.com/gin-gonic/gin"
+	swagno3 "github.com/go-swagno/swagno/v3"
+	"github.com/go-swagno/swagno/v3/components/security"
+	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/log"
+	"github.com/gofiber/fiber/v3/middleware/logger"
+
+	recoverer "github.com/gofiber/fiber/v3/middleware/recover"
 )
 
 func main() {
-	core.ConfigureValidator()
+	loggerHandler := logger.New()
 
-	global.InitDatabase()
-	global.Database().AutoMigrate(
-		&domain.ClientEntity{},
-		&domain.AuthTokenEntity{},
-		&domain.TrackEntity{},
-		&domain.ArtistEntity{},
-		&domain.PlaylistEntity{},
-		&domain.PlaylistTracksEntity{},
-		&domain.ClientPlaylistsEntity{},
-	)
+	config := core.InitConfig()
+	database := db.InitDatabase(config)
+	defer database.Close()
 
-	gin.SetMode(gin.ReleaseMode)
+	db.MigrateDB(database)
 
-	engine := gin.Default()
-	engine.SetTrustedProxies([]string{"127.0.0.1"})
-	engine.Use(middleware.DefaultHeaders)
-	InitRouting(engine)
+	app := fiber.New(fiber.Config{
+		ErrorHandler:      apierrors.ErrorHandler,
+		StructValidator:   core.NewValidator(),
+		StreamRequestBody: true,
+	})
 
-	engine.Run(":8080")
+	app.Use(recoverer.New(recoverer.Config{
+		EnableStackTrace:  true,
+		StackTraceHandler: recoverer.ConfigDefault.StackTraceHandler,
+	}))
+
+	app.Use(loggerHandler)
+
+	openapi := swagno3.New(swagno3.Config{
+		Title:           "Music Vault",
+		Version:         time.Now().Format("2006-01-02 15:04:05"),
+		HidePackageName: true,
+	})
+	openapi.SetApiKeyAuth("Authorization", security.Header, "")
+
+	txFactory := core.NewTxFactory(database)
+	clientServiceFactory := services.NewClientFactory(database)
+	authTokenServiceFactory := services.NewAuthTokenFactory(database)
+	trackServiceFactory := services.NewTrackFactory(database)
+	FFmpegFactory := services.NewFFmpegFactory(database)
+
+	router := routing.New(routing.Config{
+		App:    app,
+		Swagno: openapi,
+
+		Security: middleware.Authorization(authTokenServiceFactory),
+		WrapperFunc: routing.DIWrapper(
+			txFactory, clientServiceFactory, authTokenServiceFactory, trackServiceFactory, FFmpegFactory,
+		),
+	})
+
+	{
+		unsecured := router.Group("api", loggerHandler, middleware.DefaultHeaders)
+		unsecured.Post("auth/sign-up", auth_handlers.SignUpInfo, auth_handlers.SignUp)
+		unsecured.Post("auth/sign-in", auth_handlers.SignInInfo, auth_handlers.SignIn)
+
+		unsecured.RouteOpenApi()
+		unsecured.RouteScalar()
+
+		secured := router.GroupSecured("api", loggerHandler, middleware.DefaultHeaders)
+
+		secured.Get("client/me", client_handlers.MeInfo, client_handlers.Me)
+
+		secured.Post("tracks/upload", track_handlers.UploadInfo, track_handlers.Upload)
+		secured.Get("tracks/covers/match", track_covers_handlers.MatchInfo, track_covers_handlers.Match)
+		secured.Post("tracks/covers/upload", track_covers_handlers.UploadInfo, track_covers_handlers.Upload)
+
+	}
+
+	app.Hooks().OnPostStartupMessage(func(m *fiber.PostStartupMessageData) error {
+		log.Info("Backend started")
+		return nil
+	})
+
+	dir := "./uploads"
+	err := os.MkdirAll(dir, os.ModePerm)
+
+	if err != nil {
+		log.Error(err)
+		os.Exit(1)
+	}
+
+	err = app.Listen(":3001", fiber.ListenConfig{
+		DisableStartupMessage: true,
+	})
+
+	if err != nil {
+		log.Error(err)
+		os.Exit(1)
+	}
 }
