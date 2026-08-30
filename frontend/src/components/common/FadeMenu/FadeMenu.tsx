@@ -5,7 +5,8 @@ import { CSSProperties, Children, ElementType, PropsWithChildren, ReactElement, 
 
 interface FadeMenuContextType {
     firstRender: boolean
-    active?: string | null
+    active: string
+    duration: number
     transitionEnd: (type: string) => void
 }
   
@@ -15,7 +16,8 @@ const useFadeMenuContext = () => useContext(FadeMenuContext)
 interface FadeMenuContainerProps extends PropsWithChildren {
     element?: ElementType | null
     className?: string | null
-    active?: string | null
+    active: string
+    duration?: number | null
 }
 
 export function FadeMenuContainer(props: FadeMenuContainerProps) {
@@ -34,26 +36,14 @@ export function FadeMenuContainer(props: FadeMenuContainerProps) {
     }, [props.children])
 
     useEffect(() => {
-        if (!props.active) {
-            visible.set(new Set())
-            return
-        }
-
-        visible.set((prev) => {
-            const newSet = new Set(prev)
-            newSet.add(props.active!)
-            return newSet
-        })
-
-        return () => {
-            firstRender.current = false
-        }
-    }, [props.active])
+        firstRender.current = false
+    }, [])
 
     const transitionEnd = (type: string) => {
         visible.set((prev) => {
             const newSet = new Set(prev)
             newSet.delete(type)
+            newSet.add(props.active)
             return newSet
         })
     }
@@ -62,10 +52,17 @@ export function FadeMenuContainer(props: FadeMenuContainerProps) {
 
     let className = "fade-menu-container"
     if (props.className) className += " " + props.className
+
+    const providerValue: FadeMenuContextType = {
+        firstRender: firstRender.current,
+        active: props.active,
+        duration: props.duration ?? 0.2,
+        transitionEnd
+    }
     
     return (
         <Element className={className}>
-            <FadeMenuContext.Provider value={{ firstRender: firstRender.current, active: props.active, transitionEnd }}>
+            <FadeMenuContext.Provider value={providerValue}>
                 {Array.from(children.entries()).map(([type, child]) => {
                     const isVisible = visible.value.has(type)
                     if (!isVisible) return null
@@ -93,15 +90,21 @@ export function FadeMenu(props: FadeMenuProps) {
     if (props.className) className += " " + props.className
 
     useEffect(() => {
+        opacity.set(1)
+    }, [])
+
+    useEffect(() => {
         opacity.set(Number(context.active == props.type))
     }, [context.active, props.type])
 
     const style: CSSProperties = {
         opacity: opacity.value,
+        transitionDuration: context.duration + "s",
         pointerEvents: opacity.value == 0 ? "none" : undefined
     }
 
     const onTransitionEnd = (e: ReactEvent.Transition) => {
+        if (e.target !== e.currentTarget) return
         if (e.propertyName !== "opacity") return
         if ((e.target as HTMLElement).style.opacity == "1") return
 
