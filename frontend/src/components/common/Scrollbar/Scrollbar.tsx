@@ -11,6 +11,12 @@ export function Scrollbar(props: PropsWithChildren) {
                     autoHideDelay: 0
                 }
             }}
+            events={{
+                initialized: (instance) => {
+                    const viewport = instance.elements().viewport
+                    viewport.classList.add("scrollbar-viewport")
+                }
+            }}
             defer
             children={props.children}
         />

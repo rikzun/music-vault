@@ -49,7 +49,7 @@
             .scrollbar-host {
                 height: 100%;
 
-                > div[data-overlayscrollbars-contents] {
+                > .scrollbar-viewport {
                     display: flex;
                     flex-direction: column;
                     position: unset;
