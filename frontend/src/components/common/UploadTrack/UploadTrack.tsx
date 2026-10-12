@@ -1,7 +1,6 @@
 import "./UploadTrack.styles.scss"
 import { UploadTrackProps } from "./UploadTrack.types"
 import { UploadAtoms } from "@atoms/upload"
-import { useTrueClick } from "@utils/hooks/useTrueClick"
 import { Input } from "@components/common/Input"
 import { PopupMenuData } from "src/types/popupMenu"
 import { EventBus } from "@utils/hooks"
@@ -61,10 +60,10 @@ export function UploadTrack(props: UploadTrackProps) {
         })
     }
 
-    const trueClick = useTrueClick(() => {
+    const onClick = () => {
         if (isEditing) return
         turnEditMode()
-    })
+    }
 
     const addArtist = () => {
         currentTrackData.set((state) => {
@@ -99,7 +98,7 @@ export function UploadTrack(props: UploadTrackProps) {
     const dataPM = isEditing ? undefined : JSON.stringify(popupMenu)
 
     return (
-        <div className={className} tabIndex={isEditing ? undefined : 0} {...(isEditing ? {} : trueClick)} data-pm={dataPM}>
+        <div className={className} tabIndex={isEditing ? undefined : 0} onClick={isEditing ? onClick : undefined} data-pm={dataPM}>
             <div className="column-field">
                 <div className="column">
                     <div className="field">

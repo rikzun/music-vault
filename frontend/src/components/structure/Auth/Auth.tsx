@@ -8,7 +8,6 @@ import { ReactEvent } from "@utils/react"
 import { Divider } from "@components/common/Divider"
 import { ParallaxBackground } from "@components/common/ParallaxBackground"
 import BackgroundURL from "@assets/auth-background.jpg?url"
-import HelpOutlineRounded from "@mui/icons-material/HelpOutlineRounded"
 import { Input } from "@components/common/Input"
 import { Button } from "@components/common/Button"
 import { Switch } from "@components/common/Switch"
@@ -86,8 +85,6 @@ export function Auth() {
                             <Switch.Option label="Sign In" onSelect={() => mode.set("sign-in")} active={mode.value == "sign-in"} />
                             <Switch.Option label="Sign Up" onSelect={() => mode.set("sign-up")} active={mode.value == "sign-up"} />
                         </Switch.Container>
-
-                        {/* <HelpOutlineRounded /> */}
                     </div>
 
                     {isSignIn && (

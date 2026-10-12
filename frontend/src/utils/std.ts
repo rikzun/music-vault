@@ -35,6 +35,8 @@ export function isMobile(): boolean {
     return mobileRegex.test(navigator.userAgent)
 }
 
+export const precisePointer = window.matchMedia('(any-pointer: fine)').matches
+
 export function trimAndNullIfEmpty(data: string | null | undefined): string | null {
     if (!data) return null
     const value = data.trim()

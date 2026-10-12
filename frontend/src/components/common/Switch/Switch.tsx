@@ -1,7 +1,7 @@
-import { useTrueClick } from "@utils/hooks/useTrueClick"
 import "./Switch.style.scss"
-import { Children, CSSProperties, isValidElement, PropsWithChildren, ReactNode, useLayoutEffect, useMemo, useRef } from "react"
+import { Children, isValidElement, PropsWithChildren, ReactNode, useLayoutEffect, useMemo, useRef } from "react"
 import { Divider } from "@components/common/Divider"
+import { ReactEvent } from "@utils/react"
 
 interface SwitchContainerProps extends PropsWithChildren {
     optionWidth?: string | null
@@ -70,11 +70,11 @@ export namespace Switch {
             return data
         }, [props.children])
 
-        const trueClick = useTrueClick((e) => {
-            const target = (e.target as HTMLButtonElement)
+        const onClick = (e: ReactEvent.Mouse) => {
+            const target = e.target as HTMLButtonElement
             const childProps = childData.props.find((v) => v.label === target.textContent)
             childProps?.onSelect?.()
-        })
+        }
 
         useLayoutEffect(() => {
             const activeIndex = childData.props.findIndex((v) => v.active)
@@ -96,7 +96,7 @@ export namespace Switch {
         }, [childData])
 
         return (
-            <div className="switch-container-component" {...trueClick}>
+            <div className="switch-container-component" onClick={onClick}>
                 {childData.elements}
 
                 <div ref={ref} className="underline" />

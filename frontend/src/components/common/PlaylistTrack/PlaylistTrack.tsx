@@ -5,7 +5,6 @@ import { Button } from "@components/common/Button"
 import AddRounded from "@mui/icons-material/AddRounded"
 import RemoveRounded from "@mui/icons-material/RemoveRounded"
 import MoreVertRounded from "@mui/icons-material/MoreVertRounded"
-import { useTrueClick } from "@utils/hooks/useTrueClick"
 import { BufferAtoms } from "@atoms/buffer"
 import { PlaylistAtoms } from "@atoms/playlist"
 import { bufferAddTrack, bufferRemoveTrack } from "src/App"
@@ -20,8 +19,6 @@ export function PlaylistTrack(props: PlaylistTrackProps) {
     const playlists = PlaylistAtoms.usePlaylists()
     const bufferPlaylistID = BufferAtoms.usePlaylistID()
 
-    const trueClick = useTrueClick(props.onClick)
-
     const bufferPlaylistIndex = bufferPlaylistID.value
         ? playlists.value.findIndex((v) => v.id == bufferPlaylistID.value)
         : -1
@@ -34,7 +31,7 @@ export function PlaylistTrack(props: PlaylistTrackProps) {
     const bufferAddAction = !bufferPlaylistTrackIdList.includes(props.data.id)
 
     return (
-        <div className="track-component" tabIndex={0} {...trueClick}>
+        <div className="track-component" tabIndex={0} onClick={props.onClick}>
             <div className="container">
                 {props.data.imageURL
                     ? <img className="cover" src={ENV.APP_URL + props.data.imageURL} />

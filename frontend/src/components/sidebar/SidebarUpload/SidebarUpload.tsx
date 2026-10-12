@@ -11,7 +11,7 @@ import { Scrollbar } from "@components/common/Scrollbar"
 import { UploadTrackProgress } from "@components/common/UploadTrackProgress"
 import { UploadAtoms } from "@atoms/upload"
 import { AsyncPool } from "@utils/asyncPool"
-import { ID } from "../../../types/types"
+import { ID } from "../../../types/global"
 import { toOctetStream } from "@utils/std"
 
 export const trackWorker = Workers.Track()

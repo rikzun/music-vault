@@ -49,3 +49,7 @@ export type MdIcon = OverridableComponent<SvgIconTypeMap<{}, "svg">> & {
 
 export type PrimitiveType = string | number | boolean
 export type PrimitiveTypeNullable = PrimitiveType | undefined | null
+
+export type ControlType =
+    | "mouse"
+    | "touch"

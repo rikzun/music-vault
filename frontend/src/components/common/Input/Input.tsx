@@ -1,7 +1,6 @@
 import "./Input.style.scss"
 import { InputTextProps, InputImageProps, InputFormFieldProps } from "@components/common/Input"
 import { useInput, useState } from "@utils/hooks"
-import { useTrueClick } from "@utils/hooks/useTrueClick"
 import SearchRounded from "@mui/icons-material/SearchRounded"
 import HideImageRounded from "@mui/icons-material/HideImageRounded"
 import VisibilityRounded from "@mui/icons-material/VisibilityRounded"
@@ -53,17 +52,17 @@ export namespace Input {
     export function Image(props: InputImageProps) {
         const input = useInput({ handler: props.onChange })
         
-        const trueClick = useTrueClick(() => {
+        const onClick = () => {
             if (props.disabled) return
             input.click()
-        })
+        }
 
         let className = cl + " input-component-image"
         if (!props.imageURL) className += " input-component-image__empty"
         if (props.disabled) className += " input-component-image__disabled"
 
         return (
-            <button className={className} {...trueClick}>
+            <button className={className} onClick={onClick}>
                 <div className="cover">
                     <SearchRounded />
                 </div>

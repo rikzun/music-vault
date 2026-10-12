@@ -1,5 +1,5 @@
 {
-  "include": ["src", "assets.d.ts", "fixes.d.ts"],
+  "include": ["src", "assets.d.ts", "declarations.d.ts", "fixes.d.ts"],
   "compilerOptions": {
     "strict": true,
     "noImplicitOverride": true,
@@ -23,6 +23,8 @@
       "@atoms/*": ["./src/atoms/*"],
       "@components": ["./src/components"],
       "@components/*": ["./src/components/*"],
+      "@types": ["./src/types"],
+      "@types/*": ["./src/types/*"],
       "@utils": ["./src/utils"],
       "@utils/*": ["./src/utils/*"],
       "@workers": ["./src/workers"],

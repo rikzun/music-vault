@@ -10,6 +10,7 @@ import { useEffect } from "react"
 import { GetListPlaylistResponse } from "./SidebarPlaylist.types"
 import { FadeMenu, FadeMenuContainer } from "@components/common/FadeMenu"
 import { PlaylistCreation } from "@components/common/PlaylistCreation"
+import { openContextMenu, triggerContextMenu } from "@components/structure/ContextMenu/ContextMenu.service"
 
 type Menu = "playlistList" | "playlistCreation"
 
@@ -48,7 +49,12 @@ export function SidebarPlaylist() {
 
                 <Button.Icon
                     icon={MoreHorizRounded}
-                    data-pmi={{type: "playlists"}}
+                    {...triggerContextMenu("playlists", {
+                        anchorH: "right",
+                        anchorV: "bottom",
+
+                        transformH: "right"
+                    })}
                 />
             </div>
 
@@ -67,7 +73,7 @@ export function SidebarPlaylist() {
                                         title={p.title}
                                         imageURL={p.imageURL}
                                         onClick={() => currentPlaylist.set(p.id)}
-                                        data-pm={{ type: "addPlaylistToBuffer", data: { id: p.id } }}
+                                        {...openContextMenu("addPlaylistToBuffer")}
                                     />
                                 )
                             })}

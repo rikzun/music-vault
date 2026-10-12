@@ -1,13 +1,11 @@
-import { MouseEvent, Ref } from "react"
-import { PopupMenuData, PopupMenuInitiator } from "src/types/popupMenu"
-import { MdIcon } from "src/types/types"
+import { Ref } from "react"
+import { ReactEvent } from "@utils/react"
+import { MdIcon } from "../../../types/global"
 
 interface ButtonBaseProps {
     "aria-label"?: string
-    "data-pm"?: PopupMenuData
-    "data-pmi"?: PopupMenuInitiator
     className?: string
-    onClick?: ((e: MouseEvent<HTMLButtonElement>) => void) | null
+    onClick?: ReactEvent.Mouse.Handler<HTMLButtonElement> | null
     ref?: Ref<HTMLButtonElement> | undefined
     color?: string
 }

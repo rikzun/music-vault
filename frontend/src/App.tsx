@@ -5,17 +5,18 @@ import { Auth } from "@components/structure/Auth"
 import { SectionSidebar } from "@components/structure/SectionSidebar"
 import { SectionPlayer } from "@components/structure/SectionPlayer"
 import { SectionPlaylist } from "@components/structure/SectionPlaylist"
-import { SettingsAtoms } from "src/atoms/settings"
-import { useEffect } from "react"
-import { ClientResponse } from "./types/types"
+import { SettingsAtoms } from "@atoms/settings"
+import { Fragment, useEffect } from "react"
+import { ClientResponse } from "./types/global"
 import { ClientAtoms } from "@atoms/client"
-import { PopupMenuProvider } from "@components/structure/PopupMenu"
 import { LocalStorage } from "@utils/localStorage"
 import { Accumulator } from "@utils/accumulator"
 import { MenuAtoms } from "@atoms/menu"
 import { getDefaultStore } from "jotai"
 import { isMobile } from "@utils/std"
 import { VolumeAtoms } from "@atoms/volume"
+import { ContextMenu } from "@components/structure/ContextMenu/ContextMenu"
+import { ShaderBackground } from "@components/common/ShaderBackground"
 
 axios.defaults.baseURL = ENV.APP_URL + "api"
 
@@ -92,13 +93,17 @@ export function App() {
         }
     }, [])
 
-    if (token.value == null) return <Auth />
+    // if (token.value == null) return <Auth />
 
     return (
-        <PopupMenuProvider>
+        <Fragment>
+            {/* <ShaderBackground /> */}
+
             <SectionSidebar />
             <SectionPlayer />
             <SectionPlaylist />
-        </PopupMenuProvider>
+
+            <ContextMenu />
+        </Fragment>
     )
 }

@@ -1,18 +1,10 @@
-import { EventBus } from "@utils/hooks"
-import { PopupMenuType } from "src/types/popupMenu"
-import { getDefaultStore } from "jotai"
 import { BufferAtoms } from "@atoms/buffer"
 import { UploadAtoms } from "@atoms/upload"
+import { EventBus } from "@utils/hooks"
+import { getDefaultStore } from "jotai"
+import { ContextMenuOptions } from "./ContextMenu.types"
 
-export interface PopupMenuItem {
-    label: string
-    onClick?: (data?: any) => void
-    children?: Omit<PopupMenuItem, "children">[]
-}
-
-export type PopupMenuOptions = Record<PopupMenuType, PopupMenuItem[]>
-
-export const popupMenuOptions: PopupMenuOptions = {
+export const contextMenuOptions: ContextMenuOptions = {
     "playlists": [
         {
             label: "Create new",

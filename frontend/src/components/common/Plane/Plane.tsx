@@ -1,17 +1,15 @@
-import { useTrueClick } from "@utils/hooks/useTrueClick"
+import { ReactEvent } from "@utils/react"
 import "./Plane.style.scss"
 
 export interface PlaneProps {
-    onClick: () => void
+    onPointerDown: ReactEvent.Mouse.Handler<HTMLDivElement>
 }
 
 export function Plane(props: PlaneProps) {
-    const trueClick = useTrueClick(props.onClick, false)
-
     return (
         <div
             className="plane-component"
-            {...trueClick}
+            onPointerDown={props.onPointerDown}
         />
     )
 }

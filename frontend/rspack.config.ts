@@ -29,6 +29,7 @@ const PATH_TS_CONFIG = path.join(__dirname, "tsconfig.json")
 const ALIAS_ASSETS_FOLDER = path.join(PATH_SOURCE_FOLDER, "assets")
 const ALIAS_ATOMS_FOLDER = path.join(PATH_SOURCE_FOLDER, "atoms")
 const ALIAS_COMPONENTS_FOLDER = path.join(PATH_SOURCE_FOLDER, "components")
+const ALIAS_TYPES_FOLDER = path.join(PATH_SOURCE_FOLDER, "types")
 const ALIAS_UTILS_FOLDER = path.join(PATH_SOURCE_FOLDER, "utils")
 const ALIAS_WORKERS_FOLDER = path.join(PATH_SOURCE_FOLDER, "workers")
 
@@ -76,6 +77,7 @@ export default defineConfig({
             "@assets": ALIAS_ASSETS_FOLDER,
             "@atoms": ALIAS_ATOMS_FOLDER,
             "@components": ALIAS_COMPONENTS_FOLDER,
+            "@types": ALIAS_TYPES_FOLDER,
             "@utils": ALIAS_UTILS_FOLDER,
             "@workers": ALIAS_WORKERS_FOLDER
         }

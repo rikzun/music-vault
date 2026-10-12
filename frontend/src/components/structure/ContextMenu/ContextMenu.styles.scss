@@ -1,5 +1,5 @@
-.popup-menu-component {
-    position: absolute;
+.context-menu-component {
+    position: fixed;
     z-index: 9999;
     background-color: rgba(0, 0, 0, .6);
     backdrop-filter: blur(4px);
@@ -37,7 +37,7 @@
         }
     }
 
-    &__default {
+    &__mouse {
         border-radius: 7px;
         width: max-content;
         overflow: hidden;
@@ -47,5 +47,18 @@
         left: 0;
         bottom: 0;
         width: 100%;
+
+        > .option {
+            height: 48px;
+
+            > .count {
+                display: none;
+            }
+
+            > .text {
+                padding-left: 16px;
+                font-size: 18px;
+            }
+        }
     }
 }
