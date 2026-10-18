@@ -1,22 +1,8 @@
 import * as Comlink from "comlink"
 
 export namespace WorkerLib {
-    const supported = isWebsocketSupported()
-    
     export function isWebsocketSupported() {
         return typeof Worker !== "undefined"
-
-        // try {
-        //     const blob = new Blob([""], { type: "application/javascript" })
-        //     const url = URL.createObjectURL(blob)
-        //     const worker = new Worker(url)
-            
-        //     worker.terminate()
-        //     URL.revokeObjectURL(url)
-        //     return true
-        // } catch (e: unknown) {
-        //     return false
-        // }
     }
 
     export abstract class RPC {
@@ -27,8 +13,14 @@ export namespace WorkerLib {
         }
 
         static wrap<T extends RPC>(this: new (...args: any[]) => T, cb: () => Worker) {
+            const supported = isWebsocketSupported()
+
             const rpc = new this()
             const worker = supported ? cb() : {} as Worker
+
+            worker.addEventListener("error", (e) => {
+                console.log("WORKER ERROR", e)
+            })
 
             Object.assign(worker, {
                 rpc: supported ? Comlink.wrap<T>(worker) : rpc,

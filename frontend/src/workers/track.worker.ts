@@ -11,6 +11,7 @@ export class TrackWorkerRPC extends WorkerLib.RPC {
         try {
             const canvas = new OffscreenCanvas(this.imageSize, this.imageSize)
             if (canvas.getContext("bitmaprenderer") == null) throw Error()
+            if (canvas.getContext("2d") == null) throw Error()
 
             return true
         } catch {
@@ -43,7 +44,7 @@ export class TrackWorkerRPC extends WorkerLib.RPC {
 
     async getPerceptualHash(canvas: OffscreenCanvas): Promise<string> {
         const smallCanvas = new OffscreenCanvas(8, 8)
-        const ctx = smallCanvas.getContext('2d')!
+        const ctx = smallCanvas.getContext("2d")!
         
         ctx.drawImage(canvas, 0, 0, 8, 8)
         
@@ -74,7 +75,9 @@ export class TrackWorkerRPC extends WorkerLib.RPC {
         let meta: IAudioMetadata
     
         try {
-            meta = await parseBlob(file)
+            meta = await parseBlob(file, {
+                duration: false
+            })
         } catch {
             return null
         }
