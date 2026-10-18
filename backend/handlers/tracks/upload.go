@@ -172,7 +172,7 @@ func Upload(
 
 	coverIDHeader := ctx.Get("X-Cover-ID")
 	if coverIDHeader != "" {
-		coverIDParsed, err := strconv.ParseInt(metaSizeHeader, 10, 64)
+		coverIDParsed, err := strconv.ParseInt(coverIDHeader, 10, 64)
 
 		if err != nil || coverIDParsed <= 0 {
 			log.Error(err)
