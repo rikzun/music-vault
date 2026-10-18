@@ -1,0 +1,87 @@
+$ripple-duration: 550ms;
+$ripple-easing: cubic-bezier(0.4, 0, 0.2, 1);
+
+.ripple-component {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    outline: 0;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+
+    > .ripple__root {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+        pointer-events: none;
+        border-radius: inherit;
+        color: #fff;
+        transition: background-color 200ms linear;
+
+        > .ripple__wave {
+            position: absolute;
+            opacity: 0.4;
+            transform: scale(1);
+            animation: ripple-enter $ripple-duration $ripple-easing;
+
+            &--pulsate {
+                animation-duration: 200ms;
+            }
+
+            > .ripple__child {
+                display: block;
+                width: 100%;
+                height: 100%;
+                opacity: 1;
+                border-radius: 50%;
+                background-color: #fff;
+
+                &--leaving {
+                    opacity: 0;
+                    animation: ripple-exit $ripple-duration $ripple-easing;
+                }
+
+                &--pulsate {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    animation: ripple-pulsate 2500ms $ripple-easing 200ms infinite;
+                }
+            }
+        }
+    }
+}
+
+@keyframes ripple-enter {
+    0% {
+        transform: scale(0);
+        opacity: 0.1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.4;
+    }
+}
+
+@keyframes ripple-exit {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes ripple-pulsate {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(0.92);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
