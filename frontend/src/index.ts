@@ -5,4 +5,4 @@ import { FS } from "@utils/fs"
 FS.initialize()
 
 createRoot(ROOT)
-    .render(<App />)
+    .render(App())
