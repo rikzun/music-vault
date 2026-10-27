@@ -12,6 +12,6 @@ export interface ContextMenuData extends Partial<Vector2> {
 }
 
 export namespace ContextMenuAtoms {
-    export const position = atom<ContextMenuData | null>(null)
-    export const usePosition = () => useAtom(position)
+    export const data = atom<ContextMenuData | null>(null)
+    export const useData = () => useAtom(data)
 }

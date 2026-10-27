@@ -7,23 +7,26 @@ import { createPortal } from 'react-dom'
 import { Plane } from "@components/common/Plane"
 import { useState } from "@utils/hooks"
 import { Vector2 } from "@types"
+import { ContextMenuItem } from "./ContextMenu.types"
 
 const PADDING = 16
 const numbers = ["1", "2", "3", "4", "5", "6", "8", "9", "0"]
 
 export function ContextMenu() {
-    const position = ContextMenuAtoms.usePosition()
+    const data = ContextMenuAtoms.useData()
     const finalPos = useState<Vector2 | null>(null)
+    const finalNestedPos = useState<Vector2 | null>(null)
+    const nestedOptionChosen = useState<ContextMenuItem | null>(null)
     const ref = useRef<HTMLDivElement>(null)
 
-    const isMouse = position.value?.controlType === "mouse"
+    const isMouse = data.value?.controlType === "mouse"
 
     let className = "context-menu-component"
     if (isMouse) className += " " + className + "__mouse"
     else className += " " + className + "__touch"
 
-    const options = position.value?.type
-        ? contextMenuOptions[position.value.type]
+    const options = data.value?.type
+        ? contextMenuOptions[data.value.type]
         : []
 
     const onKeyDown = (e: KeyboardEvent) => {
@@ -39,8 +42,11 @@ export function ContextMenu() {
             const option = options[index]
             if (!option) return
 
-            option.onClick?.(position.value?.data)
-            position.set(null)
+            option.onClick?.(data.value?.data)
+
+            if (!option.children) {
+                data.set(null)
+            }
         }
     }
 
@@ -54,8 +60,9 @@ export function ContextMenu() {
     }, [])
 
     useLayoutEffect(() => {
-        if (!position.value) {
+        if (!data.value) {
             finalPos.set(null)
+            finalNestedPos.set(null)
             return
         }
 
@@ -64,18 +71,18 @@ export function ContextMenu() {
             return
         }
 
-        let finalX = position.value.x!
-        let finalY = position.value.y!
+        let finalX = data.value.x!
+        let finalY = data.value.y!
 
         const rect = ref.current?.getBoundingClientRect()!
         const availableWidth = document.body.clientWidth - PADDING
         const availableHeight = document.body.clientHeight - PADDING
 
-        if (position.value.transformH == "center") finalX -= rect.width / 2
-        if (position.value.transformH == "right") finalX -= rect.width
+        if (data.value.transformH == "center") finalX -= rect.width / 2
+        if (data.value.transformH == "right") finalX -= rect.width
 
-        if (position.value.transformV == "center") finalY -= rect.height / 2
-        if (position.value.transformV == "bottom") finalY -= rect.height
+        if (data.value.transformV == "center") finalY -= rect.height / 2
+        if (data.value.transformV == "bottom") finalY -= rect.height
         
         if (finalX < PADDING) finalX = PADDING
         if (finalX + rect.width > availableWidth) finalX = availableWidth - rect.width
@@ -87,53 +94,111 @@ export function ContextMenu() {
 
         addEventListener("keydown", onKeyDown, { passive: false })
         return () => removeEventListener("keydown", onKeyDown)
-    }, [position.value])
+    }, [data.value])
+
+    const calculateNestedFinalPos = (option: ContextMenuItem, index: number) => {
+        const rect = ref.current?.getBoundingClientRect()!
+        const availableWidth = document.body.clientWidth - PADDING - rect.width
+        const availableHeight = document.body.clientHeight - PADDING
+
+        let finalX = rect.x
+        let finalY = rect.y
+
+        let oneOptionSize = (rect.height / options.length) * index
+
+        finalX += rect.width
+        finalY += oneOptionSize
+        
+        if (finalX + rect.width > availableWidth) finalX = finalX - (rect.width * 2) - PADDING
+        // obviously buggy line
+        // if (finalY + (oneOptionSize * option.children?.length!) > availableHeight) finalY = finalY - (rect.width * 2) - PADDING
+
+        nestedOptionChosen.set(option)
+        finalNestedPos.set({x: finalX, y: finalY})
+    }
 
     return createPortal(
         <Fragment>
-            {finalPos.value && (
-                <Plane
-                    onPointerDown={() => {
-                        position.set(null)
+            {/* first menu */}
+            <Fragment>
+                {finalPos.value && (
+                    <Plane
+                        onPointerDown={() => {
+                            data.set(null)
+                        }}
+                    />
+                )}
+
+                <div
+                    className={className}
+                    ref={ref}
+                    style={{
+                        visibility: finalPos.value ? "visible" : "hidden",
+                        left: finalPos.value?.x ? finalPos.value?.x + "px" : undefined,
+                        top: finalPos.value?.y ? finalPos.value?.y + "px" : undefined,
                     }}
-                />
-            )}
-
-            <div
-                className={className}
-                ref={ref}
-                style={{
-                    visibility: finalPos.value ? "visible" : "hidden",
-                    left: finalPos.value?.x ? finalPos.value?.x + "px" : undefined,
-                    top: finalPos.value?.y ? finalPos.value?.y + "px" : undefined,
-                }}
-                children={
-                    options.map((option, index) => {
-                        const onClick = () => {
-                            option.onClick?.(position.value?.data)
-                            position.set(null)
-                        }
-
-                        let count: number | null = index + 1
-                        if (index == 9) count = 0
-                        if (index > 9) count = null
-
-                        return (
-                            <button className="option" key={option.label} onClick={onClick}>
-                                <div className="count">{count}</div>
-
-                                <div className="text">
-                                    {option.label}
-                                </div>
-
-                                {Boolean(option.children?.length) &&
-                                    <KeyboardArrowRight className="arrow" />
+                    children={
+                        options.map((option, index) => {
+                            const onClick = () => {
+                                if (option.children) {
+                                    calculateNestedFinalPos(option, index)
                                 }
-                            </button>
-                        )
-                    })
-                }
-            />
+
+                                option.onClick?.(data.value?.data)
+                                if (!option.children) {
+                                    data.set(null)
+                                }
+                            }
+
+                            let count: number | null = index + 1
+                            if (index == 9) count = 0
+                            if (index > 9) count = null
+
+                            return (
+                                <button className="option" key={option.label} onClick={onClick}>
+                                    <div className="count">{count}</div>
+
+                                    <div className="text">
+                                        {option.label}
+                                    </div>
+
+                                    {Boolean(option.children?.length) &&
+                                        <KeyboardArrowRight className="arrow" />
+                                    }
+                                </button>
+                            )
+                        })
+                    }
+                />
+            </Fragment>
+
+            {/* nested menu */}
+            <Fragment>
+                <div
+                    className={className}
+                    style={{
+                        visibility: finalNestedPos.value ? "visible" : "hidden",
+                        left: finalNestedPos.value?.x ? finalNestedPos.value?.x + "px" : undefined,
+                        top: finalNestedPos.value?.y ? finalNestedPos.value?.y + "px" : undefined,
+                    }}
+                    children={
+                        nestedOptionChosen.value?.children?.map((option, index) => {
+                            const onClick = () => {
+                                option.onClick?.(data.value?.data)
+                                data.set(null)
+                            }
+
+                            return (
+                                <button className="option" key={option.label} onClick={onClick}>
+                                    <div className="text">
+                                        {option.label}
+                                    </div>
+                                </button>
+                            )
+                        })
+                    }
+                />
+            </Fragment>
         </Fragment>,
         document.body
     )

@@ -20,7 +20,7 @@ export const contextMenuOptions: ContextMenuOptions = {
             label: "Sort by",
             children: [
                 {
-                    label: "Creation date",
+                    label: "Creation date"
                 },
                 {
                     label: "Modification date"

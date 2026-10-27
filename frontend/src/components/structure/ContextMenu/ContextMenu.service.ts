@@ -21,7 +21,7 @@ function show(type: ContextMenuType, controlType: ControlType, x: number, y: num
         controlType: controlType
     }
 
-    getDefaultStore().set(ContextMenuAtoms.position, data)
+    getDefaultStore().set(ContextMenuAtoms.data, data)
 }
 
 export function openContextMenu(type: ContextMenuType) {
